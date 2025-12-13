@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Camera - Face Recognition Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="sidebar">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-4 sidebar-header">
+                        <h4 class="sidebar-header-text mb-0"><i class="fas fa-user-shield"></i> Admin Panel</h4>
+                        <button id="sidebarToggle" class="btn btn-toggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                    <ul class="nav flex-column sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html" id="dashboard-link">
+                                <i class="fas fa-tachometer-alt nav-icon"></i>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="reports-dropdown" data-bs-toggle="collapse" data-bs-target="#reports-submenu" aria-expanded="false" aria-controls="reports-submenu">
+                                <i class="fas fa-chart-bar nav-icon"></i>
+                                <span class="nav-text">Reports</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="reports-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#cameras" id="cameras-link">
+                                        <i class="fas fa-video nav-icon"></i>
+                                        <span class="nav-text">Camera Registry</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#summary" id="summary-link">
+                                        <i class="fas fa-users nav-icon"></i>
+                                        <span class="nav-text">Employee Summary</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" id="camera-info-dropdown" data-bs-toggle="collapse" data-bs-target="#camera-info-submenu" aria-expanded="true" aria-controls="camera-info-submenu">
+                                <i class="fas fa-camera nav-icon"></i>
+                                <span class="nav-text">Camera Info</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse show" id="camera-info-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link camera-info-link active" href="#" id="add-camera-link">
+                                        <i class="fas fa-plus-circle nav-icon"></i>
+                                        <span class="nav-text">Add Camera</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link camera-info-link" href="update_camera_status.html" id="update-camera-status-link">
+                                        <i class="fas fa-toggle-on nav-icon"></i>
+                                        <span class="nav-text">Update Camera Status</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="face-recognition-link">
+                                <i class="fas fa-user-check nav-icon"></i>
+                                <span class="nav-text">Face Recognition</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <a class="nav-link" href="#" id="logout-link">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                <span class="nav-text">Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Header -->
+                <header>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1><i class="fas fa-plus-circle"></i> Add New Camera</h1>
+                            <p class="mb-0">Register a new camera in the system</p>
+                        </div>
+                        <div id="user-info" class="text-end">
+                            <small class="text-white-50">Welcome,</small><br>
+                            <strong id="current-user" class="text-white">Admin User</strong>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Add Camera Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-camera"></i> Camera Registration Form</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="add-camera-form">
+                            <!-- Camera Information -->
+                            <fieldset class="mb-4">
+                                <legend>Camera Information</legend>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="camera_name" class="form-label">Camera Name *</label>
+                                        <input type="text" class="form-control" id="camera_name" name="camera_name" placeholder="Enter camera name" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="camera_category" class="form-label">Camera Category</label>
+                                        <select class="form-select" id="camera_category" name="camera_category">
+                                            <option value="">Select category</option>
+                                            <option value="Fixed">Fixed</option>
+                                            <option value="PTZ">PTZ</option>
+                                            <option value="Dome">Dome</option>
+                                            <option value="Bullet">Bullet</option>
+                                            <option value="Wireless">Wireless</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="camera_type" class="form-label">Camera Type</label>
+                                        <input type="text" class="form-control" id="camera_type" name="camera_type" placeholder="Enter camera type">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="camera_brand" class="form-label">Camera Brand</label>
+                                        <input type="text" class="form-control" id="camera_brand" name="camera_brand" placeholder="Enter camera brand">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="camera_model" class="form-label">Camera Model</label>
+                                        <input type="text" class="form-control" id="camera_model" name="camera_model" placeholder="Enter camera model">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="serial_no" class="form-label">Serial Number</label>
+                                        <input type="text" class="form-control" id="serial_no" name="serial_no" placeholder="Enter serial number">
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Company Information -->
+                            <fieldset class="mb-4">
+                                <legend>Company Information</legend>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="company_code" class="form-label">Company Code *</label>
+                                        <input type="text" class="form-control" id="company_code" name="company_code" placeholder="Enter company code" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="company_name" class="form-label">Company Name *</label>
+                                        <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Enter company name" required>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Department Information -->
+                            <fieldset class="mb-4">
+                                <legend>Department Information</legend>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="department_code" class="form-label">Department Code</label>
+                                        <input type="text" class="form-control" id="department_code" name="department_code" placeholder="Enter department code">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="department_name" class="form-label">Department Name</label>
+                                        <input type="text" class="form-control" id="department_name" name="department_name" placeholder="Enter department name">
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Location Information -->
+                            <fieldset class="mb-4">
+                                <legend>Location Information</legend>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="location_type" class="form-label">Location Type *</label>
+                                        <select class="form-select" id="location_type" name="location_type" required>
+                                            <option value="">Select location type</option>
+                                            <option value="Indoor">Indoor</option>
+                                            <option value="Outdoor">Outdoor</option>
+                                            <option value="Perimeter">Perimeter</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="site_code" class="form-label">Site Code</label>
+                                        <input type="text" class="form-control" id="site_code" name="site_code" placeholder="Enter site code">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="site_name" class="form-label">Site Name</label>
+                                        <input type="text" class="form-control" id="site_name" name="site_name" placeholder="Enter site name">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="building_code" class="form-label">Building Code</label>
+                                        <input type="text" class="form-control" id="building_code" name="building_code" placeholder="Enter building code">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="building_name" class="form-label">Building Name</label>
+                                        <input type="text" class="form-control" id="building_name" name="building_name" placeholder="Enter building name">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="floor_no" class="form-label">Floor Number</label>
+                                        <input type="text" class="form-control" id="floor_no" name="floor_no" placeholder="Enter floor number">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="floor_name" class="form-label">Floor Name</label>
+                                        <input type="text" class="form-control" id="floor_name" name="floor_name" placeholder="Enter floor name">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="wing_name" class="form-label">Wing Name</label>
+                                        <input type="text" class="form-control" id="wing_name" name="wing_name" placeholder="Enter wing name">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="room_no" class="form-label">Room Number</label>
+                                        <input type="text" class="form-control" id="room_no" name="room_no" placeholder="Enter room number">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="room_name" class="form-label">Room Name</label>
+                                        <input type="text" class="form-control" id="room_name" name="room_name" placeholder="Enter room name">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="line_no" class="form-label">Line Number</label>
+                                        <input type="text" class="form-control" id="line_no" name="line_no" placeholder="Enter line number">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="line_name" class="form-label">Line Name</label>
+                                        <input type="text" class="form-control" id="line_name" name="line_name" placeholder="Enter line name">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="area_name" class="form-label">Area Name</label>
+                                        <input type="text" class="form-control" id="area_name" name="area_name" placeholder="Enter area name">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="direction" class="form-label">Direction</label>
+                                        <select class="form-select" id="direction" name="direction">
+                                            <option value="">Select direction</option>
+                                            <option value="North">North</option>
+                                            <option value="South">South</option>
+                                            <option value="East">East</option>
+                                            <option value="West">West</option>
+                                            <option value="Northeast">Northeast</option>
+                                            <option value="Northwest">Northwest</option>
+                                            <option value="Southeast">Southeast</option>
+                                            <option value="Southwest">Southwest</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Technical Specifications -->
+                            <fieldset class="mb-4">
+                                <legend>Technical Specifications</legend>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="camera_mp" class="form-label">Camera MP (MegaPixels)</label>
+                                        <input type="text" class="form-control" id="camera_mp" name="camera_mp" placeholder="Enter camera mega pixels">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="camera_resolution" class="form-label">Camera Resolution</label>
+                                        <input type="text" class="form-control" id="camera_resolution" name="camera_resolution" placeholder="Enter camera resolution">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="firmware_version" class="form-label">Firmware Version</label>
+                                        <input type="text" class="form-control" id="firmware_version" name="firmware_version" placeholder="Enter firmware version">
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Network Information -->
+                            <fieldset class="mb-4">
+                                <legend>Network Information</legend>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="ip_address" class="form-label">IP Address *</label>
+                                        <input type="text" class="form-control" id="ip_address" name="ip_address" placeholder="Enter IP address" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="rtsp_url" class="form-label">RTSP URL</label>
+                                        <input type="text" class="form-control" id="rtsp_url" name="rtsp_url" placeholder="Enter RTSP URL">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="user_name" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Enter username">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="passwords" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="passwords" name="passwords" placeholder="Enter password">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="latitude" class="form-label">Latitude</label>
+                                        <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Enter latitude">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="longitude" class="form-label">Longitude</label>
+                                        <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Enter longitude">
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Status and Installation -->
+                            <fieldset class="mb-4">
+                                <legend>Status and Installation</legend>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="is_active" class="form-label">Status</label>
+                                        <select class="form-select" id="is_active" name="is_active">
+                                            <option value="Y">Active</option>
+                                            <option value="N">Inactive</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="install_date" class="form-label">Installation Date</label>
+                                        <input type="date" class="form-control" id="install_date" name="install_date">
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html#cameras'">
+                                    <i class="fas fa-arrow-left"></i> Back to Camera Registry
+                                </button>
+                                <button type="submit" class="btn btn-primary" id="submit-btn">
+                                    <i class="fas fa-save"></i> Submit Camera Registration
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="pt-5 my-4 text-muted border-top">
+                    <p class="mb-0">&copy; 2025 Face Recognition System Admin Dashboard</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // API base URL
+        const API_BASE_URL = 'http://localhost:5001/api';
+        
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+            } else {
+                // Load user info
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (currentUser.name) {
+                    document.getElementById('current-user').textContent = currentUser.name;
+                }
+            }
+            
+            // Set today as default installation date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('install_date').value = today;
+        });
+        
+        // Handle form submission
+        document.getElementById('add-camera-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submit-btn');
+            const originalHtml = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering Camera...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Collect form data
+                const formData = new FormData(this);
+                const cameraData = {};
+                
+                // Convert FormData to object
+                for (let [key, value] of formData.entries()) {
+                    cameraData[key] = value;
+                }
+                
+                // Get current user for created_by field
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                cameraData.created_by = currentUser.employee_id || 'System';
+                
+                // Send request to backend
+                const response = await fetch(`${API_BASE_URL}/cameras`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(cameraData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success message
+                    showAlert(`Camera registered successfully! Camera ID: ${result.camera_id}`, 'success');
+                    
+                    // Reset form after successful submission
+                    this.reset();
+                    
+                    // Set today as default installation date again
+                    const today = new Date().toISOString().split('T')[0];
+                    document.getElementById('install_date').value = today;
+                    document.getElementById('is_active').value = 'Y';
+                } else {
+                    showAlert(`Failed to register camera: ${result.message || 'Unknown error'}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`Error registering camera: ${error.message}`, 'danger');
+                console.error('Error:', error);
+            } finally {
+                // Restore button state
+                submitBtn.innerHTML = originalHtml;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Show alert message
+        function showAlert(message, type = 'info') {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.alert-fixed');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-fixed`;
+            alertDiv.role = 'alert';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+        
+        // Logout functionality
+        document.getElementById('logout-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('isAdminLoggedIn');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        });
+        
+        // Camera Info dropdown click handler
+        document.getElementById('camera-info-dropdown').addEventListener('click', function(e) {
+            // Just toggle the dropdown, don't change the active state of other items
+            // The active state should remain on the currently selected item
+            e.stopPropagation();
+        });
+        
+        // Sidebar toggle functionality
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            
+            // Change icon based on sidebar state
+            const icon = this.querySelector('i');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+            
+            // Trigger a resize event to ensure proper layout adjustment
+            window.dispatchEvent(new Event('resize'));
+        });
+    </script>
+</body>
+</html>

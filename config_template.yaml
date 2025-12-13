@@ -1,0 +1,102 @@
+# config_template.yaml
+# Copy this file to config.yaml and update with your actual credentials
+
+# --- Database Configuration ---
+oracle:
+  username: "your_username"
+  password: "your_password"
+  dsn: "your_host:your_port/your_service"
+  pool_min: 2
+  pool_max: 10
+  pool_increment: 1
+
+# --- Server Settings ---
+server_host: "127.0.0.1" #"0.0.0.0" # Listen on all network interfaces
+server_port: 8000
+
+# --- Cameras (add as many as you need) ---
+cameras:
+  # - id: "CAM-01-A"
+  #   url: 'your_camera_stream_url'
+  #   location: "Camera Location"
+
+# --- Camera and Stream Defaults ---
+frame_width: 1280
+frame_height: 720
+fps_target: 30
+min_fps: 5  # Minimum acceptable FPS for adaptive frame skipping
+max_frame_skip_ratio: 0.8  # Maximum frame skip ratio (80%)
+adaptive_frame_skipping: true  # Enable adaptive frame skipping
+base_frame_skip: 5  # Base frame skip interval
+
+# --- Model Paths ---
+detector_model_path: "models/face_detection_yunet_2023mar.onnx"
+recognizer_model_path: "models/glint360k_r100.onnx"  # MODEL PATH
+# New model paths for YOLOv8-Face + MobileFaceNet
+yolo_model_path: "models/yolov8n-face.pt"  # YOLOv8 face detection model (face-optimized)
+mobilefacenet_model_path: "models/mobilefacenet.pth"  # MobileFaceNet recognition model
+
+# --- DB sync / Index files ---
+employee_data_csv: "data/employee_data.csv"
+faiss_index_path: "output/faiss_index_arcface.bin"   # index file
+metadata_path: "output/metadata_arcface.pkl"         # metadata file
+
+# --- Detection Parameters (YuNet) ---
+detector_confidence_threshold: 0.6
+detector_nms_threshold: 0.3
+detector_input_size: [640, 640]
+
+# New parameters for YOLOv8
+yolo_confidence_threshold: 0.5
+yolo_nms_threshold: 0.4
+yolo_detection_interval: 10
+
+# --- Recognition Parameters (ArcFace) ---
+recognition_threshold: 0.5
+recognition_interval: 3
+
+# --- MULTI-FRAME AVERAGING ---
+temporal_smoothing_window: 5
+min_embeddings_for_recognition: 1
+
+# --- Tracker Settings ---
+max_disappeared_frames: 10
+max_distance: 120
+
+# --- ADVANCED QUALITY FILTERS ---
+min_face_size: 70
+min_blur_clarity: 35.0
+min_brightness: 50
+max_brightness: 230
+max_pose_yaw: 80
+max_pose_pitch: 75
+max_pose_roll: 180
+
+# --- ADAPTIVE SIMILARITY THRESHOLDS ---
+clarity_threshold_for_adaptation: 200.0
+adaptive_threshold_increase: 0.05
+
+# --- Visualization ---
+font: "FONT_HERSHEY_SIMPLEX"
+font_scale: 0.6
+font_thickness: 2
+green_color: [0, 255, 0]
+red_color: [0, 0, 255]
+text_color: [255, 255, 255]
+
+# Option to use YOLOv8-Face + MobileFaceNet for better performance
+# To enable YOLOv8-Face + MobileFaceNet, set this to true
+# This will use YOLOv8 for face detection (faster) and MobileFaceNet for recognition (lightweight)
+# Recommended for low-end hardware or when processing multiple cameras simultaneously
+use_yolo_mobilefacenet: true  # Set to true to use YOLOv8-Face + MobileFaceNet
+
+# Option to use DeepSORT for better tracking performance
+# To enable DeepSORT, set this to true
+# This will use DeepSORT for object tracking instead of the simple CentroidTracker
+# Recommended for better tracking accuracy, especially in crowded scenes
+use_deepsort: false  # Set to true to use DeepSORT (requires deep_sort_pytorch)
+
+# --- Image Enhancement ---
+# use_clahe_preprocessing: true
+# clahe_clip_limit: 2.0
+# clahe_tile_grid_size: [8, 8]

@@ -1,0 +1,791 @@
+/*
+ * Admin Dashboard Styles
+ */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 0;
+    background: #212529; /* Deep charcoal or near-black background */
+    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.3);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    width: 250px;
+    transition: width 0.3s ease, left 0.3s ease;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Ensure collapsed sidebar rail is always visible */
+.sidebar.collapsed {
+    z-index: 101; /* Ensure it stays above content */
+    left: 0 !important; /* Force flush with left edge */
+}
+
+/* Sidebar header */
+.sidebar-header {
+    padding: 15px 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header-text {
+    color: #ffffff; /* White text */
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Clean, modern sans-serif font */
+}
+
+.sidebar-header-text i {
+    margin-right: 10px;
+    color: #ffffff; /* White icon */
+}
+
+/* Sidebar Toggle Button */
+.btn-toggle {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 5px 7px; /* Reduced padding to fit within 30px sidebar rail */
+    transition: all 0.3s ease;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.btn-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+}
+
+/* Sidebar navigation */
+.sidebar-nav {
+    padding: 0 15px;
+}
+
+.sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 5px;
+    border-radius: 0;
+    color: #adb5bd; /* Light gray text */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Consistent sans-serif font */
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+/* Icons styling */
+.nav-icon {
+    width: 20px;
+    text-align: center;
+    margin-right: 12px;
+    font-size: 0.9rem;
+    color: #adb5bd; /* Light gray icons */
+}
+
+.dropdown-icon {
+    font-size: 0.8rem;
+    color: #adb5bd; /* Light gray dropdown icon */
+    transition: transform 0.3s ease;
+    margin-left: 10px; /* Add spacing between text and dropdown icon */
+}
+
+/* Hover effect */
+.sidebar .nav-link:hover {
+    color: #ffffff; /* White text on hover */
+    background-color: rgba(255, 255, 255, 0.05); /* Subtle hover effect */
+}
+
+.sidebar .nav-link:hover .nav-icon,
+.sidebar .nav-link:hover .dropdown-icon {
+    color: #ffffff; /* White icons on hover */
+}
+
+/* Active/Selected state - bright blue background */
+.sidebar .nav-link.active {
+    background: #0d6efd; /* Bright blue background */
+    color: #ffffff; /* White text */
+    box-shadow: none;
+    margin-left: -20px;
+    margin-right: -15px;
+    padding-left: 20px;
+    padding-right: 15px;
+}
+
+.sidebar .nav-link.active .nav-icon,
+.sidebar .nav-link.active .dropdown-icon {
+    color: #ffffff; /* White icons when active */
+}
+
+/* Rotate dropdown icon when expanded */
+.sidebar .nav-link[aria-expanded="true"] .dropdown-icon {
+    transform: rotate(180deg);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+/* Smooth transition for dropdown icon */
+.dropdown-icon {
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+/* Submenu styling - include user management submenu */
+#reports-submenu, #camera-info-submenu, #user-management-submenu {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    margin-top: 5px;
+    padding: 8px 0;
+}
+
+#reports-submenu .nav-link, #camera-info-submenu .nav-link, #user-management-submenu .nav-link {
+    padding-left: 40px; /* Indent submenu items */
+    font-size: 0.9rem;
+    color: #adb5bd;
+}
+
+#reports-submenu .nav-link:hover, #camera-info-submenu .nav-link:hover, #user-management-submenu .nav-link:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+#reports-submenu .nav-link.active, #camera-info-submenu .nav-link.active, #user-management-submenu .nav-link.active {
+    background: #0d6efd;
+    color: #ffffff;
+}
+
+/* Scrollbar styling for sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #343a40;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #0d6efd;
+    border-radius: 3px;
+}
+
+/* Add decorative top border to submenu */
+.sidebar #reports-submenu:before, .sidebar #camera-info-submenu:before, .sidebar #user-management-submenu:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #0d6efd, transparent);
+}
+
+.sidebar #reports-submenu .nav-link, .sidebar #camera-info-submenu .nav-link, .sidebar #user-management-submenu .nav-link {
+    background: transparent;
+    border-radius: 0;
+    margin: 0;
+    padding: 15px 15px 15px 50px;
+    font-size: 0.9rem;
+    border: none;
+    box-shadow: none;
+    color: #adb5bd;
+    position: relative;
+    transition: all 0.3s ease;
+    transform: translateX(-10px);
+    opacity: 0;
+}
+
+.sidebar #reports-submenu.show .nav-link, .sidebar #camera-info-submenu.show .nav-link, .sidebar #user-management-submenu.show .nav-link {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.sidebar #reports-submenu .nav-item:nth-child(1) .nav-link, .sidebar #camera-info-submenu .nav-item:nth-child(1) .nav-link, .sidebar #user-management-submenu .nav-item:nth-child(1) .nav-link {
+    transition-delay: 0.1s;
+}
+
+.sidebar #reports-submenu .nav-item:nth-child(2) .nav-link, .sidebar #camera-info-submenu .nav-item:nth-child(2) .nav-link, .sidebar #user-management-submenu .nav-item:nth-child(2) .nav-link {
+    transition-delay: 0.15s;
+}
+
+.sidebar #reports-submenu .nav-link:hover, .sidebar #camera-info-submenu .nav-link:hover, .sidebar #user-management-submenu .nav-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.sidebar #reports-submenu .nav-link:hover:before, .sidebar #camera-info-submenu .nav-link:hover:before, .sidebar #user-management-submenu .nav-link:hover:before {
+    opacity: 1;
+}
+
+.sidebar #reports-submenu .nav-link i, .sidebar #camera-info-submenu .nav-link i, .sidebar #user-management-submenu .nav-link i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+}
+
+/* Divider between submenu items */
+/* Removed old styles */
+
+/* Chevron rotation animation */
+/* Removed old styles */
+
+/* Smooth dropdown animation - include user management submenu */
+#reports-submenu, #camera-info-submenu, #user-management-submenu {
+    opacity: 0;
+    transform: translateY(-15px);
+    display: block !important;
+    visibility: hidden;
+    max-height: 0;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 0;
+    margin-top: 0;
+    padding: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+#reports-submenu.show, #camera-info-submenu.show, #user-management-submenu.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    max-height: 500px; /* Adjust as needed */
+    padding: 5px 0;
+}
+
+/* Header */
+header {
+    background: #0d6efd; /* Bright, saturated blue background */
+    color: white;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0;
+    margin-bottom: 30px;
+    width: 100%;
+    transition: margin-left 0.3s ease;
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+header h1 i {
+    margin-right: 10px;
+}
+
+header p {
+    font-size: 1rem;
+    font-weight: 400;
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+/* Sidebar Toggle Button */
+.btn-toggle {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 5px 7px; /* Reduced padding to fit within 30px sidebar rail */
+    transition: all 0.3s ease;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.btn-toggle:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.btn-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+}
+
+/* Sidebar Collapsed State */
+.sidebar.collapsed {
+    width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .sidebar.collapsed {
+        width: 0;
+    }
+}
+
+/* Dashboard Stats Cards */
+#dashboard-stats .card {
+    border-radius: 12px; /* Soft rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadows */
+    margin-bottom: 0;
+    transition: all 0.3s ease;
+    border: none;
+    overflow: hidden;
+}
+
+#dashboard-stats .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Specific card colors as described */
+#dashboard-stats .col-md-3:nth-child(1) .card {
+    background: #0d6efd; /* Deep blue for Total Cameras */
+}
+
+#dashboard-stats .col-md-3:nth-child(2) .card {
+    background: #198754; /* Rich green for Active Cameras */
+}
+
+#dashboard-stats .col-md-3:nth-child(3) .card {
+    background: #0dcaf0; /* Bright cyan for Employees Today */
+}
+
+#dashboard-stats .col-md-3:nth-child(4) .card {
+    background: #fd7e14; /* Warm yellow-orange for Recognitions Today */
+}
+
+#dashboard-stats .card-body {
+    padding: 25px;
+}
+
+#dashboard-stats .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+#dashboard-stats .card-title i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+#dashboard-stats h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    color: white !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Filter Section */
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    background: white;
+    margin-bottom: 30px;
+}
+
+.card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background: #0d6efd; /* Same blue as header */
+    color: white;
+    border-radius: 10px 10px 0 0 !important;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    padding: 15px 20px;
+}
+
+/* Tables */
+.table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+}
+
+.table th {
+    font-weight: 600;
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.card-header {
+    background: linear-gradient(90deg, #0d6efd, #0b5ed7);
+    color: white;
+    border-radius: 8px 8px 0 0 !important;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Status indicators */
+.status-active {
+    color: #198754; /* Rich green */
+    font-weight: 600;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.status-inactive {
+    color: #dc3545; /* Red */
+    font-weight: 600;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Card body */
+.card-body {
+    padding: 20px;
+}
+
+/* Ensure dashboard stats are visible */
+#dashboard-stats .card {
+    color: white !important;
+}
+
+/* Specific card colors as described */
+#dashboard-stats .col-md-3:nth-child(1) .card {
+    background: #0d6efd; /* Deep blue for Total Cameras */
+}
+
+#dashboard-stats .col-md-3:nth-child(2) .card {
+    background: #198754; /* Rich green for Active Cameras */
+}
+
+#dashboard-stats .col-md-3:nth-child(3) .card {
+    background: #0dcaf0; /* Bright cyan for Employees Today */
+}
+
+#dashboard-stats .col-md-3:nth-child(4) .card {
+    background: #fd7e14; /* Warm yellow-orange for Recognitions Today */
+}
+
+#dashboard-stats .card h2 {
+    color: white !important;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Buttons */
+.btn {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn i {
+    margin-right: 5px;
+}
+
+/* Container fluid */
+.container-fluid {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.row {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; /* Keep sidebar fixed on mobile */
+        padding: 0;
+        height: 100%;
+    }
+    
+    .sidebar.collapsed {
+        width: 30px !important;
+        position: fixed;
+        height: 100%;
+        top: 0;
+        left: 0 !important; /* Ensure it stays flush with left edge */
+        z-index: 101; /* Ensure it stays above content */
+    }
+    
+
+    
+    .btn-toggle {
+        padding: 6px 10px;
+    }
+    
+    .card-deck .card {
+        margin-bottom: 15px;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    header {
+        padding: 15px;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    /* Hide sidebar completely on very small screens when collapsed */
+    @media (max-width: 576px) {
+        .sidebar.collapsed {
+            width: 0 !important;
+            overflow: hidden;
+        }
+        
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 0;
+        }
+    }
+}
+
+/* Adjust main content when sidebar is collapsed */
+.sidebar.collapsed {
+    width: 30px !important;
+    overflow: hidden;
+    left: 0; /* Ensure it stays flush with left edge */
+    min-width: 30px; /* Ensure minimum width */
+}
+
+.sidebar.collapsed .sidebar-header {
+    padding: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar.collapsed .sidebar-header-text {
+    display: none;
+}
+
+.sidebar.collapsed .btn-toggle {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar.collapsed .sidebar-nav {
+    display: none;
+}
+
+.sidebar.collapsed ~ .main-content > header {
+    padding-left: 30px; /* Increased spacing between sidebar rail and header */
+    margin-left: 0;
+}
+
+.sidebar.collapsed ~ .main-content {
+    margin-left: 30px; /* Match the collapsed sidebar width */
+    padding-left: 30px; /* Increased spacing between sidebar rail and content */
+}
+
+/* Add spacing between sidebar rail and cards when collapsed */
+.sidebar.collapsed ~ .main-content .card,
+.sidebar.collapsed ~ .main-content #dashboard-stats {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+/* Default main content margin when sidebar is expanded */
+.main-content {
+    margin-left: 250px; /* Match sidebar width */
+    transition: margin-left 0.3s ease;
+    position: relative; /* Ensure proper positioning */
+    height: 100vh; /* Full height */
+    overflow-y: auto; /* Allow vertical scrolling */
+    left: 0;
+}
+
+#apply-filter {
+    background: #0d6efd; /* Same blue as header */
+    border: none;
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+#apply-filter:hover {
+    background: #0b5ed7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* User Management Styles */
+.user-management-section {
+    margin-top: 20px;
+}
+
+.user-management-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    background: white;
+    margin-bottom: 30px;
+}
+
+.user-management-card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.user-management-header {
+    background: linear-gradient(90deg, #0d6efd, #0b5ed7);
+    color: white;
+    border-radius: 10px 10px 0 0 !important;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    padding: 15px 20px;
+}
+
+.user-management-table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+}
+
+.user-management-table th {
+    font-weight: 600;
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.user-management-table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.375rem;
+}
+
+.status-badge-pending {
+    color: #fff;
+    background-color: #ffc107;
+}
+
+.status-badge-approved {
+    color: #fff;
+    background-color: #198754;
+}
+
+.status-badge-rejected {
+    color: #fff;
+    background-color: #dc3545;
+}
+
+.status-badge-active {
+    color: #fff;
+    background-color: #0d6efd;
+}
+
+.status-badge-inactive {
+    color: #fff;
+    background-color: #6c757d;
+}
+
+/* Refresh buttons */
+#refresh-cameras, #refresh-summary {
+    background: white;
+    border: 1px solid #0d6efd;
+    color: #0d6efd;
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+#refresh-cameras:hover, #refresh-summary:hover {
+    background: #0d6efd;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Form elements */
+.form-control, .form-select {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 10px 15px;
+}
+
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
+    border: 1px solid #86b7fe;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.input-group-text {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ced4da;
+    background-color: #f8f9fa;
+}
+
+/* Dropdown menus */
+.dropdown-menu {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Alert messages */
+.alert-fixed {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}

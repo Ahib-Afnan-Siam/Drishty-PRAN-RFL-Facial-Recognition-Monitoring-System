@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Face Recognition Analytics Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root{
+            --primary:#4361ee;--secondary:#3f37c9;--success:#4cc9f0;--warning:#f72585;
+            --dark:#1d3557;--light:#f8f9fa;--gray:#6c757d;
+            /* fixed camera item height so 5 items = exact scroll */
+            --cam-item-h:56px;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+        body{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); min-height:100vh; padding:20px; display:flex; align-items:center; justify-content:center;}
+        /* Match Attendance sizing */
+        .dashboard{
+            width:100%; max-width:1600px;
+            background:rgba(255,255,255,.95); border-radius:20px;
+            box-shadow:0 20px 40px rgba(0,0,0,.1); overflow:hidden; backdrop-filter:blur(10px)
+        }
+        .header{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+        .header h1{font-size:24px;font-weight:700}
+        .header-left{display:flex;align-items:center;gap:10px}
+        .menu-btn{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:6px 10px;border-radius:6px}
+        .menu-btn:hover{background:rgba(255,255,255,.2)}
+        .cam-group{display:flex;align-items:center;gap:8px}
+        .camera-badge{background:rgba(255,255,255,.15);padding:4px 10px;border-radius:999px;font-size:12px}
+        /* header dropdown removed */
+
+        .status-indicators{display:flex;gap:16px;align-items:center}
+        .status-item{display:flex;align-items:center;gap:8px;font-size:14px}
+        .status-dot{width:10px;height:10px;border-radius:50%;animation:pulse 2s infinite}
+        .status-connected{background:#4ade80}.status-processing{background:#f59e0b}.status-error{background:#ef4444}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+        /* Match Attendance layout proportions */
+        .main-content{display:grid;grid-template-columns:2.2fr 1fr; min-height:850px; /* similar height */}
+        .video-section{padding:22px;border-right:1px solid #e9ecef}
+        .video-container{background:var(--dark);border-radius:15px;overflow:hidden;position:relative;box-shadow:0 10px 25px rgba(0,0,0,.2)}
+        .video-header{background:rgba(0,0,0,.8);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+        .video-feed{width:100%;height:520px; /* taller like attendance */ background:#000;display:flex;align-items:center;justify-content:center;color:#fff;position:relative}
+        .video-feed canvas{max-width:100%;max-height:100%; display:block; opacity:1; transition:opacity .22s ease-in-out;}
+        .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:18px}
+        .stat-card{background:#fff;padding:18px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.1);text-align:center;border-left:4px solid var(--primary)}
+        .stat-value{font-size:28px;font-weight:700;color:var(--primary);margin:8px 0}
+        .stat-label{font-size:13px;color:var(--gray);font-weight:600}
+        .sidebar{background:#f8f9fa;padding:22px}
+        .section-title{font-size:16px;font-weight:600;color:var(--dark);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+        .recognitions-list{max-height:300px;overflow-y:auto}
+        .recognition-item{background:#fff;padding:12px;margin-bottom:10px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.1);border-left:4px solid var(--success)}
+        .recognition-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+        .employee-name{font-weight:600;color:var(--dark)}
+        .confidence{background:var(--success);color:#fff;padding:3px 8px;border-radius:20px;font-size:12px;font-weight:700}
+        .recognition-meta{font-size:12px;color:var(--gray);display:flex;justify-content:space-between}
+        .log-container{background:var(--dark);color:#fff;padding:12px;border-radius:10px;margin-top:16px;font-family:'Courier New',monospace;font-size:12px;max-height:150px;overflow-y:auto}
+        .log-entry{margin-bottom:5px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+        .camera-controls{display:flex;gap:10px;margin-top:14px}
+        .btn{padding:10px 14px;border:none;border-radius:6px;cursor:pointer;font-weight:700;display:flex;align-items:center;gap:8px}
+        .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--secondary)}
+        .btn-outline{background:transparent;border:2px solid var(--primary);color:var(--primary)}.btn-outline:hover{background:var(--primary);color:#fff}
+        .btn-success{background:var(--success);color:#fff}.btn-success:hover{filter:brightness(.9)}
+        .btn-warning{background:var(--warning);color:#fff}.btn-warning:hover{filter:brightness(.9)}
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(5px)}
+        .modal-content{background:#fff;padding:24px;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,.2);width:90%;max-width:500px;text-align:center}
+        .modal-content h2{color:var(--dark);margin-bottom:14px}
+        .form-group{margin-bottom:12px;text-align:left}
+        .form-group label{display:block;margin-bottom:5px;font-weight:700;color:var(--gray)}
+        .form-group input{width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font-size:16px}
+        .modal-actions{margin-top:18px;display:flex;justify-content:flex-end;gap:10px}
+
+        /* Menu */
+        .menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:999}
+        .menu-drawer{position:fixed;top:0;left:-320px;width:320px;height:100%;background:var(--dark);color:#fff;padding:24px 18px;z-index:1000;transition:left .3s;box-shadow:2px 0 10px rgba(0,0,0,.3)}
+        .menu-drawer.open{left:0}
+        .menu-drawer h2{margin-bottom:16px;border-bottom:2px solid var(--primary);padding-bottom:8px}
+        .menu-drawer ul{list-style:none}
+        .menu-drawer li{margin-bottom:12px}
+        .menu-drawer .btn{width:100%;justify-content:center}
+
+        /* Camera list (like Attendance) */
+        .menu-section-title{font-size:14px;opacity:.9;margin:18px 0 8px;text-transform:uppercase;letter-spacing:.6px}
+        .input-wrap{display:flex;align-items:center;gap:8px;background:#0f2038;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 10px}
+        .input-wrap i{opacity:.7}
+        .input-wrap input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-size:14px}
+        .camera-menu-list{margin-top:10px;max-height:calc(var(--cam-item-h)*5);overflow:auto;border:1px solid rgba(255,255,255,.08);border-radius:10px}
+        .camera-item{display:flex;align-items:center;justify-content:space-between;min-height:var(--cam-item-h);padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;transition:background .15s ease-in-out}
+        .camera-item:last-child{border-bottom:none}
+        .camera-item:hover{background:rgba(255,255,255,.06)}
+        .camera-item .left{display:flex;align-items:center;gap:10px}
+        .camera-item .id{font-weight:700}
+        .camera-item .loc{font-size:12px;opacity:.8}
+        .camera-item .active-tag{font-size:11px;padding:2px 8px;border-radius:999px;background:#22c55e;color:#0b2e13;font-weight:800}
+        .registration-progress{background:rgba(0,0,0,.8);color:#fff;padding:10px 15px;border-radius:8px;margin-top:10px;text-align:center}
+        .progress-bar{width:100%;height:10px;background:#333;border-radius:5px;margin:10px 0;overflow:hidden}
+        .progress-fill{height:100%;background:var(--success);transition:width .3s}
+        .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#9aa7c7;gap:6px}
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <div class="header">
+        <div class="header-left">
+            <button class="menu-btn" onclick="toggleMenu()">&#9776;</button>
+            <h1><i class="fas fa-user-check"></i> Face Recognition Dashboard</h1>
+        </div>
+        <div class="cam-group">
+            <span class="camera-badge" id="activeCameraBadge">CAM-01</span>
+            <!-- header select removed -->
+        </div>
+        <div class="status-indicators">
+            <div class="status-item"><div class="status-dot status-connected"></div><span>System Online</span></div>
+            <div class="status-item"><div class="status-dot status-processing"></div><span>Real-time Processing</span></div>
+            <div id="connectionStatus" class="status-item"><div class="status-dot status-error"></div><span>Connecting...</span></div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="video-section">
+            <div class="video-container">
+                <div class="video-header">
+                    <div><i class="fas fa-video"></i> <span id="cameraTitle">Live Camera Feed</span></div>
+                    <div id="fpsCounter"><i class="fas fa-tachometer-alt"></i> <span>FPS: 0</span></div>
+                </div>
+                <div class="video-feed" id="videoFeed">
+                    <div class="empty-state">
+                        <i class="fas fa-video-slash"></i>
+                        <div>Waiting for camera stream...</div>
+                    </div>
+                </div>
+                <div id="registrationProgress" class="registration-progress" style="display:none">
+                    <div>Registration Progress: <span id="progressCount">0</span>/10</div>
+                    <div class="progress-bar"><div id="progressFill" class="progress-fill" style="width:0%"></div></div>
+                    <div id="qualityStatus">Position your face in the frame</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Connected Cameras</div>
+                    <div class="stat-value" id="cameraCount">0</div>
+                    <div class="stat-subtitle">Active Streams</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Faces Detected</div>
+                    <div class="stat-value" id="facesDetected">0</div>
+                    <div class="stat-subtitle">This Session</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Recognitions</div>
+                    <div class="stat-value" id="recognitionsCount">0</div>
+                    <div class="stat-subtitle">Successful IDs</div>
+                </div>
+            </div>
+
+            <div class="camera-controls">
+                <button class="btn btn-primary" onclick="captureSnapshot()"><i class="fas fa-camera"></i> Capture Snapshot</button>
+                <button class="btn btn-outline" onclick="toggleStream()"><i class="fas fa-pause"></i> Pause Stream</button>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="section-title"><i class="fas fa-history"></i> Recent Recognitions</div>
+            <div class="recognitions-list" id="recognitionsList">
+                <div class="empty-state"><i class="fas fa-user-clock"></i><div>No recognitions yet</div><small>Waiting for face detection...</small></div>
+            </div>
+
+            <div class="section-title" style="margin-top:20px;"><i class="fas fa-terminal"></i> System Log</div>
+            <div class="log-container" id="logContainer">
+                <div class="log-entry"><span class="log-time" style="color:#4ade80">[00:00:00]</span> Dashboard initialized</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Registration Modal -->
+<div id="registrationModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2>Register New Employee</h2>
+        <div id="registrationForm">
+            <div class="form-group"><label for="employeeId">Employee ID *</label><input type="number" id="employeeId" placeholder="e.g., 510654" required></div>
+            <div class="form-group"><label for="employeeName">Full Name *</label><input type="text" id="employeeName" placeholder="e.g., Sujan Das" required></div>
+            <div class="form-group"><label for="employeeDept">Department</label><input type="text" id="employeeDept" placeholder="e.g., MIS"></div>
+            <div class="form-group"><label for="employeeRole">Role</label><input type="text" id="employeeRole" placeholder="e.g., Software Developer"></div>
+            <div class="modal-actions">
+                <button class="btn btn-warning" onclick="cancelRegistration()"><i class="fas fa-times"></i> Cancel</button>
+                <button id="submitRegistrationBtn" class="btn btn-success"><i class="fas fa-paper-plane"></i> Submit Registration</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Menu -->
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+<div class="menu-drawer" id="menuDrawer">
+    <h2>Dashboard Menu</h2>
+    <ul>
+        <li>
+            <button class="btn btn-primary" onclick="window.location.href='/'">
+                <i class="fas fa-home"></i> Home
+            </button>
+        </li>
+        <li><button class="btn btn-success" onclick="startRegistration()"><i class="fas fa-user-plus"></i> Register by Camera</button></li>
+        <li><button class="btn btn-primary" onclick="window.location.href='/attendance'"><i class="fas fa-clipboard-user"></i> Attendance View</button></li>
+        <li><button class="btn btn-primary" onclick="location.reload()"><i class="fas fa-sync"></i> Refresh Dashboard</button></li>
+    </ul>
+
+    <!-- Cameras (like Attendance) -->
+    <div class="menu-section-title"><i class="fas fa-video"></i> Cameras</div>
+    <div class="input-wrap">
+        <i class="fas fa-search"></i>
+        <input id="cameraSearchInput" type="text" placeholder="Search cameras..." />
+    </div>
+    <div id="cameraMenuList" class="camera-menu-list"></div>
+
+    <ul style="margin-top:12px">
+        <li><button class="btn btn-outline" onclick="toggleMenu()" style="background:transparent;color:#fff;border-color:#fff"><i class="fas fa-times"></i> Close Menu</button></li>
+    </ul>
+</div>
+
+<script>
+/* ===== Cameras: dynamic list + searchable (5 visible items with scroll) ===== */
+let CAMERA_LIST = [];
+let CAMERA_INFO = {}; // id -> { id, location }
+
+/* Load list then boot dashboard */
+async function loadCameraList() {
+    try {
+        const res = await fetch('/api/cameras');
+        const camData = await res.json();
+
+        CAMERA_LIST = camData.map(c => c.id);
+        camData.forEach(c => (CAMERA_INFO[c.id] = c));
+
+        renderCameraMenuList(); // initial render
+        window.dashboard = new FaceRecognitionDashboard(camData);
+    } catch (err) {
+        console.error("Camera list load failed", err);
+        // fallback (optional)
+        CAMERA_LIST = ["CAM-01","CAM-02","CAM-03"];
+        CAMERA_INFO = { "CAM-01":{id:"CAM-01",location:"Unknown"}, "CAM-02":{id:"CAM-02",location:"Unknown"}, "CAM-03":{id:"CAM-03",location:"Unknown"} };
+        renderCameraMenuList();
+        window.dashboard = new FaceRecognitionDashboard(Object.values(CAMERA_INFO));
+        alert("Cannot load camera list from server. Using defaults.");
+    }
+}
+document.addEventListener("DOMContentLoaded", loadCameraList);
+
+/* Build/Filter the camera menu list */
+function renderCameraMenuList(filterText='') {
+    const listEl = document.getElementById('cameraMenuList');
+    const term = (filterText||'').toLowerCase().trim();
+    const active = window.dashboard?.activeCamera;
+
+    const items = CAMERA_LIST
+      .filter(id=>{
+        if(!term) return true;
+        const info = CAMERA_INFO[id]||{};
+        const combo = `${id} ${(info.location||info.location_text||info.locationName||'')}`.toLowerCase();
+        return combo.includes(term);
+      })
+      .map(id=>{
+        const info = CAMERA_INFO[id]||{};
+        const loc = info.location||info.location_text||info.locationName||'';
+        const isActive = id===active;
+        return `
+          <div class="camera-item" data-camid="${id}">
+            <div class="left">
+              <i class="fas fa-video"></i>
+              <div>
+                <div class="id">${id}</div>
+                ${loc ? `<div class="loc">${loc}</div>` : ``}
+              </div>
+            </div>
+            ${isActive ? `<span class="active-tag">Active</span>` : ``}
+          </div>
+        `;
+      });
+
+    listEl.innerHTML = items.join('') || `<div class="camera-item" style="cursor:default;opacity:.7">No cameras found</div>`;
+
+    // Bind clicks
+    listEl.querySelectorAll('.camera-item[data-camid]').forEach(el=>{
+        el.addEventListener('click',()=>{
+            const camId = el.getAttribute('data-camid');
+            if(window.dashboard){
+                window.dashboard.switchCamera(camId);
+                renderCameraMenuList(document.getElementById('cameraSearchInput').value);
+                toggleMenu(); // close after select
+            }
+        });
+    });
+}
+
+// Live search
+document.addEventListener('input',(e)=>{
+    if(e.target && e.target.id==='cameraSearchInput'){
+        renderCameraMenuList(e.target.value);
+    }
+});
+
+class FaceRecognitionDashboard{
+    constructor(cameraInfo){
+        // state
+        this.wsPool = {}; this.lastFrames = {}; this.wsStatus = {};
+        this.cameraInfo = cameraInfo; // [{id,location}]
+        this.isConnected=false; this.facesDetected=0; this.recognitionsCount=0;
+        this.frameCount=0; this.lastFrameTime=Date.now(); this.fps=0; this.isStreamPaused=false;
+        this.recentRecognitions=[]; this.maxRecognitions=10;
+
+        // Registration state
+        this.isInRegistrationMode=false; this.capturedCount=0; this.numToCapture=10;
+
+        // Camera state
+        this.activeCamera=this.getInitialCamera();
+
+        // UI
+        this.el={
+            camBadge:document.getElementById('activeCameraBadge'),
+            camTitle:document.getElementById('cameraTitle'),
+            connectionStatus:document.getElementById('connectionStatus'),
+            cameraCount:document.getElementById('cameraCount'),
+            facesDetected:document.getElementById('facesDetected'),
+            recognitionsCount:document.getElementById('recognitionsCount'),
+            fpsCounter:document.getElementById('fpsCounter'),
+            regProgressWrap:document.getElementById('registrationProgress'),
+            progressCount:document.getElementById('progressCount'),
+            progressFill:document.getElementById('progressFill'),
+            qualityStatus:document.getElementById('qualityStatus'),
+            regModal:document.getElementById('registrationModal'),
+            videoFeed:document.getElementById('videoFeed'),
+            recList:document.getElementById('recognitionsList'),
+            log:document.getElementById('logContainer')
+        };
+
+        // Update header counts
+        this.el.cameraCount.textContent = (CAMERA_LIST?.length || 0).toString();
+        this.initHeaderBadge();
+        this.init();
+    }
+
+    getInitialCamera(){
+        const p=new URLSearchParams(location.search).get('camera');
+        if(p && CAMERA_LIST.includes(p)) return p;
+        return CAMERA_LIST[0] || 'CAM-01';
+    }
+
+    initHeaderBadge(){ this.el.camBadge.textContent=this.activeCamera; }
+
+    init(){
+        this.connectAllSockets();
+        this.setupEventListeners();
+        this.startFPSCounter();
+        this.log('Dashboard initialized successfully');
+        // Title with location
+        const loc = this.cameraInfo.find(c=>c.id===this.activeCamera)?.location || "Unknown";
+        this.el.camTitle.textContent = `${this.activeCamera} • ${loc}`;
+    }
+
+    /* Sockets */
+    connectAllSockets(){ CAMERA_LIST.forEach(id=>this.connectSingleSocket(id)); }
+
+    connectSingleSocket(camId){
+        if(this.wsPool[camId] && (this.wsPool[camId].readyState===WebSocket.OPEN || this.wsPool[camId].readyState===WebSocket.CONNECTING)) return;
+        const protocol = location.protocol==='https:'?'wss:':'ws:';
+        const wsUrl = `${protocol}//${location.host}/ws/${encodeURIComponent(camId)}`;
+
+        try{
+            this.wsStatus[camId]='connecting';
+            const ws = new WebSocket(wsUrl);
+            ws.binaryType='arraybuffer';
+
+            ws.onopen = ()=>{
+                this.wsPool[camId]=ws; this.wsStatus[camId]='connected';
+                this.log(`Connected to ${camId}`); this.updateGlobalConnectionIndicator();
+            };
+
+            ws.onmessage = (evt)=>{
+                try{
+                    const data = JSON.parse(evt.data);
+                    if(!data) return;
+                    this.lastFrames[camId]=data;
+
+                    if(data.type==='recognition_results' && !this.isInRegistrationMode){
+                        if(camId===this.activeCamera && !this.isStreamPaused){
+                            this.updateRecognitionResults(data);
+                        }
+                    } else if(data.type==='registration_feedback' && this.isInRegistrationMode && camId===this.activeCamera){
+                        this.updateRegistrationFeedback(data);
+                    }
+
+                    if(camId===this.activeCamera && !this.isStreamPaused){
+                        if(data.frame && data.type!=='recognition_results'){ this.updateVideoCanvas(data); }
+                    }
+                }catch(err){ this.log(`Error parsing message (${camId}): ${err}`,'error'); }
+            };
+
+            ws.onclose = ()=>{
+                this.wsStatus[camId]='closed';
+                this.log(`Disconnected from ${camId} — retrying...`,'warning');
+                this.updateGlobalConnectionIndicator();
+                setTimeout(()=>this.connectSingleSocket(camId),1500+Math.floor(Math.random()*1000));
+            };
+
+            ws.onerror = ()=>{ this.wsStatus[camId]='error'; this.log(`WebSocket error (${camId})`,'error'); };
+
+            this.wsPool[camId]=ws;
+        }catch(e){
+            this.log(`Failed to connect ${camId}: ${e}`,'error');
+            setTimeout(()=>this.connectSingleSocket(camId),1500+Math.floor(Math.random()*1000));
+        }
+    }
+
+    updateGlobalConnectionIndicator(){
+        const anyConnected = CAMERA_LIST.some(id=>this.wsStatus[id]==='connected');
+        this.el.connectionStatus.innerHTML = anyConnected
+            ? '<div class="status-dot status-connected"></div><span>Connected</span>'
+            : '<div class="status-dot status-error"></div><span>Disconnected</span>';
+    }
+
+    /* Camera switching (triggered from menu list) */
+    switchCamera(newCam){
+        if(!CAMERA_LIST.includes(newCam)) return;
+        this.activeCamera=newCam;
+        this.el.camBadge.textContent=newCam;
+
+        const url=new URL(location.href); url.searchParams.set('camera',newCam); history.replaceState({},'',url.toString());
+
+        // reset session counters
+        this.facesDetected=0; this.recognitionsCount=0;
+        this.el.facesDetected.textContent='0'; this.el.recognitionsCount.textContent='0';
+
+        // Update title with location
+        const loc = this.cameraInfo.find(c=>c.id===this.activeCamera)?.location || "Unknown";
+        this.el.camTitle.textContent = `${this.activeCamera} • ${loc}`;
+
+        // render cached frame if available
+        const last=this.lastFrames[newCam];
+        if(last && last.frame){
+            this.el.videoFeed.innerHTML='<canvas></canvas>';
+            this.updateVideoCanvas(last);
+        }else{
+            this.el.videoFeed.innerHTML='<div class="empty-state"><i class="fas fa-video-slash"></i><div>Waiting for camera stream...</div></div>';
+        }
+
+        if(!this.wsPool[newCam] || this.wsStatus[newCam]==='closed' || this.wsStatus[newCam]==='error'){
+            this.connectSingleSocket(newCam);
+        }
+
+        this.log(`Switched to ${newCam}`);
+    }
+
+    /* Rendering & updates */
+    updateRecognitionResults(data){
+        this.frameCount++;
+        this.facesDetected += (data.results||[]).length;
+        this.recognitionsCount += (data.results||[]).filter(r=>r.employee_id && r.employee_id!=='unknown').length;
+        this.el.facesDetected.textContent=this.facesDetected;
+        this.el.recognitionsCount.textContent=this.recognitionsCount;
+
+        this.updateVideoCanvas(data);
+        if(data.results?.length) this.updateRecognitionsList(data.results, data.camera_id);
+        this.log(`Frame processed (${data.camera_id}): ${data.results.length} faces`);
+    }
+
+    updateVideoCanvas(data){
+        let canvas=this.el.videoFeed.querySelector('canvas');
+        if(!canvas){ this.el.videoFeed.innerHTML='<canvas></canvas>'; canvas=this.el.videoFeed.querySelector('canvas'); }
+        canvas.style.opacity=0;
+        const ctx=canvas.getContext('2d'); const img=new Image();
+        img.onload=()=>{
+            canvas.width=img.width; canvas.height=img.height; ctx.drawImage(img,0,0);
+            (data.results||[]).forEach(r=>{
+                const [x,y,w,h]=r.bbox||[0,0,0,0], conf=r.confidence||0, name=r.employee_id||'Unknown';
+                ctx.strokeStyle = conf>0.7 ? '#4ade80' : '#f59e0b';
+                ctx.lineWidth=3; ctx.strokeRect(x,y,w,h);
+                const label=`${name} (${(conf*100).toFixed(1)}%)`;
+                ctx.font='14px Arial'; const tw=ctx.measureText(label).width;
+                ctx.fillStyle = conf>0.7 ? '#4ade80' : '#f59e0b';
+                ctx.fillRect(x,y-22,tw+10,20);
+                ctx.fillStyle='#fff'; ctx.fillText(label,x+5,y-7);
+            });
+            requestAnimationFrame(()=> canvas.style.opacity=1);
+        };
+        if(data.frame) img.src='data:image/jpeg;base64,'+data.frame;
+    }
+
+    updateRegistrationFeedback(data){
+        let canvas=this.el.videoFeed.querySelector('canvas');
+        if(!canvas){ this.el.videoFeed.innerHTML='<canvas></canvas>'; canvas=this.el.videoFeed.querySelector('canvas'); }
+        const ctx=canvas.getContext('2d'); const img=new Image();
+        img.onload=()=>{
+            canvas.width=img.width; canvas.height=img.height; ctx.drawImage(img,0,0);
+            if(data.bbox){
+                const [x,y,w,h]=data.bbox;
+                ctx.strokeStyle = data.is_good ? '#4ade80' : '#ef4444';
+                ctx.lineWidth=3; ctx.strokeRect(x,y,w,h);
+                ctx.fillStyle = data.is_good ? '#4ade80' : '#ef4444';
+                ctx.font='14px Arial'; ctx.fillText(data.is_good?'✓ Good Quality':'✗ Adjust Position', x, y-8);
+            }
+            let y=30; ctx.fillStyle='#fff'; ctx.font='14px Arial';
+            for(const [k,v] of Object.entries(data.metrics||{})){
+                ctx.fillText(`${k}: ${typeof v==='object'?JSON.stringify(v):v}`,10,y); y+=18;
+            }
+        };
+        if(data.frame) img.src='data:image/jpeg;base64,'+data.frame;
+
+        this.capturedCount=data.count||0;
+        this.el.progressCount.textContent=this.capturedCount;
+        this.el.progressFill.style.width = `${(this.capturedCount/this.numToCapture)*100}%`;
+        this.el.qualityStatus.textContent = data.is_good ? 'Good quality - capturing automatically'
+            : (data.reasons?.length ? 'Adjust: '+data.reasons.join(', ') : 'Position your face in the frame');
+
+        if(this.capturedCount>=this.numToCapture) setTimeout(()=>this.showMetadataForm(),500);
+    }
+
+    updateRecognitionsList(list,cameraId){
+        list.forEach(r=>{
+            if(r.employee_id && r.employee_id!=='unknown'){
+                this.recentRecognitions.unshift({...r, timestamp:new Date().toLocaleTimeString(), cameraId});
+            }
+        });
+        this.recentRecognitions=this.recentRecognitions.slice(0,this.maxRecognitions);
+        if(!this.recentRecognitions.length){
+            this.el.recList.innerHTML='<div class="empty-state"><i class="fas fa-user-clock"></i><div>No recognitions yet</div></div>';
+            return;
+        }
+        this.el.recList.innerHTML=this.recentRecognitions.map(rec=>`
+            <div class="recognition-item">
+                <div class="recognition-header">
+                    <div class="employee-name">${rec.employee_id}</div>
+                    <div class="confidence">${((rec.confidence||0)*100).toFixed(1)}%</div>
+                </div>
+                <div class="recognition-meta"><span>Camera: ${rec.cameraId}</span><span>${rec.timestamp}</span></div>
+            </div>
+        `).join('');
+    }
+
+    startFPSCounter(){
+        setInterval(()=>{
+            const now=Date.now(), delta=now-this.lastFrameTime;
+            this.fps=Math.max(0, Math.round(1000/Math.max(1,delta))); this.lastFrameTime=now;
+            this.el.fpsCounter.innerHTML=`<i class="fas fa-tachometer-alt"></i> FPS: ${this.fps}`;
+        },1000);
+    }
+
+    log(msg,type='info'){
+        const t=new Date().toLocaleTimeString();
+        const color= type==='error' ? '#ef4444' : type==='warning' ? '#f59e0b' : '#4ade80';
+        const div=document.createElement('div'); div.className='log-entry';
+        div.innerHTML=`<span class="log-time" style="color:${color}">[${t}]</span> ${msg}`;
+        this.el.log.appendChild(div); this.el.log.scrollTop=this.el.log.scrollHeight;
+        if(this.el.log.children.length>40){ this.el.log.removeChild(this.el.log.firstChild); }
+    }
+
+    setupEventListeners(){
+        document.addEventListener('visibilitychange',()=>{
+            if(!document.hidden){ CAMERA_LIST.forEach(cam=>this.connectSingleSocket(cam)); }
+        });
+        document.getElementById('submitRegistrationBtn').addEventListener('click',()=>this.submitRegistration());
+        document.getElementById('registrationForm').addEventListener('keypress',(e)=>{ if(e.key==='Enter') this.submitRegistration(); });
+    }
+
+    /* Registration */
+    async startRegistration(){
+        try{
+            this.log(`Starting registration on ${this.activeCamera}...`);
+            const res=await fetch(`/start-registration/${encodeURIComponent(this.activeCamera)}`,{method:'POST'});
+            const data=await res.json();
+            if(data.status==='success'){
+                this.isInRegistrationMode=true; this.capturedCount=0;
+                this.el.camTitle.textContent='Registration Mode';
+                this.el.regProgressWrap.style.display='block';
+                toggleMenu(); this.log('Registration mode started - look at the camera');
+            }else{ throw new Error(data.message||'Unknown error'); }
+        }catch(e){ this.log('Failed to start registration: '+e.message,'error'); alert('Failed to start registration: '+e.message); }
+    }
+
+    async cancelRegistration(){
+        try{
+            await fetch(`/cancel-registration/${encodeURIComponent(this.activeCamera)}`,{method:'POST'});
+            this.isInRegistrationMode=false; this.capturedCount=0;
+            const loc = this.cameraInfo.find(c=>c.id===this.activeCamera)?.location || "Unknown";
+            this.el.camTitle.textContent=`${this.activeCamera} • ${loc}`;
+            this.el.regProgressWrap.style.display='none';
+            this.hideMetadataForm();
+            this.log('Registration cancelled');
+        }catch(e){ this.log('Error cancelling registration: '+e,'error'); }
+    }
+
+    async submitRegistration(){
+        const employee_id=parseInt(document.getElementById('employeeId').value);
+        const name=document.getElementById('employeeName').value;
+        const department=document.getElementById('employeeDept').value||'Not specified';
+        const role=document.getElementById('employeeRole').value||'Not specified';
+        if(!employee_id || !name){ alert('Employee ID and Name are required.'); return; }
+
+        try{
+            this.log('Submitting registration data...');
+            const res=await fetch(`/submit-registration/${encodeURIComponent(this.activeCamera)}`,{
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({employee_id,name,department,role})
+            });
+            const data=await res.json();
+            if(data.status==='success'){
+                this.log('Registration successful: '+data.message,'success');
+                alert('✅ Registration Successful!\n\n'+data.message);
+                this.cancelRegistration();
+                ['employeeId','employeeName','employeeDept','employeeRole'].forEach(id=>document.getElementById(id).value='');
+            }else{ throw new Error(data.message||'Registration failed'); }
+        }catch(e){
+            this.log('Registration failed: '+e.message,'error');
+            alert('❌ Registration Failed:\n'+e.message);
+        }
+    }
+
+    showMetadataForm(){ this.el.regModal.style.display='flex'; }
+    hideMetadataForm(){ this.el.regModal.style.display='none'; }
+}
+
+/* Global helpers */
+function captureSnapshot(){
+    const c=document.querySelector('#videoFeed canvas');
+    if(!c){ alert('No video feed to capture'); return; }
+    const a=document.createElement('a');
+    a.download=`snapshot-${new Date().toISOString().replace(/[:.]/g,'-')}.png`;
+    a.href=c.toDataURL(); a.click(); window.dashboard.log('Snapshot captured');
+}
+function toggleStream(){
+    const btn=document.querySelector('button[onclick="toggleStream()"]');
+    window.dashboard.isStreamPaused=!window.dashboard.isStreamPaused;
+    btn.innerHTML = window.dashboard.isStreamPaused ? '<i class="fas fa-play"></i> Resume Stream' : '<i class="fas fa-pause"></i> Pause Stream';
+    window.dashboard.log(window.dashboard.isStreamPaused?'Stream paused':'Stream resumed');
+}
+function toggleMenu(){
+    const d=document.getElementById('menuDrawer'), o=document.getElementById('menuOverlay');
+    const open=d.classList.contains('open');
+    if(open){ d.classList.remove('open'); o.style.display='none'; } else { d.classList.add('open'); o.style.display='block'; }
+}
+function startRegistration(){ window.dashboard?.startRegistration(); }
+function cancelRegistration(){ window.dashboard?.cancelRegistration(); }
+function submitRegistration(){ window.dashboard?.submitRegistration(); }
+</script>
+</body>
+</html>
+

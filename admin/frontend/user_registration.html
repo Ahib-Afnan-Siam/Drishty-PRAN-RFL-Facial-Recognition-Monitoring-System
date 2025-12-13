@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Access Request - Face Recognition Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="sidebar">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-4 sidebar-header">
+                        <h4 class="sidebar-header-text mb-0"><i class="fas fa-user-shield"></i> Admin Panel</h4>
+                        <button id="sidebarToggle" class="btn btn-toggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                    <ul class="nav flex-column sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.html" id="login-link">
+                                <i class="fas fa-sign-in-alt nav-icon"></i>
+                                <span class="nav-text">Login</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" id="registration-link">
+                                <i class="fas fa-user-plus nav-icon"></i>
+                                <span class="nav-text">User Registration</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Header -->
+                <header>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1><i class="fas fa-user-plus"></i> User Access Request</h1>
+                            <p class="mb-0">Request access to the Face Recognition Admin Dashboard</p>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Registration Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-user-plus"></i> Access Request Form</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="registration-form">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="full_name" class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Enter your full name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="employee_id" class="form-label">Employee ID *</label>
+                                    <input type="text" class="form-control" id="employee_id" name="employee_id" placeholder="Enter your employee ID" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="department" class="form-label">Department *</label>
+                                    <input type="text" class="form-control" id="department" name="department" placeholder="Enter your department" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="designation" class="form-label">Designation *</label>
+                                    <input type="text" class="form-control" id="designation" name="designation" placeholder="Enter your designation" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="terms" required>
+                                    <label class="form-check-label" for="terms">
+                                        I confirm that I need access to the Face Recognition Admin Dashboard for official purposes.
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" onclick="window.location.href='login.html'">
+                                    <i class="fas fa-arrow-left"></i> Back to Login
+                                </button>
+                                <button type="submit" class="btn btn-primary" id="submit-btn">
+                                    <i class="fas fa-paper-plane"></i> Submit Access Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Information Section -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-info-circle"></i> Important Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Your access request will be reviewed by an administrator.</li>
+                            <li>You will receive an email notification once your request is approved or rejected.</li>
+                            <li>Passwords are never stored in the system. Authentication is handled through the HRIS system.</li>
+                            <li>Access to the dashboard is restricted to authorized personnel only.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="pt-5 my-4 text-muted border-top">
+                    <p class="mb-0">&copy; 2025 Face Recognition System Admin Dashboard</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // API base URL
+        const API_BASE_URL = 'http://localhost:5001/api';
+        
+        // Handle form submission
+        document.getElementById('registration-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate terms checkbox
+            if (!document.getElementById('terms').checked) {
+                showAlert('Please agree to the terms and conditions', 'warning');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submit-btn');
+            const originalHtml = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting Request...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Collect form data
+                const formData = new FormData(this);
+                const requestData = {};
+                
+                // Convert FormData to object
+                for (let [key, value] of formData.entries()) {
+                    requestData[key] = value;
+                }
+                
+                // Send request to backend
+                const response = await fetch(`${API_BASE_URL}/user-registration`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success message
+                    showAlert('Access request submitted successfully! An administrator will review your request.', 'success');
+                    
+                    // Reset form after successful submission
+                    this.reset();
+                } else {
+                    showAlert(`Failed to submit request: ${result.message || 'Unknown error'}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`Error submitting request: ${error.message}`, 'danger');
+                console.error('Error:', error);
+            } finally {
+                // Restore button state
+                submitBtn.innerHTML = originalHtml;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Show alert message
+        function showAlert(message, type = 'info') {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.alert-fixed');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-fixed`;
+            alertDiv.role = 'alert';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+        
+        // Sidebar toggle functionality
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            
+            // Change icon based on sidebar state
+            const icon = this.querySelector('i');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+            
+            // Trigger a resize event to ensure proper layout adjustment
+            window.dispatchEvent(new Event('resize'));
+        });
+    </script>
+</body>
+</html>

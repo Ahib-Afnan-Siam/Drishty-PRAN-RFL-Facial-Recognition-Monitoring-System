@@ -1,0 +1,28 @@
+opencv-python==4.9.0.80
+#opencv-python==4.8.1.78
+numpy==1.26.4
+#faiss-cpu==1.7.4
+faiss-cpu==1.13.0
+pyyaml==6.0.2
+loguru==0.7.2
+scipy
+Pillow
+scikit-learn
+fastapi
+uvicorn[standard]
+websockets
+requests
+#new
+oracledb 
+psutil
+# Commenting out packages that cause installation issues
+# realesrgan==0.3.0
+# gfpgan==1.3.8
+# basicsr==1.4.2
+# facexlib==0.2.5
+# Updated to compatible versions
+torch==2.6.0
+torchvision==0.21.0
+# Add YOLOv8 and MobileFaceNet dependencies
+ultralytics==8.0.198
+# MobileFaceNet will be implemented from scratch or use existing PyTorch implementation

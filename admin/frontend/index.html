@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="sidebar">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-4 sidebar-header">
+                        <h4 class="sidebar-header-text mb-0"><i class="fas fa-user-shield"></i> Admin Panel</h4>
+                        <button id="sidebarToggle" class="btn btn-toggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                    <ul class="nav flex-column sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="dashboard-link">
+                                <i class="fas fa-tachometer-alt nav-icon"></i>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="reports-dropdown" data-bs-toggle="collapse" data-bs-target="#reports-submenu" aria-expanded="false" aria-controls="reports-submenu">
+                                <i class="fas fa-chart-bar nav-icon"></i>
+                                <span class="nav-text">Reports</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="reports-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="#" id="cameras-link">
+                                        <i class="fas fa-video nav-icon"></i>
+                                        <span class="nav-text">Camera Registry</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="#" id="summary-link">
+                                        <i class="fas fa-users nav-icon"></i>
+                                        <span class="nav-text">Employee Summary</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="camera-info-dropdown" data-bs-toggle="collapse" data-bs-target="#camera-info-submenu" aria-expanded="false" aria-controls="camera-info-submenu">
+                                <i class="fas fa-camera nav-icon"></i>
+                                <span class="nav-text">Camera Info</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="camera-info-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link camera-info-link" href="#" id="add-camera-link">
+                                        <i class="fas fa-plus-circle nav-icon"></i>
+                                        <span class="nav-text">Add Camera</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link camera-info-link" href="#" id="update-camera-status-link">
+                                        <i class="fas fa-toggle-on nav-icon"></i>
+                                        <span class="nav-text">Update Camera Status</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="user-management-dropdown" data-bs-toggle="collapse" data-bs-target="#user-management-submenu" aria-expanded="false" aria-controls="user-management-submenu">
+                                <i class="fas fa-users-cog nav-icon"></i>
+                                <span class="nav-text">User Management</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="user-management-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link user-management-link" href="user_management.html#pending-requests" id="pending-requests-link">
+                                        <i class="fas fa-clock nav-icon"></i>
+                                        <span class="nav-text">Pending Requests</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link user-management-link" href="user_management.html#authorized-users" id="authorized-users-link">
+                                        <i class="fas fa-user-check nav-icon"></i>
+                                        <span class="nav-text">Authorized Users</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="face-recognition-link">
+                                <i class="fas fa-user-check nav-icon"></i>
+                                <span class="nav-text">Face Recognition</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <a class="nav-link" href="#" id="logout-link">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                <span class="nav-text">Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Header -->
+                <header>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1><i class="fas fa-user-shield"></i> Face Recognition Admin Dashboard</h1>
+                            <p class="mb-0">Monitor and manage your facial recognition system</p>
+                        </div>
+                        <div id="user-info" class="text-end">
+                            <small class="text-white-50">Welcome,</small><br>
+                            <strong id="current-user" class="text-white">Admin User</strong>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Dashboard View -->
+                <div id="dashboard-view">
+                    <!-- Dashboard Stats -->
+                    <section id="dashboard-stats" class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-video"></i> Total Cameras</h5>
+                                    <h2 id="total-cameras" class="display-4 mb-0">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-video"></i> Active Cameras</h5>
+                                    <h2 id="active-cameras" class="display-4 mb-0">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-users"></i> Employees Today</h5>
+                                    <h2 id="total-employees" class="display-4 mb-0">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title"><i class="fas fa-fingerprint"></i> Recognitions Today</h5>
+                                    <h2 id="total-recognitions" class="display-4 mb-0">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Date Filter -->
+                    <section class="row mb-4">
+                        <div class="col">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-4">Filter Data</h5>
+                                    <div class="row">
+                                        <div class="col-md-5 mb-3 mb-md-0">
+                                            <label for="from-date" class="form-label">From Date</label>
+                                            <input type="date" class="form-control" id="from-date">
+                                        </div>
+                                        <div class="col-md-5 mb-3 mb-md-0">
+                                            <label for="to-date" class="form-label">To Date</label>
+                                            <input type="date" class="form-control" id="to-date">
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            <button id="apply-filter" class="btn btn-primary w-100">
+                                                <i class="fas fa-filter"></i> Apply
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Camera Registry View -->
+                <div id="cameras-view" class="d-none">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-video"></i> Registered Cameras</h5>
+                            <button id="refresh-cameras" class="btn btn-outline-primary">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="cameras-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Location Type</th>
+                                            <th>Site</th>
+                                            <th>Building</th>
+                                            <th>Floor</th>
+                                            <th>Area</th>
+                                            <th>Direction</th>
+                                            <th>IP Address</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Camera data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employee Summary View -->
+                <div id="summary-view" class="d-none">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Employee Daily Summary</h5>
+                            <button id="refresh-summary" class="btn btn-outline-primary">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <!-- Search and Sort Controls -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                        <input type="text" class="form-control" id="summary-search" placeholder="Search by Employee ID, Name, or Department...">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex justify-content-end">
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                                <i class="fas fa-sort"></i> Sort By
+                                            </button>
+                                            <ul class="dropdown-menu" id="sort-options">
+                                                <li><a class="dropdown-item sort-option" href="#" data-sort="REC_DATE" data-dir="asc">Date (Ascending)</a></li>
+                                                <li><a class="dropdown-item sort-option" href="#" data-sort="REC_DATE" data-dir="desc">Date (Descending)</a></li>
+                                                <li><a class="dropdown-item sort-option" href="#" data-sort="EMPLOYEE_ID" data-dir="asc">Employee ID (Ascending)</a></li>
+                                                <li><a class="dropdown-item sort-option" href="#" data-sort="EMPLOYEE_ID" data-dir="desc">Employee ID (Descending)</a></li>
+                                                <li><a class="dropdown-item sort-option" href="#" data-sort="NAME" data-dir="asc">Name (A-Z)</a></li>
+                                                <li><a class="dropdown-item sort-option" href="#" data-sort="NAME" data-dir="desc">Name (Z-A)</a></li>
+                                                <li><a class="dropdown-item sort-option" href="#" data-sort="DEPARTMENT" data-dir="asc">Department (A-Z)</a></li>
+                                                <li><a class="dropdown-item sort-option" href="#" data-sort="DEPARTMENT" data-dir="desc">Department (Z-A)</a></li>
+                                                <li><a class="dropdown-item sort-option" href="#" data-sort="TOTAL_SPAN_HHMM" data-dir="desc">Total Time (High to Low)</a></li>
+                                                <li><a class="dropdown-item sort-option" href="#" data-sort="TOTAL_SPAN_HHMM" data-dir="asc">Total Time (Low to High)</a></li>
+                                                <li><a class="dropdown-item sort-option" href="#" data-sort="TOTAL_HITS" data-dir="desc">Hits (High to Low)</a></li>
+                                                <li><a class="dropdown-item sort-option" href="#" data-sort="TOTAL_HITS" data-dir="asc">Hits (Low to High)</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="summary-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Employee ID</th>
+                                            <th>Name</th>
+                                            <th>Department</th>
+                                            <th>First Seen</th>
+                                            <th>Last Seen</th>
+                                            <th>Total Time</th>
+                                            <th>Hits</th>
+                                            <th>Floors</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Summary data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Camera View -->
+                <div id="add-camera-view" class="d-none">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-plus-circle"></i> Add New Camera</h5>
+                            <button id="refresh-add-camera" class="btn btn-outline-primary" onclick="window.location.href='add_camera.html'">
+                                <i class="fas fa-plus"></i> Open Full Form
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-center">For a better experience, please use the <a href="add_camera.html">dedicated camera registration form</a>.</p>
+                            <div class="d-flex justify-content-center mt-3">
+                                <button class="btn btn-primary" onclick="window.location.href='add_camera.html'">
+                                    <i class="fas fa-external-link-alt"></i> Open Camera Registration Form
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Update Camera Status View -->
+                <div id="update-camera-status-view" class="d-none">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-toggle-on"></i> Update Camera Status</h5>
+                            <button id="refresh-update-camera-status" class="btn btn-outline-primary" onclick="window.location.href='update_camera_status.html'">
+                                <i class="fas fa-external-link-alt"></i> Open Full Page
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-center">For a better experience, please use the <a href="update_camera_status.html">dedicated camera status management page</a>.</p>
+                            <div class="d-flex justify-content-center mt-3">
+                                <button class="btn btn-primary" onclick="window.location.href='update_camera_status.html'">
+                                    <i class="fas fa-external-link-alt"></i> Open Camera Status Management
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="pt-5 my-4 text-muted border-top">
+                    <p class="mb-0">&copy; 2025 Face Recognition System Admin Dashboard</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+            } else {
+                // Load user info
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (currentUser.name) {
+                    document.getElementById('current-user').textContent = currentUser.name;
+                }
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logout-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('isAdminLoggedIn');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>

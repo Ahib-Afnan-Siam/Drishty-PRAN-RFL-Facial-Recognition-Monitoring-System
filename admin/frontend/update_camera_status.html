@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Camera Status - Face Recognition Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="sidebar">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-4 sidebar-header">
+                        <h4 class="sidebar-header-text mb-0"><i class="fas fa-user-shield"></i> Admin Panel</h4>
+                        <button id="sidebarToggle" class="btn btn-toggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                    <ul class="nav flex-column sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html" id="dashboard-link">
+                                <i class="fas fa-tachometer-alt nav-icon"></i>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="reports-dropdown" data-bs-toggle="collapse" data-bs-target="#reports-submenu" aria-expanded="false" aria-controls="reports-submenu">
+                                <i class="fas fa-chart-bar nav-icon"></i>
+                                <span class="nav-text">Reports</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="reports-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#cameras" id="cameras-link">
+                                        <i class="fas fa-video nav-icon"></i>
+                                        <span class="nav-text">Camera Registry</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#summary" id="summary-link">
+                                        <i class="fas fa-users nav-icon"></i>
+                                        <span class="nav-text">Employee Summary</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" id="camera-info-dropdown" data-bs-toggle="collapse" data-bs-target="#camera-info-submenu" aria-expanded="true" aria-controls="camera-info-submenu">
+                                <i class="fas fa-camera nav-icon"></i>
+                                <span class="nav-text">Camera Info</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse show" id="camera-info-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link camera-info-link" href="add_camera.html" id="add-camera-link">
+                                        <i class="fas fa-plus-circle nav-icon"></i>
+                                        <span class="nav-text">Add Camera</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link camera-info-link active" href="#" id="update-camera-status-link">
+                                        <i class="fas fa-toggle-on nav-icon"></i>
+                                        <span class="nav-text">Update Camera Status</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="face-recognition-link">
+                                <i class="fas fa-user-check nav-icon"></i>
+                                <span class="nav-text">Face Recognition</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <a class="nav-link" href="#" id="logout-link">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                <span class="nav-text">Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Header -->
+                <header>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1><i class="fas fa-toggle-on"></i> Update Camera Status</h1>
+                            <p class="mb-0">Select a camera and update its active status</p>
+                        </div>
+                        <div id="user-info" class="text-end">
+                            <small class="text-white-50">Welcome,</small><br>
+                            <strong id="current-user" class="text-white">Admin User</strong>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Update Camera Status Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-camera"></i> Camera Status Management</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="update-camera-status-form">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="camera-id" class="form-label">Camera ID *</label>
+                                    <select class="form-select" id="camera-id" name="camera_id" required>
+                                        <option value="">Select a camera</option>
+                                        <!-- Camera options will be populated dynamically -->
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="is-active" class="form-label">Active Status *</label>
+                                    <select class="form-select" id="is-active" name="is_active" required>
+                                        <option value="">Select status</option>
+                                        <option value="Y">Active</option>
+                                        <option value="N">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html#cameras'">
+                                    <i class="fas fa-arrow-left"></i> Back to Camera Registry
+                                </button>
+                                <button type="submit" class="btn btn-primary" id="submit-btn">
+                                    <i class="fas fa-save"></i> Update Camera Status
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Camera List Table -->
+                <div class="card mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-list"></i> Camera List</h5>
+                        <button id="refresh-cameras" class="btn btn-outline-primary">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" id="cameras-table">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Location Type</th>
+                                        <th>IP Address</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Camera data will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="pt-5 my-4 text-muted border-top">
+                    <p class="mb-0">&copy; 2025 Face Recognition System Admin Dashboard</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // API base URL
+        const API_BASE_URL = 'http://localhost:5001/api';
+        
+        // DOM Elements
+        const cameraIdSelect = document.getElementById('camera-id');
+        const isActiveSelect = document.getElementById('is-active');
+        const camerasTableBody = document.querySelector('#cameras-table tbody');
+        const refreshCamerasBtn = document.getElementById('refresh-cameras');
+        
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+            } else {
+                // Load user info
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (currentUser.name) {
+                    document.getElementById('current-user').textContent = currentUser.name;
+                }
+                
+                // Load cameras
+                loadCameras();
+            }
+        });
+        
+        // Load cameras for dropdown and table
+        async function loadCameras() {
+            try {
+                // Show loading state
+                const originalHTML = refreshCamerasBtn.innerHTML;
+                refreshCamerasBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                refreshCamerasBtn.classList.add('btn-loading');
+                
+                const response = await fetch(`${API_BASE_URL}/cameras`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Populate dropdown
+                    populateCameraDropdown(result.data);
+                    
+                    // Render camera table
+                    renderCamerasTable(result.data);
+                } else {
+                    showAlert('Failed to load cameras: ' + result.error, 'danger');
+                }
+            } catch (error) {
+                showAlert('Error loading cameras: ' + error.message, 'danger');
+                console.error('Error:', error);
+            } finally {
+                // Restore button state
+                refreshCamerasBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                refreshCamerasBtn.classList.remove('btn-loading');
+            }
+        }
+        
+        // Populate camera dropdown
+        function populateCameraDropdown(cameras) {
+            // Clear existing options except the first one
+            cameraIdSelect.innerHTML = '<option value="">Select a camera</option>';
+            
+            // Add camera options
+            cameras.forEach(camera => {
+                const option = document.createElement('option');
+                option.value = camera.CAMERA_ID;
+                option.textContent = `${camera.CAMERA_ID} - ${camera.CAMERA_NAME}`;
+                cameraIdSelect.appendChild(option);
+            });
+        }
+        
+        // Render cameras table
+        function renderCamerasTable(cameras) {
+            if (cameras.length === 0) {
+                camerasTableBody.innerHTML = '<tr><td colspan="6" class="text-center">No cameras found</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            cameras.forEach(camera => {
+                const statusClass = camera.IS_ACTIVE === 'Y' ? 'status-active' : 'status-inactive';
+                const statusText = camera.IS_ACTIVE === 'Y' ? 'Active' : 'Inactive';
+                
+                html += `
+                    <tr>
+                        <td>${camera.CAMERA_ID}</td>
+                        <td>${camera.CAMERA_NAME}</td>
+                        <td>${camera.LOCATION_TYPE}</td>
+                        <td>${camera.IP_ADDRESS || '-'}</td>
+                        <td class="${statusClass}">${statusText}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary update-status-btn" 
+                                    data-camera-id="${camera.CAMERA_ID}" 
+                                    data-current-status="${camera.IS_ACTIVE}">
+                                <i class="fas fa-edit"></i> Update
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            camerasTableBody.innerHTML = html;
+            
+            // Add event listeners to update buttons
+            document.querySelectorAll('.update-status-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const cameraId = this.getAttribute('data-camera-id');
+                    const currentStatus = this.getAttribute('data-current-status');
+                    
+                    // Set the form values
+                    cameraIdSelect.value = cameraId;
+                    isActiveSelect.value = currentStatus === 'Y' ? 'N' : 'Y'; // Toggle status
+                    
+                    // Scroll to form
+                    document.querySelector('#update-camera-status-form').scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        }
+        
+        // Handle form submission
+        document.getElementById('update-camera-status-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const cameraId = cameraIdSelect.value;
+            const isActive = isActiveSelect.value;
+            
+            if (!cameraId || !isActive) {
+                showAlert('Please select both camera and status', 'warning');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submit-btn');
+            const originalHtml = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Send request to backend
+                const response = await fetch(`${API_BASE_URL}/cameras/${cameraId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        is_active: isActive
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show success message
+                    showAlert(`Camera status updated successfully!`, 'success');
+                    
+                    // Reset form
+                    this.reset();
+                    
+                    // Reload cameras to reflect changes
+                    loadCameras();
+                } else {
+                    showAlert(`Failed to update camera status: ${result.message || 'Unknown error'}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`Error updating camera status: ${error.message}`, 'danger');
+                console.error('Error:', error);
+            } finally {
+                // Restore button state
+                submitBtn.innerHTML = originalHtml;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Refresh cameras button
+        refreshCamerasBtn.addEventListener('click', loadCameras);
+        
+        // Show alert message
+        function showAlert(message, type = 'info') {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.alert-fixed');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-fixed`;
+            alertDiv.role = 'alert';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+        
+        // Logout functionality
+        document.getElementById('logout-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('isAdminLoggedIn');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        });
+        
+        // Camera Info dropdown click handler
+        document.getElementById('camera-info-dropdown').addEventListener('click', function(e) {
+            // Just toggle the dropdown, don't change the active state of other items
+            // The active state should remain on the currently selected item
+            e.stopPropagation();
+        });
+        
+        // Sidebar toggle functionality
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            
+            // Change icon based on sidebar state
+            const icon = this.querySelector('i');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+            
+            // Trigger a resize event to ensure proper layout adjustment
+            window.dispatchEvent(new Event('resize'));
+        });
+    </script>
+</body>
+</html>

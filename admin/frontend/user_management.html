@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Face Recognition Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="sidebar">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-4 sidebar-header">
+                        <h4 class="sidebar-header-text mb-0"><i class="fas fa-user-shield"></i> Admin Panel</h4>
+                        <button id="sidebarToggle" class="btn btn-toggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                    <ul class="nav flex-column sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html" id="dashboard-link">
+                                <i class="fas fa-tachometer-alt nav-icon"></i>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="reports-dropdown" data-bs-toggle="collapse" data-bs-target="#reports-submenu" aria-expanded="false" aria-controls="reports-submenu">
+                                <i class="fas fa-chart-bar nav-icon"></i>
+                                <span class="nav-text">Reports</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="reports-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#cameras" id="cameras-link">
+                                        <i class="fas fa-video nav-icon"></i>
+                                        <span class="nav-text">Camera Registry</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#summary" id="summary-link">
+                                        <i class="fas fa-users nav-icon"></i>
+                                        <span class="nav-text">Employee Summary</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" id="user-management-dropdown" data-bs-toggle="collapse" data-bs-target="#user-management-submenu" aria-expanded="true" aria-controls="user-management-submenu">
+                                <i class="fas fa-users-cog nav-icon"></i>
+                                <span class="nav-text">User Management</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse show" id="user-management-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link user-management-link active" href="#pending-requests" id="pending-requests-link">
+                                        <i class="fas fa-clock nav-icon"></i>
+                                        <span class="nav-text">Pending Requests</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link user-management-link" href="#authorized-users" id="authorized-users-link">
+                                        <i class="fas fa-user-check nav-icon"></i>
+                                        <span class="nav-text">Authorized Users</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="face-recognition-link">
+                                <i class="fas fa-user-check nav-icon"></i>
+                                <span class="nav-text">Face Recognition</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <a class="nav-link" href="#" id="logout-link">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                <span class="nav-text">Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Header -->
+                <header>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1><i class="fas fa-users-cog"></i> User Management</h1>
+                            <p class="mb-0">Manage user access requests and authorized users</p>
+                        </div>
+                        <div id="user-info" class="text-end">
+                            <small class="text-white-50">Welcome,</small><br>
+                            <strong id="current-user" class="text-white">Admin User</strong>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Direct Access Grant Section - Only show for pending requests view -->
+                <div class="card mb-4" id="direct-access-section">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-user-plus"></i> Direct Access Grant</h5>
+                        <p class="mb-0 text-muted">Grant dashboard access to a user directly without requiring a registration request</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="direct-access-form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="employee_id" class="form-label">Employee ID *</label>
+                                        <input type="text" class="form-control" id="employee_id" name="employee_id" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="full_name" class="form-label">Full Name *</label>
+                                        <input type="text" class="form-control" id="full_name" name="full_name" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="department" class="form-label">Department *</label>
+                                        <input type="text" class="form-control" id="department" name="department" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="designation" class="form-label">Designation</label>
+                                        <input type="text" class="form-control" id="designation" name="designation">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary" id="grant-access-btn">
+                                    <i class="fas fa-user-check"></i> Grant Access
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Pending Requests View -->
+                <div id="pending-requests-view">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-clock"></i> Pending Access Requests</h5>
+                            <button id="refresh-pending" class="btn btn-outline-primary">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="pending-requests-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Request ID</th>
+                                            <th>Full Name</th>
+                                            <th>Employee ID</th>
+                                            <th>Department</th>
+                                            <th>Designation</th>
+                                            <th>Email</th>
+                                            <th>Requested At</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Pending requests will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Authorized Users View -->
+                <div id="authorized-users-view" class="d-none">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-user-check"></i> Authorized Users</h5>
+                            <button id="refresh-authorized" class="btn btn-outline-primary">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="authorized-users-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>User ID</th>
+                                            <th>Full Name</th>
+                                            <th>Employee ID</th>
+                                            <th>Department</th>
+                                            <th>Designation</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th>Access Granted At</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Authorized users will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="pt-5 my-4 text-muted border-top">
+                    <p class="mb-0">&copy; 2025 Face Recognition System Admin Dashboard</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // API base URL
+        const API_BASE_URL = 'http://localhost:5001/api';
+        
+        // DOM Elements
+        const pendingRequestsTableBody = document.querySelector('#pending-requests-table tbody');
+        const authorizedUsersTableBody = document.querySelector('#authorized-users-table tbody');
+        const refreshPendingBtn = document.getElementById('refresh-pending');
+        const refreshAuthorizedBtn = document.getElementById('refresh-authorized');
+        
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+            } else {
+                // Load user info
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (currentUser.name) {
+                    document.getElementById('current-user').textContent = currentUser.name;
+                }
+                
+                // Check for hash in URL to determine which view to show
+                const hash = window.location.hash;
+                if (hash === '#authorized-users') {
+                    showView('authorized-users');
+                } else {
+                    // Load pending requests by default
+                    showView('pending-requests');
+                }
+            }
+        });
+        
+        // Show a specific view and hide others
+        function showView(viewName) {
+            const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Hide all views
+            document.getElementById('pending-requests-view').classList.add('d-none');
+            document.getElementById('authorized-users-view').classList.add('d-none');
+            
+            // Remove active class from all sidebar links
+            document.querySelectorAll('.user-management-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show/hide direct access section based on view
+            const directAccessSection = document.getElementById('direct-access-section');
+            if (directAccessSection) {
+                if (viewName === 'pending-requests') {
+                    directAccessSection.classList.remove('d-none');
+                } else {
+                    directAccessSection.classList.add('d-none');
+                }
+            }
+            
+            // Show the selected view
+            if (viewName === 'pending-requests') {
+                document.getElementById('pending-requests-view').classList.remove('d-none');
+                document.getElementById('pending-requests-link').classList.add('active');
+                loadPendingRequests();
+            } else if (viewName === 'authorized-users') {
+                document.getElementById('authorized-users-view').classList.remove('d-none');
+                document.getElementById('authorized-users-link').classList.add('active');
+                loadAuthorizedUsers();
+            }
+        }
+        
+        // Listen for hash changes to update the view
+        window.addEventListener('hashchange', function() {
+            const hash = window.location.hash;
+            if (hash === '#authorized-users') {
+                showView('authorized-users');
+            } else if (hash === '#pending-requests' || hash === '') {
+                showView('pending-requests');
+            }
+        });
+        
+        // Load pending registration requests
+        async function loadPendingRequests() {
+            try {
+                // Show loading state
+                const originalHTML = refreshPendingBtn.innerHTML;
+                refreshPendingBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                refreshPendingBtn.classList.add('btn-loading');
+                
+                pendingRequestsTableBody.innerHTML = '<tr><td colspan="8" class="text-center">Loading...</td></tr>';
+                
+                const response = await fetch(`${API_BASE_URL}/registration-requests`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderPendingRequests(result.data);
+                } else {
+                    pendingRequestsTableBody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">Error: ${result.error}</td></tr>`;
+                    showAlert('Failed to load pending requests: ' + result.error, 'danger');
+                }
+            } catch (error) {
+                pendingRequestsTableBody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">Error: ${error.message}</td></tr>`;
+                showAlert('Error loading pending requests: ' + error.message, 'danger');
+                console.error('Error:', error);
+            } finally {
+                // Restore button state
+                refreshPendingBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                refreshPendingBtn.classList.remove('btn-loading');
+            }
+        }
+        
+        // Render pending requests table
+        function renderPendingRequests(requests) {
+            if (requests.length === 0) {
+                pendingRequestsTableBody.innerHTML = '<tr><td colspan="8" class="text-center">No pending requests found</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            requests.forEach(request => {
+                html += `
+                    <tr>
+                        <td>${request.REQUEST_ID}</td>
+                        <td>${request.FULL_NAME}</td>
+                        <td>${request.EMPLOYEE_ID}</td>
+                        <td>${request.DEPARTMENT || '-'}</td>
+                        <td>${request.DESIGNATION || '-'}</td>
+                        <td>${request.EMAIL || '-'}</td>
+                        <td>${new Date(request.REQUESTED_AT).toLocaleString()}</td>
+                        <td>
+                            <button class="btn btn-sm btn-success approve-btn" data-request-id="${request.REQUEST_ID}">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button class="btn btn-sm btn-danger reject-btn" data-request-id="${request.REQUEST_ID}">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            pendingRequestsTableBody.innerHTML = html;
+            
+            // Add event listeners to approve buttons
+            document.querySelectorAll('.approve-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const requestId = this.getAttribute('data-request-id');
+                    approveRequest(requestId);
+                });
+            });
+            
+            // Add event listeners to reject buttons
+            document.querySelectorAll('.reject-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const requestId = this.getAttribute('data-request-id');
+                    rejectRequest(requestId);
+                });
+            });
+        }
+        
+        // Load authorized users
+        async function loadAuthorizedUsers() {
+            try {
+                // Show loading state
+                const originalHTML = refreshAuthorizedBtn.innerHTML;
+                refreshAuthorizedBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                refreshAuthorizedBtn.classList.add('btn-loading');
+                
+                authorizedUsersTableBody.innerHTML = '<tr><td colspan="9" class="text-center">Loading...</td></tr>';
+                
+                const response = await fetch(`${API_BASE_URL}/access-granted-users`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderAuthorizedUsers(result.data);
+                } else {
+                    authorizedUsersTableBody.innerHTML = `<tr><td colspan="9" class="text-center text-danger">Error: ${result.error}</td></tr>`;
+                    showAlert('Failed to load authorized users: ' + result.error, 'danger');
+                }
+            } catch (error) {
+                authorizedUsersTableBody.innerHTML = `<tr><td colspan="9" class="text-center text-danger">Error: ${error.message}</td></tr>`;
+                showAlert('Error loading authorized users: ' + error.message, 'danger');
+                console.error('Error:', error);
+            } finally {
+                // Restore button state
+                refreshAuthorizedBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                refreshAuthorizedBtn.classList.remove('btn-loading');
+            }
+        }
+        
+        // Render authorized users table
+        function renderAuthorizedUsers(users) {
+            if (users.length === 0) {
+                authorizedUsersTableBody.innerHTML = '<tr><td colspan="9" class="text-center">No authorized users found</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            users.forEach(user => {
+                const statusClass = user.IS_ACTIVE === 'Y' ? 'status-active' : 'status-inactive';
+                const statusText = user.IS_ACTIVE === 'Y' ? 'Active' : 'Inactive';
+                
+                html += `
+                    <tr>
+                        <td>${user.USER_ID}</td>
+                        <td>${user.FULL_NAME}</td>
+                        <td>${user.EMPLOYEE_ID}</td>
+                        <td>${user.DEPARTMENT || '-'}</td>
+                        <td>${user.DESIGNATION || '-'}</td>
+                        <td>${user.EMAIL || '-'}</td>
+                        <td class="${statusClass}">${statusText}</td>
+                        <td>${new Date(user.ACCESS_GRANTED_AT).toLocaleString()}</td>
+                        <td>
+                            ${user.IS_ACTIVE === 'Y' ? 
+                                `<button class="btn btn-sm btn-warning revoke-btn" data-user-id="${user.USER_ID}">
+                                    <i class="fas fa-ban"></i> Revoke
+                                </button>` : 
+                                '-'}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            authorizedUsersTableBody.innerHTML = html;
+            
+            // Add event listeners to revoke buttons
+            document.querySelectorAll('.revoke-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-user-id');
+                    revokeUser(userId);
+                });
+            });
+        }
+        
+        // Approve a registration request
+        async function approveRequest(requestId) {
+            if (!confirm('Are you sure you want to approve this request?')) {
+                return;
+            }
+            
+            try {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const approvedBy = currentUser.employee_id || 'System';
+                
+                const response = await fetch(`${API_BASE_URL}/registration-requests/${requestId}/approve`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        approved_by: approvedBy
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Request approved successfully!', 'success');
+                    loadPendingRequests();
+                } else {
+                    showAlert(`Failed to approve request: ${result.message || 'Unknown error'}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`Error approving request: ${error.message}`, 'danger');
+                console.error('Error:', error);
+            }
+        }
+        
+        // Reject a registration request
+        async function rejectRequest(requestId) {
+            if (!confirm('Are you sure you want to reject this request?')) {
+                return;
+            }
+            
+            try {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const rejectedBy = currentUser.employee_id || 'System';
+                
+                const response = await fetch(`${API_BASE_URL}/registration-requests/${requestId}/reject`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        rejected_by: rejectedBy
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Request rejected successfully!', 'success');
+                    loadPendingRequests();
+                } else {
+                    showAlert(`Failed to reject request: ${result.message || 'Unknown error'}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`Error rejecting request: ${error.message}`, 'danger');
+                console.error('Error:', error);
+            }
+        }
+        
+        // Revoke user access
+        async function revokeUser(userId) {
+            if (!confirm('Are you sure you want to revoke this user\'s access?')) {
+                return;
+            }
+            
+            try {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const revokedBy = currentUser.employee_id || 'System';
+                
+                const response = await fetch(`${API_BASE_URL}/access-granted-users/${userId}/revoke`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        revoked_by: revokedBy
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('User access revoked successfully!', 'success');
+                    loadAuthorizedUsers();
+                } else {
+                    showAlert(`Failed to revoke user access: ${result.message || 'Unknown error'}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`Error revoking user access: ${error.message}`, 'danger');
+                console.error('Error:', error);
+            }
+        }
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Refresh buttons
+            refreshPendingBtn.addEventListener('click', loadPendingRequests);
+            refreshAuthorizedBtn.addEventListener('click', loadAuthorizedUsers);
+            
+            // User management navigation
+            document.getElementById('pending-requests-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                showView('pending-requests');
+            });
+            
+            document.getElementById('authorized-users-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                showView('authorized-users');
+            });
+            
+            // Direct access form submission
+            document.getElementById('direct-access-form').addEventListener('submit', grantDirectAccess);
+            
+            // Logout functionality
+            document.getElementById('logout-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('isAdminLoggedIn');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            });
+            
+            // User Management dropdown click handler
+            document.getElementById('user-management-dropdown').addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            // Sidebar toggle functionality
+            document.getElementById('sidebarToggle').addEventListener('click', function() {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('collapsed');
+                
+                // Change icon based on sidebar state
+                const icon = this.querySelector('i');
+                if (sidebar.classList.contains('collapsed')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+                
+                // Trigger a resize event to ensure proper layout adjustment
+                window.dispatchEvent(new Event('resize'));
+            });
+        });
+        
+        // Show alert message
+        function showAlert(message, type = 'info') {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.alert-fixed');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-fixed`;
+            alertDiv.role = 'alert';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+        
+        // Handle direct access form submission
+        async function grantDirectAccess(event) {
+            event.preventDefault();
+            
+            try {
+                // Get form data
+                const formData = new FormData(document.getElementById('direct-access-form'));
+                const userData = {};
+                for (let [key, value] of formData.entries()) {
+                    userData[key] = value;
+                }
+                
+                // Get current user for granted_by field
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                userData.granted_by = currentUser.employee_id || 'System';
+                
+                // Show loading state
+                const grantBtn = document.getElementById('grant-access-btn');
+                const originalHTML = grantBtn.innerHTML;
+                grantBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Granting Access...';
+                grantBtn.disabled = true;
+                
+                // Send request to API
+                const response = await fetch(`${API_BASE_URL}/access-granted-users/direct-grant`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('User access granted successfully!', 'success');
+                    // Reset form
+                    document.getElementById('direct-access-form').reset();
+                    // Refresh authorized users list
+                    loadAuthorizedUsers();
+                } else {
+                    showAlert(`Failed to grant access: ${result.message || 'Unknown error'}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`Error granting access: ${error.message}`, 'danger');
+                console.error('Error:', error);
+            } finally {
+                // Restore button state
+                const grantBtn = document.getElementById('grant-access-btn');
+                grantBtn.innerHTML = '<i class="fas fa-user-check"></i> Grant Access';
+                grantBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

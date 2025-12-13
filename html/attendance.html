@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Attendance Kiosk</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    :root{
+      --primary:#00529b; --success:#28a745; --dark:#212529; --light:#f8f9fa;
+      --gray:#6c757d; --border-color:#e9ecef; --unknown-color:#ffc107;
+      /* NEW: fixed camera item height so 5 items = exact scroll area */
+      --cam-item-h: 56px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI','Roboto',sans-serif; }
+    body { background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .attendance-container {
+      display: grid; grid-template-columns: 2.2fr 1fr;
+      width: 100%; max-width: 1600px; height: 850px; max-height: 95vh;
+      background: white; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,.1); border: 1px solid var(--border-color);
+    }
+    .camera-panel { display: flex; flex-direction: column; background: var(--dark); }
+    .camera-header {
+      padding: 12px 18px; color: white; display: flex; gap: 12px;
+      align-items: center; justify-content: space-between;
+      background: rgba(0,0,0,.2); border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .camera-left { display: flex; align-items: center; gap: 12px; }
+    .camera-title { display: flex; align-items: center; gap: 8px; }
+    .camera-title h2 { font-size: 18px; font-weight: 600; }
+    .camera-badge { background: rgba(255,255,255,.12); padding: 4px 10px; border-radius: 999px; font-size: 12px; }
+    #clock { font-size: 18px; font-weight: 500; font-family: 'Courier New', monospace; }
+    .video-feed-wrapper { flex-grow: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    #videoFeedCanvas { max-width: 100%; max-height: 100%; object-fit: contain; transition: opacity .3s ease-in-out; }
+    .confirmation-panel { display: flex; flex-direction: column; padding: 30px; border-left: 1px solid var(--border-color); background: var(--light); }
+    .main-confirmation { text-align: center; }
+
+    #thumbnailCanvasWrapper {
+      width: 100%; padding-top: 100%; position: relative; margin-bottom: 20px;
+      background: #e0e0e0; border-radius: 12px; overflow: hidden;
+      border: 4px solid var(--border-color); transition: border-color .2s ease-in-out;
+    }
+    #thumbnailCanvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .confirmation-stamp {
+      position: absolute; bottom: 10px; right: 10px; width: 70px; height: 70px;
+      background: var(--success); border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center;
+      font-size: 40px; border: 5px solid white; transform: scale(0) rotate(-15deg); opacity: 0;
+      transition: all .25s cubic-bezier(.34,1.56,.64,1);
+    }
+    .confirmed #thumbnailCanvasWrapper { border-color: var(--success); }
+    .confirmed .confirmation-stamp { transform: scale(1) rotate(0deg); opacity: 1; }
+
+    .employee-info { min-height: 160px; }
+    .employee-name { font-size: 28px; font-weight: 700; color: var(--dark); margin-bottom: 8px; line-height: 1.2; }
+    .employee-id-badge {
+      background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; display: inline-block; margin-bottom: 15px;
+    }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; text-align: left; margin-top: 15px; }
+    .detail-item { font-size: 15px; color: var(--gray); }
+    .detail-item .label { font-weight: 600; color: var(--dark); display: block; font-size: 13px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .5px; }
+    .detail-value { font-weight: 500; color: var(--dark); }
+    #recognitionTime { font-size: 16px; font-weight: 600; color: var(--primary); margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 8px; }
+
+    .status-indicators { display: flex; gap: 20px; align-items: center; justify-content: center; margin-top: 12px; padding: 10px; }
+    .status-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #fff; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; animation: pulse 2s infinite; }
+    .status-connected { background: #4ade80; }
+    .status-processing { background: #f59e0b; }
+    .status-error { background: #ef4444; }
+
+    @keyframes pulse { 0%,100% { transform: scale(1);} 50% { transform: scale(1.1);} }
+
+    .confidence-badge {
+      background: linear-gradient(135deg,#4ade80,#22c55e);
+      color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;
+    }
+
+    /* Menu Styles */
+    .menu-btn { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; padding: 6px 10px; border-radius: 6px; }
+    .menu-btn:hover { background: rgba(255,255,255,.2); }
+    .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: none; z-index: 999; }
+    .menu-drawer { 
+      position: fixed; top: 0; left: -320px; width: 320px; height: 100%; 
+      background: #1d3557; color: #fff; padding: 24px 18px; z-index: 1000; 
+      transition: left .3s; box-shadow: 2px 0 10px rgba(0,0,0,.3);
+    }
+    .menu-drawer.open { left: 0; }
+    .menu-drawer h2 { margin-bottom: 16px; border-bottom: 2px solid #4361ee; padding-bottom: 8px; }
+    .menu-drawer ul { list-style: none; }
+    .menu-drawer li { margin-bottom: 12px; }
+    .menu-drawer .btn { width: 100%; justify-content: center; }
+
+    .btn {
+      padding: 10px 14px; border: none; border-radius: 6px; cursor: pointer;
+      font-weight: 700; display: flex; align-items: center; gap: 8px;
+    }
+    .btn-primary { background: #4361ee; color: #fff; }
+    .btn-primary:hover { background: #3f37c9; }
+    .btn-success { background: #4cc9f0; color: #fff; }
+    .btn-success:hover { filter: brightness(.9); }
+    .btn-outline { background: transparent; border: 2px solid #4361ee; color: #4361ee; }
+    .btn-outline:hover { background: #4361ee; color: #fff; }
+
+    /* Camera list in menu (with 5-row scroll) */
+    .menu-section-title { font-size: 14px; opacity:.9; margin: 18px 0 8px; text-transform: uppercase; letter-spacing:.6px; }
+    .input-wrap { display:flex; align-items:center; gap:8px; background:#123; border:1px solid rgba(255,255,255,.12); border-radius:8px; padding:8px 10px; }
+    .input-wrap i { opacity:.7; }
+    .input-wrap input {
+      flex:1; background:transparent; border:none; outline:none; color:#fff; font-size:14px;
+    }
+    .camera-menu-list{
+      margin-top:10px;
+      max-height: calc(var(--cam-item-h) * 5); /* exactly 5 items tall */
+      overflow:auto;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:10px;
+    }
+    .camera-item{
+      display:flex; align-items:center; justify-content:space-between;
+      min-height: var(--cam-item-h);
+      padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.06); cursor:pointer;
+      transition: background .15s ease-in-out;
+    }
+    .camera-item:last-child { border-bottom:none; }
+    .camera-item:hover { background: rgba(255,255,255,.06); }
+    .camera-item .left { display:flex; align-items:center; gap:10px; }
+    .camera-item .id { font-weight:700; }
+    .camera-item .loc { font-size:12px; opacity:.8; }
+    .camera-item .active-tag {
+      font-size: 11px; padding:2px 8px; border-radius:999px; background:#22c55e; color:#0b2e13; font-weight:800;
+    }
+  </style>
+</head>
+<body>
+<div class="attendance-container">
+  <div class="camera-panel">
+    <div class="camera-header">
+      <div class="camera-left">
+        <button class="menu-btn" onclick="toggleMenu()">&#9776;</button>
+        <div class="camera-title">
+          <i class="fas fa-video"></i>
+          <h2>Attendance Camera</h2>
+        </div>
+        <span class="camera-badge" id="activeCameraBadge">CAM-01</span>
+        <!-- Camera dropdown removed from header -->
+      </div>
+      <div id="clock"></div>
+    </div>
+
+    <div class="video-feed-wrapper">
+      <canvas id="videoFeedCanvas"></canvas>
+    </div>
+
+    <div class="status-indicators">
+      <div class="status-item" id="connStatus">
+        <div class="status-dot status-connected" id="connDot"></div>
+        <span>System Online</span>
+      </div>
+      <div class="status-item">
+        <div class="status-dot status-processing"></div>
+        <span>Real-time Processing</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="confirmation-panel">
+    <div class="main-confirmation" id="mainConfirmation">
+      <div id="thumbnailCanvasWrapper">
+        <canvas id="thumbnailCanvas"></canvas>
+        <div class="confirmation-stamp"><i class="fas fa-check"></i></div>
+      </div>
+      <div class="employee-info">
+        <div class="employee-name" id="employeeName">Please Look at the Camera</div>
+        <div class="employee-id-badge" id="employeeIdBadge">ID: ---</div>
+
+        <div class="detail-grid">
+          <div class="detail-item"><span class="label">Department</span><span class="detail-value" id="employeeDept">---</span></div>
+          <div class="detail-item"><span class="label">Role</span><span class="detail-value" id="employeeRole">---</span></div>
+          <div class="detail-item"><span class="label">Confidence</span><span class="detail-value" id="employeeConfidence">---</span></div>
+          <div class="detail-item"><span class="label">Status</span><span class="detail-value" id="attendanceStatus">Waiting...</span></div>
+        </div>
+        <p id="recognitionTime"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Menu Overlay and Drawer -->
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+<div class="menu-drawer" id="menuDrawer">
+  <h2>Dashboard Menu</h2>
+  <ul>
+    <li>
+      <button class="btn btn-primary" onclick="window.location.href='/'">
+        <i class="fas fa-home"></i> Home
+      </button>
+    </li>
+    <li><button class="btn btn-success" onclick="startRegistration()"><i class="fas fa-user-plus"></i> Register by Camera</button></li>
+    <li><button class="btn btn-primary" onclick="window.location.href='/attendance'"><i class="fas fa-clipboard-user"></i> Attendance View</button></li>
+    <li><button class="btn btn-primary" onclick="location.reload()"><i class="fas fa-sync"></i> Refresh Dashboard</button></li>
+  </ul>
+
+  <!-- Cameras (5 visible with scroll) -->
+  <div class="menu-section-title"><i class="fas fa-video"></i> Cameras</div>
+  <div class="input-wrap">
+    <i class="fas fa-search"></i>
+    <input id="cameraSearchInput" type="text" placeholder="Search cameras..." />
+  </div>
+  <div id="cameraMenuList" class="camera-menu-list"></div>
+
+  <ul style="margin-top:12px">
+    <li><button class="btn btn-outline" onclick="toggleMenu()" style="background:transparent;color:#fff;border-color:#fff"><i class="fas fa-times"></i> Close Menu</button></li>
+  </ul>
+</div>
+
+<script>
+/*
+  Dynamic cameras in menu with 5-row scroll.
+  All other features remain unchanged.
+*/
+
+let CAMERA_LIST = [];
+let CAMERA_INFO = {}; // id -> { id, location }
+
+async function loadCameraListForAttendance() {
+  try {
+    const res = await fetch('/api/cameras');
+    if (!res.ok) throw new Error('Failed to fetch camera list');
+    const data = await res.json();
+    CAMERA_LIST = data.map(c => c.id);
+    data.forEach(c => { CAMERA_INFO[c.id] = c; });
+    window.attendanceKiosk = new AttendanceKiosk();
+    renderCameraMenuList(); // initial render
+  } catch (err) {
+    console.error("Camera list load failed", err);
+    CAMERA_LIST = ["CAM-01","CAM-02","CAM-03"];
+    CAMERA_INFO = { "CAM-01": { id:"CAM-01", location: "Unknown" }, "CAM-02": { id:"CAM-02", location: "Unknown" }, "CAM-03": { id:"CAM-03", location: "Unknown" } };
+    window.attendanceKiosk = new AttendanceKiosk();
+    renderCameraMenuList(); // initial render
+  }
+}
+
+/* Build/Filter the camera menu list (5-row scroll handled by CSS) */
+function renderCameraMenuList(filterText = '') {
+  const listEl = document.getElementById('cameraMenuList');
+  const term = (filterText || '').toLowerCase().trim();
+  const active = window.attendanceKiosk?.activeCamera;
+
+  const items = CAMERA_LIST
+    .filter(id => {
+      if (!term) return true;
+      const info = CAMERA_INFO[id] || {};
+      const combo = `${id} ${(info.location || info.location_text || info.locationName || '')}`.toLowerCase();
+      return combo.includes(term);
+    })
+    .map(id => {
+      const info = CAMERA_INFO[id] || {};
+      const loc = info.location || info.location_text || info.locationName || '';
+      const isActive = id === active;
+      return `
+        <div class="camera-item" data-camid="${id}">
+          <div class="left">
+            <i class="fas fa-video"></i>
+            <div>
+              <div class="id">${id}</div>
+              ${loc ? `<div class="loc">${loc}</div>` : ``}
+            </div>
+          </div>
+          ${isActive ? `<span class="active-tag">Active</span>` : ``}
+        </div>
+      `;
+    });
+
+  listEl.innerHTML = items.join('') || `<div class="camera-item" style="cursor:default;opacity:.7">No cameras found</div>`;
+
+  // bind clicks
+  listEl.querySelectorAll('.camera-item[data-camid]').forEach(el => {
+    el.addEventListener('click', () => {
+      const camId = el.getAttribute('data-camid');
+      if (window.attendanceKiosk) {
+        window.attendanceKiosk.switchCamera(camId);
+        renderCameraMenuList(document.getElementById('cameraSearchInput').value);
+        toggleMenu(); // close after select
+      }
+    });
+  });
+}
+
+// Search input handler
+document.addEventListener('input', (e) => {
+  if (e.target && e.target.id === 'cameraSearchInput') {
+    renderCameraMenuList(e.target.value);
+  }
+});
+
+/* AttendanceKiosk (unchanged except for removed header select) */
+class AttendanceKiosk {
+  constructor() {
+    this.wsPool = {};
+    this.lastFrames = {};
+    this.activeCamera = this.getInitialCamera();
+    this.mainCanvas = document.getElementById('videoFeedCanvas');
+    this.mainCtx = this.mainCanvas.getContext('2d');
+    this.thumbCanvas = document.getElementById('thumbnailCanvas');
+    this.thumbCtx = this.thumbCanvas.getContext('2d');
+    this.recentRecognitions = new Map();
+    this.confirmationCooldown = 5000;
+    this.mainConfirmationEl = document.getElementById('mainConfirmation');
+    this.elCache = {
+      name: document.getElementById('employeeName'),
+      idBadge: document.getElementById('employeeIdBadge'),
+      dept: document.getElementById('employeeDept'),
+      role: document.getElementById('employeeRole'),
+      confidence: document.getElementById('employeeConfidence'),
+      status: document.getElementById('attendanceStatus'),
+      time: document.getElementById('recognitionTime'),
+      connDot: document.getElementById('connDot'),
+      camBadge: document.getElementById('activeCameraBadge')
+    };
+    this.initHeaderBadge();
+    this.init();
+  }
+
+  getInitialCamera() {
+    const p = new URLSearchParams(location.search).get('camera');
+    return (p && CAMERA_LIST.includes(p)) ? p : (CAMERA_LIST.length ? CAMERA_LIST[0] : "CAM-01");
+  }
+
+  initHeaderBadge() {
+    this.elCache.camBadge.textContent = this.activeCamera;
+  }
+
+  init() {
+    this.updateClock();
+    setInterval(() => this.updateClock(), 1000);
+    this.connectAllSockets();
+    this.resetConfirmationPanel();
+  }
+
+  updateClock() {
+    document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+  }
+
+  connectAllSockets() {
+    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    CAMERA_LIST.forEach(camId => {
+      const ws = new WebSocket(`${proto}//${location.host}/ws/${encodeURIComponent(camId)}`);
+      ws.onopen = () => this.setConnState('ok');
+      ws.onmessage = e => {
+        const data = JSON.parse(e.data);
+        if (!data.frame) return;
+        this.lastFrames[camId] = data;
+        if (camId === this.activeCamera) this.processFrame(data);
+      };
+      ws.onclose = () => this.setConnState('err');
+      ws.onerror = () => this.setConnState('err');
+      this.wsPool[camId] = ws;
+    });
+  }
+
+  switchCamera(newCam) {
+    if (!CAMERA_LIST.includes(newCam)) return;
+    this.activeCamera = newCam;
+    this.elCache.camBadge.textContent = newCam;
+
+    const url = new URL(location.href);
+    url.searchParams.set('camera', newCam);
+    history.replaceState({}, '', url);
+
+    const last = this.lastFrames[newCam];
+    if (last) this.processFrame(last);
+    else this.resetConfirmationPanel();
+  }
+
+  setConnState(state) {
+    const d = this.elCache.connDot;
+    d.classList.remove('status-connected','status-error');
+    d.classList.add(state === 'ok' ? 'status-connected' : 'status-error');
+  }
+
+  processFrame(data) {
+    const img = new Image();
+    img.onload = () => {
+      this.mainCanvas.width = img.width;
+      this.mainCanvas.height = img.height;
+      this.mainCtx.drawImage(img, 0, 0);
+
+      // camera overlay
+      this.drawCameraOverlay();
+
+      const mainSub = this.findMainSubject(data.results);
+      if (mainSub) this.handleRecognition(mainSub, img);
+      else this.resetConfirmationPanel();
+      this.drawBoxes(data.results);
+    };
+    img.src = `data:image/jpeg;base64,${data.frame}`;
+  }
+
+  drawCameraOverlay() {
+    try {
+      const camId = this.activeCamera || 'CAM-01';
+      const camInfo = CAMERA_INFO[camId] || {};
+      const loc = camInfo.location || camInfo.location_text || camInfo.locationName || '';
+      const label = loc ? `${camId} ${loc}` : camId;
+      const ctx = this.mainCtx;
+      const padding = 8;
+      const fontSize = Math.max(14, Math.round((this.mainCanvas.width || 1280) * 0.018));
+      ctx.save();
+      ctx.font = `${fontSize}px Arial`;
+      const tw = ctx.measureText(label).width;
+      const x = 10, y = 10;
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(x, y, tw + padding*2, fontSize + padding);
+      ctx.fillStyle = '#ffffff';
+      ctx.textBaseline = 'top';
+      ctx.fillText(label, x + padding, y + (padding/2));
+      ctx.restore();
+    } catch (e) { console.error("drawCameraOverlay error", e); }
+  }
+
+  findMainSubject(r) {
+    if (!r || !r.length) return null;
+    const rec = r.filter(a => a.employee_id !== 'unknown');
+    return (rec.length ? rec : r).reduce((a,b)=>(a.confidence||0)>(b.confidence||0)?a:b);
+  }
+
+  drawBoxes(results) {
+    if (!results) return;
+    results.forEach(r=>{
+      const [x,y,w,h]=r.bbox;
+      const ok=r.employee_id!=='unknown';
+      this.mainCtx.strokeStyle=ok?'rgba(40,167,69,.9)':'rgba(255,193,7,.9)';
+      this.mainCtx.lineWidth=3;
+      this.mainCtx.strokeRect(x,y,w,h);
+      const label=ok?r.employee_id:'Unknown';
+      this.mainCtx.fillStyle=ok?'rgba(40,167,69,.9)':'rgba(255,193,7,.9)';
+      this.mainCtx.font='14px Arial';
+      const tw=this.mainCtx.measureText(label).width;
+      this.mainCtx.fillRect(x-2,y-20,tw+10,20);
+      this.mainCtx.fillStyle='white';
+      this.mainCtx.fillText(label,x+3,y-5);
+    });
+  }
+
+  handleRecognition(p, frame) {
+    const now=Date.now(), id=p.employee_details?.id||p.employee_id;
+    if(this.recentRecognitions.has(id)&&now-this.recentRecognitions.get(id)<this.confirmationCooldown) return;
+    this.updateThumb(p,frame); this.updateDetails(p);
+
+    const isRecognized = (p.employee_id && p.employee_id !== 'unknown') && (p.employee_details && p.employee_details.id && p.employee_details.id !== 'unknown');
+    if(isRecognized){
+      this.recentRecognitions.set(id,now);
+      this.triggerAnim();
+    }
+  }
+
+  updateThumb(p,img){
+    const[x,y,w,h]=p.bbox,fw=img.width,fh=img.height,pad=0.3,cs=Math.max(w,h)*(1+pad);
+    const cx=Math.max(0,x-(cs-w)/2),cy=Math.max(0,y-(cs-h)/2),fcs=Math.min(cs,fw-cx,fh-cy);
+    this.thumbCanvas.width=300;this.thumbCanvas.height=300;
+    this.thumbCtx.clearRect(0,0,300,300);
+    this.thumbCtx.drawImage(img,cx,cy,fcs,fcs,0,0,300,300);
+  }
+
+  updateDetails(p){
+    const ok = (p.employee_id && p.employee_id !== 'unknown') && (p.employee_details && p.employee_details.id && p.employee_details.id !== 'unknown');
+    const t=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    if(ok){
+      const d=p.employee_details||{id:"N/A",name:p.employee_id,department:"Not Specified",role:"Employee"};
+      this.elCache.name.textContent=d.name;
+      this.elCache.idBadge.textContent=`ID: ${d.id}`;
+      this.elCache.dept.textContent=d.department;
+      this.elCache.role.textContent=d.role;
+      this.elCache.confidence.innerHTML=`<span class="confidence-badge">${(p.confidence*100).toFixed(1)}%</span>`;
+      this.elCache.status.textContent='Recognized';
+      this.elCache.time.textContent=`Checked-in at: ${t}`;
+    } else {
+      this.resetConfirmationPanel();
+    }
+  }
+
+  triggerAnim(){
+    this.mainConfirmationEl.classList.add('confirmed');
+    this.elCache.status.textContent='Attendance Confirmed';
+    setTimeout(()=>{this.mainConfirmationEl.classList.remove('confirmed');this.elCache.status.textContent='Ready for Next Scan';},3000);
+  }
+
+  resetConfirmationPanel(){
+    if(this.mainConfirmationEl.classList.contains('confirmed'))return;
+
+    this.elCache.name.textContent = 'Please Look at the Camera';
+    this.elCache.idBadge.textContent = 'ID: ---';
+    this.elCache.dept.textContent = '---';
+    this.elCache.role.textContent = '---';
+    this.elCache.confidence.textContent = '---';
+    this.elCache.status.textContent = 'Waiting for Recognition';
+    this.elCache.time.textContent = '';
+
+    this.thumbCtx.clearRect(0,0,300,300);
+    this.thumbCtx.fillStyle='#f8f9fa';
+    this.thumbCtx.fillRect(0,0,300,300);
+    this.thumbCtx.fillStyle='#6c757d';
+    this.thumbCtx.font='16px Arial';
+    this.thumbCtx.textAlign='center';
+    this.thumbCtx.fillText('No Face',150,150);
+  }
+}
+
+// Menu functions
+function toggleMenu(){
+  const d=document.getElementById('menuDrawer'), o=document.getElementById('menuOverlay');
+  const open=d.classList.contains('open');
+  if(open){ d.classList.remove('open'); o.style.display='none'; } 
+  else { d.classList.add('open'); o.style.display='block'; }
+}
+
+function startRegistration(){
+  alert('Registration is only available in the main dashboard. Please go to the dashboard to register new employees.');
+}
+
+// instantiate kiosk after camera list loaded
+document.addEventListener('DOMContentLoaded', loadCameraListForAttendance);
+</script>
+</body>
+</html>
+

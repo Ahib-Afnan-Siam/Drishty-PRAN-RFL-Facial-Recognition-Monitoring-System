@@ -324,11 +324,48 @@
                     localStorage.setItem('isAdminLoggedIn', 'true');
                     localStorage.setItem('currentUser', JSON.stringify(result.user));
                     
-                    // Redirect to dashboard
-                    showAlert('Login successful! Redirecting...', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
+                    // Immediately fetch and cache admin access status
+                    try {
+                        // Fetch admin access status for the logged-in user
+                        fetch('http://localhost:5001/api/admin-access-users')
+                            .then(response => response.json())
+                            .then(adminResult => {
+                                if (adminResult.success && adminResult.data) {
+                                    const currentUserEmployeeId = result.user.employee_id;
+                                    const isAdmin = adminResult.data.some(user => 
+                                        user.EMPLOYEE_ID === currentUserEmployeeId && user.ADMIN_ACCESS === 'Y'
+                                    );
+                                    
+                                    // Store the admin access result in localStorage
+                                    localStorage.setItem('userAdminAccess', isAdmin ? 'Y' : 'N');
+                                    
+                                    // Update the currentUser object with admin access info
+                                    result.user.adminAccess = isAdmin ? 'Y' : 'N';
+                                    localStorage.setItem('currentUser', JSON.stringify(result.user));
+                                    
+                                    // Redirect to dashboard
+                                    showAlert('Login successful! Redirecting...', 'success');
+                                    setTimeout(() => {
+                                        window.location.href = 'index.html';
+                                    }, 1500);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching admin access status:', error);
+                                // Even if admin access fetch fails, still redirect to dashboard
+                                showAlert('Login successful! Redirecting...', 'success');
+                                setTimeout(() => {
+                                    window.location.href = 'index.html';
+                                }, 1500);
+                            });
+                    } catch (error) {
+                        console.error('Error in admin access fetch:', error);
+                        // If there's an error, still redirect to dashboard
+                        showAlert('Login successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    }
                 } else {
                     showAlert(result.message || 'Invalid credentials. Please try again.', 'danger');
                 }

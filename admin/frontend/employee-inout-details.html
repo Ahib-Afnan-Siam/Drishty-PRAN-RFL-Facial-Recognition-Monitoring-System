@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Daily Movement Breakdown</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        #back-to-summary {
+            background-color: white !important;
+            color: #0d6efd !important; /* Bootstrap primary blue */
+            border-color: #0d6efd !important;
+        }
+        
+        #back-to-summary:hover {
+            background-color: #0d6efd !important; /* Bootstrap primary blue */
+            color: white !important;
+            border-color: #0d6efd !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="sidebar">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-4 sidebar-header">
+                        <h4 class="sidebar-header-text mb-0"><i class="fas fa-user-shield"></i> Admin Panel</h4>
+                        <button id="sidebarToggle" class="btn btn-toggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                    <ul class="nav flex-column sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html" id="dashboard-link">
+                                <i class="fas fa-tachometer-alt nav-icon"></i>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html" id="reports-dropdown" data-bs-toggle="collapse" data-bs-target="#reports-submenu" aria-expanded="false" aria-controls="reports-submenu">
+                                <i class="fas fa-chart-bar nav-icon"></i>
+                                <span class="nav-text">Reports</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="reports-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#cameras" id="cameras-link">
+                                        <i class="fas fa-video nav-icon"></i>
+                                        <span class="nav-text">Camera Registry</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#summary" id="summary-link">
+                                        <i class="fas fa-users nav-icon"></i>
+                                        <span class="nav-text">Employee Summary</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#downtime" id="downtime-link">
+                                        <i class="fas fa-clock nav-icon"></i>
+                                        <span class="nav-text">Downtime Summary</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#employee-movement" id="employee-movement-link">
+                                        <i class="fas fa-walking nav-icon"></i>
+                                        <span class="nav-text">Employee Movement</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#daily-inout-summary" id="daily-inout-summary-link">
+                                        <i class="fas fa-exchange-alt nav-icon"></i>
+                                        <span class="nav-text">Daily IN/OUT Summary</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#registered-users" id="registered-users-link">
+                                        <i class="fas fa-user-plus nav-icon"></i>
+                                        <span class="nav-text">Registered Users</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="camera-management-dropdown" data-bs-toggle="collapse" data-bs-target="#camera-management-submenu" aria-expanded="false" aria-controls="camera-management-submenu">
+                                <i class="fas fa-camera nav-icon"></i>
+                                <span class="nav-text">Camera Management</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="camera-management-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link camera-info-link" href="add_camera.html" id="add-camera-link">
+                                        <i class="fas fa-plus-circle nav-icon"></i>
+                                        <span class="nav-text">Add Camera</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link camera-info-link" href="update_camera_status.html" id="update-camera-status-link">
+                                        <i class="fas fa-toggle-on nav-icon"></i>
+                                        <span class="nav-text">Update Camera Status</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="user-management-dropdown" data-bs-toggle="collapse" data-bs-target="#user-management-submenu" aria-expanded="false" aria-controls="user-management-submenu">
+                                <i class="fas fa-users-cog nav-icon"></i>
+                                <span class="nav-text">User Management</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="user-management-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link user-management-link" href="user_management.html#pending-requests" id="pending-requests-link">
+                                        <i class="fas fa-clock nav-icon"></i>
+                                        <span class="nav-text">Pending Requests</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link user-management-link" href="user_management.html#authorized-users" id="authorized-users-link">
+                                        <i class="fas fa-user-check nav-icon"></i>
+                                        <span class="nav-text">Authorized Users</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="face-recognition-link">
+                                <i class="fas fa-user-check nav-icon"></i>
+                                <span class="nav-text">Face Recognition</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <a class="nav-link" href="#" id="logout-link">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                <span class="nav-text">Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Header -->
+                <header>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1><i class="fas fa-exchange-alt"></i> Employee Daily Movement Breakdown</h1>
+                            <p class="mb-0">Detailed view of employee movement and time calculation</p>
+                        </div>
+                        <div>
+                            <button id="back-to-summary" class="btn btn-outline-primary me-3">
+                                <i class="fas fa-arrow-left"></i> Back to Summary
+                            </button>
+                            <div id="user-info" class="text-end">
+                                <small class="text-white-50">Welcome,</small><br>
+                                <strong id="current-user" class="text-white">Admin User</strong>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Context & Trust Header -->
+                <section id="context-header" class="mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-id-card"></i> Employee Information & Summary</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="info-item">
+                                        <label class="text-muted">Employee:</label>
+                                        <h5 id="employee-name-id" class="mb-0">Loading...</h5>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="info-item">
+                                        <label class="text-muted">Department:</label>
+                                        <p id="employee-department" class="mb-0">Loading...</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="info-item">
+                                        <label class="text-muted">Date:</label>
+                                        <p id="summary-date" class="mb-0">Loading...</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <label class="text-muted">Total Inside Time:</label>
+                                                <p id="total-inside-time" class="mb-0 text-success fw-bold">Loading...</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="info-item">
+                                                <label class="text-muted">Total Outside Time:</label>
+                                                <p id="total-outside-time" class="mb-0 text-danger fw-bold">Loading...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="row">
+                    <!-- IN vs OUT Time Distribution Chart -->
+                    <section id="time-distribution-chart-section" class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-chart-pie"></i> IN vs OUT Time Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-center">
+                                    <div class="chart-container" style="position: relative; height:250px; width:250px;">
+                                        <canvas id="timeDistributionChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Visual Timeline -->
+                    <section id="visual-timeline" class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-chart-line"></i> Daily Movement Timeline</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="timeline-container" class="p-2 bg-light rounded" style="overflow-x: auto;">
+                                    <div id="timeline-visualization" class="text-center py-3">
+                                        <p>Loading timeline visualization...</p>
+                                        <div id="timeline-svg" style="height: 150px; min-width: 800px;">
+                                            <!-- Timeline SVG will be rendered here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Raw Movement Evidence (Camera Logs) -->
+                <section id="raw-movement-evidence" class="mb-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-video"></i> Raw Movement Records</h5>
+                            <div class="btn-group">
+                                <button id="refresh-raw-movement" class="btn btn-outline-primary">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="raw-movement-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Time From</th>
+                                            <th>Time To</th>
+                                            <th>Status</th>
+                                            <th>Camera</th>
+                                            <th>Floor</th>
+                                            <th>Building</th>
+                                            <th>Hits</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Raw movement data will be populated here -->
+                                        <tr>
+                                            <td colspan="7" class="text-center">Loading...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Status Transitions (Logic Explanation) -->
+                <section id="status-transitions" class="mb-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-exchange-alt"></i> Movement Transitions Used for Calculation</h5>
+                            <div class="btn-group">
+                                <button id="refresh-transitions" class="btn btn-outline-primary">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="transitions-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>From Status</th>
+                                            <th>To Status</th>
+                                            <th>From Time</th>
+                                            <th>To Time</th>
+                                            <th>Duration (min)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Transition data will be populated here -->
+                                        <tr>
+                                            <td colspan="5" class="text-center">Loading...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle"></i> Intervals shorter than 2 minutes are ignored to avoid camera noise.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Calculation Breakdown (Human Explanation) -->
+                <section id="calculation-breakdown" class="mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-calculator"></i> Calculation Breakdown</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-success">INSIDE TIME CALCULATION</h6>
+                                    <div class="border p-3 bg-light rounded">
+                                        <div id="inside-calculation">
+                                            <p class="mb-1">Loading calculation details...</p>
+                                        </div>
+                                        <hr>
+                                        <p class="mb-0 fw-bold">Total Inside = <span id="total-inside-calc">0</span> minutes</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-danger">OUTSIDE TIME CALCULATION</h6>
+                                    <div class="border p-3 bg-light rounded">
+                                        <div id="outside-calculation">
+                                            <p class="mb-1">Loading calculation details...</p>
+                                        </div>
+                                        <hr>
+                                        <p class="mb-0 fw-bold">Total Outside = <span id="total-outside-calc">0</span> minutes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="pt-5 my-4 text-muted border-top">
+                    <p class="mb-0">&copy; 2025 Face Recognition System Admin Dashboard</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/xlsx.js"></script>
+    <script src="lib/jspdf.umd.min.js"></script>
+    <script src="lib/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+            } else {
+                // Load user info
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (currentUser.name) {
+                    document.getElementById('current-user').textContent = currentUser.name;
+                }
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logout-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('isAdminLoggedIn');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        });
+
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Load employee data based on URL parameters
+        async function loadEmployeeDetails() {
+            const employeeId = getUrlParameter('employee_id');
+            const recDate = getUrlParameter('rec_date');
+
+            if (!employeeId || !recDate) {
+                alert('Missing required parameters: employee_id and rec_date');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/employee-inout-details?employee_id=${employeeId}&rec_date=${recDate}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    // Update context header
+                    const summaryData = result.summary_data[0];
+                    if (summaryData) {
+                        document.getElementById('employee-name-id').textContent = `${summaryData.NAME} (${summaryData.EMPLOYEE_ID})`;
+                        document.getElementById('employee-department').textContent = summaryData.DEPARTMENT || 'N/A';
+                        document.getElementById('summary-date').textContent = new Date(summaryData.REC_DATE).toLocaleDateString();
+                        document.getElementById('total-inside-time').textContent = `${summaryData.TOTAL_INSIDE_MINUTES || 0} min`;
+                        document.getElementById('total-outside-time').textContent = `${summaryData.TOTAL_OUTSIDE_MINUTES || 0} min`;
+                        
+                        // Update calculation breakdown
+                        document.getElementById('total-inside-calc').textContent = summaryData.TOTAL_INSIDE_MINUTES || 0;
+                        document.getElementById('total-outside-calc').textContent = summaryData.TOTAL_OUTSIDE_MINUTES || 0;
+                                            
+                        // Create IN vs OUT Time Distribution chart
+                        createTimeDistributionChart(summaryData.TOTAL_INSIDE_MINUTES || 0, summaryData.TOTAL_OUTSIDE_MINUTES || 0);
+                    }
+
+                    // Update raw movement table
+                    updateRawMovementTable(result.raw_movement_data);
+
+                    // Update transitions table
+                    updateTransitionsTable(result.transitions_data);
+
+                    // Update calculation breakdown details
+                    updateCalculationBreakdown(result.transitions_data);
+
+                    // Update timeline visualization
+                    updateTimelineVisualization(result.transitions_data);
+                } else {
+                    alert('Error loading data: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error loading employee details:', error);
+                alert('Error loading data: ' + error.message);
+            }
+        }
+
+        // Update raw movement table
+        function updateRawMovementTable(data) {
+            const tbody = document.querySelector('#raw-movement-table tbody');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">No raw movement data found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(record => `
+                <tr>
+                    <td>${record.FIRST_SEEN_TIME || '-'}</td>
+                    <td>${record.LAST_SEEN_TIME || '-'}</td>
+                    <td><span class="badge ${record.LOCATION_STATUS === 'IN' ? 'bg-success' : 'bg-danger'}">${record.LOCATION_STATUS || '-'}</span></td>
+                    <td>${record.CAMERA_NAME || '-'}</td>
+                    <td>${record.FLOOR_NAME || '-'}</td>
+                    <td>${record.BUILDING_NAME || '-'}</td>
+                    <td>${record.TOTAL_HITS || 0}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Update transitions table
+        function updateTransitionsTable(data) {
+            const tbody = document.querySelector('#transitions-table tbody');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center">No transition data found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(record => `
+                <tr>
+                    <td><span class="badge ${record.FROM_STATUS === 'IN' ? 'bg-success' : 'bg-danger'}">${record.FROM_STATUS}</span></td>
+                    <td><span class="badge ${record.TO_STATUS === 'IN' ? 'bg-success' : 'bg-danger'}">${record.TO_STATUS}</span></td>
+                    <td>${record.FROM_TS ? new Date(record.FROM_TS).toLocaleTimeString() : '-'}</td>
+                    <td>${record.TO_TS ? new Date(record.TO_TS).toLocaleTimeString() : '-'}</td>
+                    <td>${record.MINUTES || 0}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Update calculation breakdown
+        function updateCalculationBreakdown(data) {
+            if (!data || data.length === 0) {
+                document.getElementById('inside-calculation').innerHTML = '<p class="mb-1">No inside time records found</p>';
+                document.getElementById('outside-calculation').innerHTML = '<p class="mb-1">No outside time records found</p>';
+                return;
+            }
+
+            // Separate inside and outside records
+            const insideRecords = data.filter(record => record.FROM_STATUS === 'IN');
+            const outsideRecords = data.filter(record => record.FROM_STATUS === 'OUT');
+
+            // Generate inside calculation details
+            let insideHtml = '';
+            if (insideRecords.length > 0) {
+                insideHtml = insideRecords.map(record => `
+                    <p class="mb-1">${record.FROM_TS ? new Date(record.FROM_TS).toLocaleTimeString() : '-'} → ${record.TO_TS ? new Date(record.TO_TS).toLocaleTimeString() : '-'} = ${(record.MINUTES || 0).toFixed(2)} min</p>
+                `).join('');
+            } else {
+                insideHtml = '<p class="mb-1">No inside time records found</p>';
+            }
+            document.getElementById('inside-calculation').innerHTML = insideHtml;
+
+            // Generate outside calculation details
+            let outsideHtml = '';
+            if (outsideRecords.length > 0) {
+                outsideHtml = outsideRecords.map(record => `
+                    <p class="mb-1">${record.FROM_TS ? new Date(record.FROM_TS).toLocaleTimeString() : '-'} → ${record.TO_TS ? new Date(record.TO_TS).toLocaleTimeString() : '-'} = ${(record.MINUTES || 0).toFixed(2)} min</p>
+                `).join('');
+            } else {
+                outsideHtml = '<p class="mb-1">No outside time records found</p>';
+            }
+            document.getElementById('outside-calculation').innerHTML = outsideHtml;
+        }
+
+        // Create IN vs OUT Time Distribution chart
+        function createTimeDistributionChart(insideMinutes, outsideMinutes) {
+            const ctx = document.getElementById('timeDistributionChart');
+            if (!ctx) return;
+            
+            // Calculate percentages
+            const totalMinutes = insideMinutes + outsideMinutes;
+            const insidePercentage = totalMinutes > 0 ? Math.round((insideMinutes / totalMinutes) * 100) : 0;
+            const outsidePercentage = totalMinutes > 0 ? Math.round((outsideMinutes / totalMinutes) * 100) : 0;
+            
+            // Destroy existing chart if it exists
+            if (window.timeDistributionChartInstance) {
+                window.timeDistributionChartInstance.destroy();
+            }
+            
+            // Create new chart
+            window.timeDistributionChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [`Inside (${insideMinutes} min - ${insidePercentage}%)`, `Outside (${outsideMinutes} min - ${outsidePercentage}%)`],
+                    datasets: [{
+                        data: [insideMinutes, outsideMinutes],
+                        backgroundColor: [
+                            '#28a745', // Green for Inside
+                            '#dc3545'  // Red for Outside
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#fff',
+                        hoverOffset: 8,
+                        hoverBorderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 15,
+                                padding: 15,
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                color: '#495057'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                    return `${label}: ${value} min (${percentage}%)`;
+                                }
+                            },
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            }
+                        }
+                    },
+                    cutout: '65%', // Makes it a doughnut chart
+                    animation: {
+                        animateRotate: true,
+                        animateScale: false,
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+
+        // Update timeline visualization
+        function updateTimelineVisualization(data) {
+            if (!data || data.length === 0) {
+                document.getElementById('timeline-visualization').innerHTML = '<p>No data to visualize</p>';
+                return;
+            }
+
+            // Create a Gantt-style timeline visualization
+            const container = document.getElementById('timeline-svg');
+            container.innerHTML = ''; // Clear existing content
+
+            // Create SVG for timeline
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', '100%');
+            svg.setAttribute('height', '200');
+            svg.setAttribute('viewBox', '0 0 800 200');
+            
+            // Calculate time range for the day
+            const startOfDay = new Date(data[0].FROM_TS);
+            startOfDay.setHours(0, 0, 0, 0);
+            const endOfDay = new Date(startOfDay);
+            endOfDay.setHours(24, 0, 0, 0);
+            
+            const totalDuration = endOfDay - startOfDay;
+            
+            // Draw timeline background grid
+            const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bgRect.setAttribute('x', '0');
+            bgRect.setAttribute('y', '80');
+            bgRect.setAttribute('width', '800');
+            bgRect.setAttribute('height', '60');
+            bgRect.setAttribute('fill', '#f8f9fa');
+            bgRect.setAttribute('stroke', '#dee2e6');
+            bgRect.setAttribute('stroke-width', '1');
+            svg.appendChild(bgRect);
+            
+            // Add subtle grid lines for time markers
+            for (let hour = 1; hour < 24; hour++) {
+                const x = (hour / 24) * 800;
+                const gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                gridLine.setAttribute('x1', x);
+                gridLine.setAttribute('y1', '80');
+                gridLine.setAttribute('x2', x);
+                gridLine.setAttribute('y2', '140');
+                gridLine.setAttribute('stroke', '#e9ecef');
+                gridLine.setAttribute('stroke-width', '0.5');
+                svg.appendChild(gridLine);
+            }
+            
+            // Draw timeline segments
+            data.forEach((record, index) => {
+                const fromTime = new Date(record.FROM_TS);
+                const toTime = new Date(record.TO_TS);
+                
+                const startX = ((fromTime - startOfDay) / totalDuration) * 800;
+                const width = ((toTime - fromTime) / totalDuration) * 800;
+                
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', startX);
+                rect.setAttribute('y', '85');
+                rect.setAttribute('width', Math.max(width, 2)); // Minimum width of 2px
+                rect.setAttribute('height', '50');
+                rect.setAttribute('fill', record.FROM_STATUS === 'IN' ? '#28a745' : '#dc3545');
+                rect.setAttribute('stroke', '#fff');
+                rect.setAttribute('stroke-width', '2');
+                rect.setAttribute('rx', '4');
+                rect.setAttribute('ry', '4');
+                rect.setAttribute('title', `${record.FROM_STATUS} from ${fromTime.toLocaleTimeString()} to ${toTime.toLocaleTimeString()} (Duration: ${record.MINUTES || 0} min)`);
+                
+                // Add hover effect
+                rect.addEventListener('mouseover', function() {
+                    this.setAttribute('stroke-width', '4');
+                });
+                rect.addEventListener('mouseout', function() {
+                    this.setAttribute('stroke-width', '2');
+                });
+                
+                svg.appendChild(rect);
+                
+                // Add time label
+                const timeText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                timeText.setAttribute('x', startX + 2);
+                timeText.setAttribute('y', '75');
+                timeText.setAttribute('font-size', '10');
+                timeText.setAttribute('fill', '#495057');
+                timeText.setAttribute('font-weight', 'bold');
+                timeText.textContent = `${fromTime.toLocaleTimeString()}`;
+                svg.appendChild(timeText);
+                
+                // Add duration label inside the segment
+                const durationText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                const center = startX + (width / 2);
+                durationText.setAttribute('x', center);
+                durationText.setAttribute('y', '115');
+                durationText.setAttribute('font-size', '11');
+                durationText.setAttribute('fill', '#fff');
+                durationText.setAttribute('text-anchor', 'middle');
+                durationText.setAttribute('font-weight', 'bold');
+                durationText.textContent = `${record.MINUTES || 0}m`;
+                svg.appendChild(durationText);
+            });
+            
+            // Add time indicators
+            const timeIndicators = [0, 4, 8, 12, 16, 20, 24];
+            timeIndicators.forEach(hour => {
+                const x = (hour / 24) * 800;
+                
+                // Vertical time line
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x);
+                line.setAttribute('y1', '0');
+                line.setAttribute('x2', x);
+                line.setAttribute('y2', '200');
+                line.setAttribute('stroke', '#dee2e6');
+                line.setAttribute('stroke-dasharray', '4,4');
+                svg.appendChild(line);
+                
+                // Time label
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', x + 5);
+                text.setAttribute('y', '15');
+                text.setAttribute('font-size', '12');
+                text.setAttribute('fill', '#6c757d');
+                text.setAttribute('font-weight', 'bold');
+                text.textContent = `${hour}:00`;
+                svg.appendChild(text);
+            });
+            
+            // Add legend
+            const legendX = 650;
+            const legendY = 25;
+            
+            // IN legend
+            const inLegendRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            inLegendRect.setAttribute('x', legendX);
+            inLegendRect.setAttribute('y', legendY);
+            inLegendRect.setAttribute('width', '15');
+            inLegendRect.setAttribute('height', '15');
+            inLegendRect.setAttribute('fill', '#28a745');
+            inLegendRect.setAttribute('rx', '3');
+            inLegendRect.setAttribute('ry', '3');
+            svg.appendChild(inLegendRect);
+            
+            const inLegendText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            inLegendText.setAttribute('x', legendX + 20);
+            inLegendText.setAttribute('y', legendY + 12);
+            inLegendText.setAttribute('font-size', '12');
+            inLegendText.setAttribute('fill', '#333');
+            inLegendText.setAttribute('font-weight', 'bold');
+            inLegendText.textContent = 'Inside';
+            svg.appendChild(inLegendText);
+            
+            // OUT legend
+            const outLegendRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            outLegendRect.setAttribute('x', legendX);
+            outLegendRect.setAttribute('y', legendY + 20);
+            outLegendRect.setAttribute('width', '15');
+            outLegendRect.setAttribute('height', '15');
+            outLegendRect.setAttribute('fill', '#dc3545');
+            outLegendRect.setAttribute('rx', '3');
+            outLegendRect.setAttribute('ry', '3');
+            svg.appendChild(outLegendRect);
+            
+            const outLegendText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            outLegendText.setAttribute('x', legendX + 20);
+            outLegendText.setAttribute('y', legendY + 32);
+            outLegendText.setAttribute('font-size', '12');
+            outLegendText.setAttribute('fill', '#333');
+            outLegendText.setAttribute('font-weight', 'bold');
+            outLegendText.textContent = 'Outside';
+            svg.appendChild(outLegendText);
+            
+            // Add axis label
+            const axisLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            axisLabel.setAttribute('x', 400);
+            axisLabel.setAttribute('y', '190');
+            axisLabel.setAttribute('font-size', '14');
+            axisLabel.setAttribute('fill', '#495057');
+            axisLabel.setAttribute('text-anchor', 'middle');
+            axisLabel.setAttribute('font-weight', 'bold');
+            axisLabel.textContent = 'Time of Day';
+            svg.appendChild(axisLabel);
+            
+            container.appendChild(svg);
+        }
+
+        // Refresh buttons functionality
+        const rawMovementRefreshBtn = document.getElementById('refresh-raw-movement');
+        if (rawMovementRefreshBtn) {
+            rawMovementRefreshBtn.addEventListener('click', loadEmployeeDetails);
+        }
+        
+        const transitionsRefreshBtn = document.getElementById('refresh-transitions');
+        if (transitionsRefreshBtn) {
+            transitionsRefreshBtn.addEventListener('click', loadEmployeeDetails);
+        }
+
+        // Load data when page loads
+        loadEmployeeDetails();
+        
+        // Sidebar navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar navigation links
+            const dashboardLink = document.getElementById('dashboard-link');
+            const reportsDropdown = document.getElementById('reports-dropdown');
+            const camerasLink = document.getElementById('cameras-link');
+            const summaryLink = document.getElementById('summary-link');
+            const downtimeLink = document.getElementById('downtime-link');
+            const employeeMovementLink = document.getElementById('employee-movement-link');
+            const dailyInOutSummaryLink = document.getElementById('daily-inout-summary-link');
+            const addCameraLink = document.getElementById('add-camera-link');
+            const updateCameraStatusLink = document.getElementById('update-camera-status-link');
+            const faceRecognitionLink = document.getElementById('face-recognition-link');
+            
+            // Report links
+            const reportLinks = document.querySelectorAll('.report-link');
+            
+            // Camera info links
+            const cameraInfoLinks = document.querySelectorAll('.camera-info-link');
+            
+            // User management links
+            const userManagementLinks = document.querySelectorAll('.user-management-link');
+            
+            // Navigation event handlers
+            if (dashboardLink) {
+                dashboardLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'index.html';
+                });
+            }
+            
+            // Report links navigation
+            reportLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const href = this.getAttribute('href');
+                    if (href && href.startsWith('index.html')) {
+                        window.location.href = href;
+                    }
+                });
+            });
+            
+            // Camera info links navigation
+            cameraInfoLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = this.getAttribute('href');
+                });
+            });
+            
+            // User management links navigation
+            userManagementLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = this.getAttribute('href');
+                });
+            });
+            
+            // Face recognition link
+            if (faceRecognitionLink) {
+                faceRecognitionLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // For face recognition, redirect to main dashboard to handle properly
+                    window.location.href = 'index.html#face-recognition';
+                });
+            }
+            
+            // Sidebar toggle functionality
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    
+                    // Change icon based on sidebar state
+                    const icon = sidebarToggle.querySelector('i');
+                    if (sidebar.classList.contains('collapsed')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                    
+                    // Trigger a resize event to ensure proper layout adjustment
+                    window.dispatchEvent(new Event('resize'));
+                });
+            }
+            
+            // Back to Summary button functionality
+            const backToSummaryBtn = document.getElementById('back-to-summary');
+            if (backToSummaryBtn) {
+                backToSummaryBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Go back to the daily in/out summary page
+                    // Get the current parameters to maintain the date range
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const employeeId = urlParams.get('employee_id');
+                    const recDate = urlParams.get('rec_date');
+                    
+                    // Navigate to the index.html and open the daily in/out summary section
+                    // We'll use the default date range (last 7 days) for the summary
+                    window.location.href = 'index.html#daily-inout-summary';
+                });
+            }
+        });
+    </script>

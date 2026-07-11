@@ -75,3 +75,14 @@ The credentials are verified against the HRIS system via REST API.
 ## Database Configuration
 
 The database connection details are configured in [db_config.py](file:///C:/Users/MIS/Documents/rnd_face_recognition/admin/db_config.py) in the parent admin directory.
+
+# 5001 - 8093 
+# 8001 - 8094
+
+# // Configuration constants
+# const CONFIG = {
+#    FRONTEND_HOST: "172.17.2.78",
+#    FRONTEND_PORT: 8094,
+#    BACKEND_HOST: "172.17.2.78",
+#    BACKEND_PORT: 8093
+# };

@@ -1,0 +1,25 @@
+{
+  "name": "face-recognition-admin-dashboard",
+  "version": "1.0.0",
+  "description": "Admin Dashboard for Face Recognition System. To install frontend dependencies, run: npm install. To start the frontend server, run: npm start",
+  "main": "server.js",
+  "scripts": {
+    "start": "python server.py",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "face-recognition",
+    "admin-dashboard",
+    "bootstrap"
+  ],
+  "author": "Face Recognition Team",
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap": "^5.3.0",
+    "@fortawesome/fontawesome-free": "^6.4.0",
+    "xlsx": "^0.18.5",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.25"
+  },
+  "devDependencies": {}
+}

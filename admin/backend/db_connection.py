@@ -302,6 +302,148 @@ def get_employee_daily_summary(from_date, to_date):
     """
     return execute_query(query, {'from_date': from_date, 'to_date': to_date})
 
+def get_employee_daily_summary_aggregated(from_date, to_date):
+    """
+    Retrieves aggregated employee daily summary data for KPI cards and charts.
+    
+    Args:
+        from_date (str): Start date in YYYY-MM-DD format
+        to_date (str): End date in YYYY-MM-DD format
+        
+    Returns:
+        dict: Aggregated KPI data and chart data
+    """
+    # KPI data query
+    kpi_query = """
+    WITH daily_employee_summary AS (
+        SELECT
+            TRUNC(v.RECOGNITION_TIMESTAMP) AS REC_DATE,
+            v.EMPLOYEE_ID,
+            v.NAME,
+            v.DEPARTMENT,
+            ROUND(
+                EXTRACT(DAY    FROM (MAX(v.RECOGNITION_TIMESTAMP) - MIN(v.RECOGNITION_TIMESTAMP))) * 24 +
+                EXTRACT(HOUR   FROM (MAX(v.RECOGNITION_TIMESTAMP) - MIN(v.RECOGNITION_TIMESTAMP))) +
+                EXTRACT(MINUTE FROM (MAX(v.RECOGNITION_TIMESTAMP) - MIN(v.RECOGNITION_TIMESTAMP))) / 60 +
+                EXTRACT(SECOND FROM (MAX(v.RECOGNITION_TIMESTAMP) - MIN(v.RECOGNITION_TIMESTAMP))) / 3600,
+                2
+            ) AS TOTAL_SPAN_HOURS,
+            COUNT(*) AS TOTAL_HITS,
+            COUNT(DISTINCT v.CAMERA_ID) AS TOTAL_FLOOR
+        FROM V_RECOGNITION_LOGS_ENRICHED v
+        WHERE TRUNC(v.RECOGNITION_TIMESTAMP) BETWEEN TO_DATE(:from_date, 'YYYY-MM-DD') AND TO_DATE(:to_date, 'YYYY-MM-DD')
+        GROUP BY
+            TRUNC(v.RECOGNITION_TIMESTAMP),
+            v.EMPLOYEE_ID,
+            v.NAME,
+            v.DEPARTMENT
+    ),
+    employee_summary AS (
+        SELECT
+            EMPLOYEE_ID,
+            NAME,
+            DEPARTMENT,
+            SUM(TOTAL_SPAN_HOURS) AS TOTAL_SPAN_HOURS,
+            SUM(TOTAL_HITS) AS TOTAL_HITS,
+            COUNT(DISTINCT REC_DATE) AS DAYS_PRESENT,
+            MAX(TOTAL_FLOOR) AS MAX_FLOORS_IN_SINGLE_DAY
+        FROM daily_employee_summary
+        GROUP BY EMPLOYEE_ID, NAME, DEPARTMENT
+    ),
+    multi_floor_employees AS (
+        SELECT COUNT(DISTINCT EMPLOYEE_ID) AS MULTI_FLOOR_COUNT
+        FROM employee_summary
+        WHERE MAX_FLOORS_IN_SINGLE_DAY > 1
+    )
+    SELECT
+        (SELECT COUNT(DISTINCT EMPLOYEE_ID) FROM employee_summary) AS TOTAL_EMPLOYEES,
+        (SELECT SUM(TOTAL_HITS) FROM employee_summary) AS TOTAL_HITS,
+        (SELECT AVG(TOTAL_SPAN_HOURS) FROM employee_summary) AS AVG_PRESENCE_DURATION,
+        (SELECT MAX(TOTAL_SPAN_HOURS) FROM employee_summary) AS MAX_PRESENCE_DURATION,
+        (SELECT NAME FROM (SELECT NAME FROM employee_summary ORDER BY TOTAL_SPAN_HOURS DESC) WHERE ROWNUM = 1) AS LONGEST_PRESENCE_EMPLOYEE,
+        (SELECT COALESCE(MULTI_FLOOR_COUNT, 0) FROM multi_floor_employees) AS MULTI_FLOOR_EMPLOYEES
+    FROM DUAL
+    """
+    
+    # Department-wise data for chart
+    dept_chart_query = """
+    SELECT
+        DEPARTMENT,
+        AVG(TOTAL_SPAN_HOURS) AS AVG_PRESENCE_DURATION,
+        SUM(TOTAL_SPAN_HOURS) AS SUM_PRESENCE_DURATION,
+        COUNT(DISTINCT EMPLOYEE_ID) AS EMPLOYEE_COUNT
+    FROM (
+        SELECT
+            v.DEPARTMENT,
+            v.EMPLOYEE_ID,
+            ROUND(
+                EXTRACT(DAY    FROM (MAX(v.RECOGNITION_TIMESTAMP) - MIN(v.RECOGNITION_TIMESTAMP))) * 24 +
+                EXTRACT(HOUR   FROM (MAX(v.RECOGNITION_TIMESTAMP) - MIN(v.RECOGNITION_TIMESTAMP))) +
+                EXTRACT(MINUTE FROM (MAX(v.RECOGNITION_TIMESTAMP) - MIN(v.RECOGNITION_TIMESTAMP))) / 60 +
+                EXTRACT(SECOND FROM (MAX(v.RECOGNITION_TIMESTAMP) - MIN(v.RECOGNITION_TIMESTAMP))) / 3600,
+                2
+            ) AS TOTAL_SPAN_HOURS
+        FROM V_RECOGNITION_LOGS_ENRICHED v
+        WHERE TRUNC(v.RECOGNITION_TIMESTAMP) BETWEEN TO_DATE(:from_date, 'YYYY-MM-DD') AND TO_DATE(:to_date, 'YYYY-MM-DD')
+        GROUP BY
+            TRUNC(v.RECOGNITION_TIMESTAMP),
+            v.DEPARTMENT,
+            v.EMPLOYEE_ID
+    )
+    GROUP BY DEPARTMENT
+    ORDER BY AVG_PRESENCE_DURATION DESC
+    """
+    
+    # Entry time distribution data for chart
+    entry_time_query = """
+    SELECT
+        EXTRACT(HOUR FROM FIRST_SEEN_TS) AS ENTRY_HOUR,
+        COUNT(*) AS EMPLOYEE_COUNT
+    FROM (
+        SELECT
+            v.EMPLOYEE_ID,
+            MIN(v.RECOGNITION_TIMESTAMP) AS FIRST_SEEN_TS
+        FROM V_RECOGNITION_LOGS_ENRICHED v
+        WHERE TRUNC(v.RECOGNITION_TIMESTAMP) BETWEEN TO_DATE(:from_date, 'YYYY-MM-DD') AND TO_DATE(:to_date, 'YYYY-MM-DD')
+        GROUP BY
+            TRUNC(v.RECOGNITION_TIMESTAMP),
+            v.EMPLOYEE_ID
+    )
+    GROUP BY EXTRACT(HOUR FROM FIRST_SEEN_TS)
+    ORDER BY ENTRY_HOUR
+    """
+    
+    # Execute queries
+    kpi_data = execute_query(kpi_query, {'from_date': from_date, 'to_date': to_date})
+    dept_data = execute_query(dept_chart_query, {'from_date': from_date, 'to_date': to_date})
+    entry_time_data = execute_query(entry_time_query, {'from_date': from_date, 'to_date': to_date})
+    
+    # Format the results
+    if kpi_data:
+        kpi_result = kpi_data[0]
+        # Ensure we have proper values even if some are None
+        kpi_result['TOTAL_EMPLOYEES'] = kpi_result.get('TOTAL_EMPLOYEES') or 0
+        kpi_result['TOTAL_HITS'] = kpi_result.get('TOTAL_HITS') or 0
+        kpi_result['AVG_PRESENCE_DURATION'] = kpi_result.get('AVG_PRESENCE_DURATION') or 0
+        kpi_result['MAX_PRESENCE_DURATION'] = kpi_result.get('MAX_PRESENCE_DURATION') or 0
+        kpi_result['LONGEST_PRESENCE_EMPLOYEE'] = kpi_result.get('LONGEST_PRESENCE_EMPLOYEE') or 'N/A'
+        kpi_result['MULTI_FLOOR_EMPLOYEES'] = kpi_result.get('MULTI_FLOOR_EMPLOYEES') or 0
+    else:
+        kpi_result = {
+            'TOTAL_EMPLOYEES': 0,
+            'TOTAL_HITS': 0,
+            'AVG_PRESENCE_DURATION': 0,
+            'MAX_PRESENCE_DURATION': 0,
+            'LONGEST_PRESENCE_EMPLOYEE': 'N/A',
+            'MULTI_FLOOR_EMPLOYEES': 0
+        }
+    
+    return {
+        'kpi_data': kpi_result,
+        'department_data': dept_data,
+        'entry_time_data': entry_time_data
+    }
+
 def add_camera(camera_data):
     """
     Add a new camera to the CAMERA_REGISTRY table.
@@ -428,6 +570,160 @@ def revoke_user_access(user_id, revoked_by):
         if connection:
             connection.rollback()
         return False
+    finally:
+        if connection:
+            close_db_connection(connection)
+
+
+def allow_user_access(user_id, allowed_by):
+    """
+    Allow user access by setting IS_ACTIVE to 'Y'
+    
+    Args:
+        user_id (int): User ID to allow access for
+        allowed_by (str): User who allowed the access
+        
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    connection = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        
+        sql = """
+            UPDATE ADMIN_ACCESS_GRANTED_USERS
+            SET IS_ACTIVE = 'Y', UPDATED_AT = SYSDATE
+            WHERE USER_ID = :1
+        """
+        
+        cursor.execute(sql, [user_id])
+        
+        connection.commit()
+        logger.info(f"User access {user_id} allowed by {allowed_by}")
+        
+        return True
+    except cx_Oracle.Error as e:
+        logger.error(f"Error allowing user access: {e}")
+        if connection:
+            connection.rollback()
+        return False
+    finally:
+        if connection:
+            close_db_connection(connection)
+
+
+def get_access_granted_users_with_admin():
+    """
+    Get all users who have been granted access with admin access information
+    
+    Returns:
+        list: List of access granted users with admin access info
+    """
+    query = """
+        SELECT USER_ID, FULL_NAME, EMPLOYEE_ID, DEPARTMENT, DESIGNATION, EMAIL, 
+               IS_ACTIVE, ACCESS_GRANTED_AT, ADMIN_ACCESS
+        FROM ADMIN_ACCESS_GRANTED_USERS
+        ORDER BY ACCESS_GRANTED_AT DESC
+    """
+    return execute_query(query)
+
+
+def revoke_admin_access(user_id, revoked_by):
+    """
+    Revoke admin access by setting ADMIN_ACCESS to 'N'
+    
+    Args:
+        user_id (int): User ID to revoke admin access for
+        revoked_by (str): User who revoked the admin access
+        
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    connection = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        
+        sql = """
+            UPDATE ADMIN_ACCESS_GRANTED_USERS
+            SET ADMIN_ACCESS = 'N', UPDATED_AT = SYSDATE
+            WHERE USER_ID = :1
+        """
+        
+        cursor.execute(sql, [user_id])
+        
+        connection.commit()
+        logger.info(f"Admin access {user_id} revoked by {revoked_by}")
+        
+        return True
+    except cx_Oracle.Error as e:
+        logger.error(f"Error revoking admin access: {e}")
+        if connection:
+            connection.rollback()
+        return False
+    finally:
+        if connection:
+            close_db_connection(connection)
+
+
+def grant_admin_access(employee_id, granted_by):
+    """
+    Grant admin access to a user by employee ID
+    
+    Args:
+        employee_id (str): Employee ID to grant admin access for
+        granted_by (str): User who granted the admin access
+        
+    Returns:
+        dict: Result with success status and user details if successful
+    """
+    connection = None
+    try:
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        
+        # Check if the employee exists in the access granted users table
+        check_query = """
+            SELECT USER_ID, FULL_NAME, EMPLOYEE_ID, DEPARTMENT, DESIGNATION, EMAIL
+            FROM ADMIN_ACCESS_GRANTED_USERS
+            WHERE EMPLOYEE_ID = :1
+        """
+        cursor.execute(check_query, [employee_id])
+        user = cursor.fetchone()
+        
+        if not user:
+            logger.warning(f"User with employee ID {employee_id} does not exist in access granted users")
+            return None
+        
+        # Extract user details
+        user_id, full_name, emp_id, department, designation, email = user
+        
+        # Update the admin access status
+        update_sql = """
+            UPDATE ADMIN_ACCESS_GRANTED_USERS
+            SET ADMIN_ACCESS = 'Y', UPDATED_AT = SYSDATE
+            WHERE USER_ID = :1
+        """
+        
+        cursor.execute(update_sql, [user_id])
+        connection.commit()
+        
+        logger.info(f"Admin access granted to {employee_id} by {granted_by}")
+        
+        return {
+            'user_id': user_id,
+            'full_name': full_name,
+            'employee_id': emp_id,
+            'department': department,
+            'designation': designation,
+            'email': email
+        }
+    except cx_Oracle.Error as e:
+        logger.error(f"Error granting admin access: {e}")
+        if connection:
+            connection.rollback()
+        return None
     finally:
         if connection:
             close_db_connection(connection)
@@ -692,10 +988,510 @@ def get_access_granted_users():
     Returns:
         list: List of access granted users
     """
-    query = """
+    query = """\
         SELECT USER_ID, FULL_NAME, EMPLOYEE_ID, DEPARTMENT, DESIGNATION, EMAIL, 
-               IS_ACTIVE, ACCESS_GRANTED_AT
+               IS_ACTIVE, ACCESS_GRANTED_AT, ADMIN_ACCESS
         FROM ADMIN_ACCESS_GRANTED_USERS
         ORDER BY ACCESS_GRANTED_AT DESC
+    """
+    return execute_query(query)
+
+
+def get_employee_downtime_summary(from_date, to_date):
+    """
+    Retrieves employee downtime summary data using the new logic.
+    
+    Args:
+        from_date (str): Start date in YYYY-MM-DD format
+        to_date (str): End date in YYYY-MM-DD format
+        
+    Returns:
+        list: Employee downtime summary records
+    """
+    query = """
+    WITH ordered_events AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            department,
+            location_status,
+            first_seen_ts,
+            last_seen_ts,
+            LAG(location_status) OVER (
+                PARTITION BY rec_date, employee_id
+                ORDER BY first_seen_ts
+            ) AS prev_status
+        FROM movement_tracking_details
+        WHERE TRUNC(rec_date) BETWEEN TO_DATE(:from_date,'YYYY-MM-DD') AND TO_DATE(:to_date,'YYYY-MM-DD')
+    ),
+    
+    stable AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            department,
+            location_status,
+            first_seen_ts,
+            last_seen_ts
+        FROM ordered_events
+        WHERE prev_status IS NULL
+           OR prev_status <> location_status
+    ),
+    
+    paired AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            department,
+            location_status AS from_status,
+            last_seen_ts AS from_ts,
+            LEAD(location_status) OVER (
+                PARTITION BY rec_date, employee_id
+                ORDER BY first_seen_ts
+            ) AS to_status,
+            LEAD(first_seen_ts) OVER (
+                PARTITION BY rec_date, employee_id
+                ORDER BY first_seen_ts
+            ) AS to_ts
+        FROM stable
+    ),
+    
+    movement AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            department,
+            from_status,
+            to_status,
+            from_ts,
+            to_ts,
+            ROUND((CAST(to_ts AS DATE) - CAST(from_ts AS DATE)) * 1440, 2) AS minutes
+        FROM paired
+        WHERE to_status IS NOT NULL
+          AND from_status <> to_status
+    ),
+    
+    downtime AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            department,
+            minutes
+        FROM movement
+        WHERE from_status = 'OUT'
+    )
+    
+    SELECT
+        rec_date,
+        employee_id,
+        name,
+        department,
+        ROUND(SUM(minutes), 2) AS downtime_minutes,
+        COUNT(*) AS downtime_events
+    FROM downtime
+    GROUP BY
+        rec_date,
+        employee_id,
+        name,
+        department
+    ORDER BY
+        rec_date,
+        downtime_minutes DESC
+    """
+    return execute_query(query, {'from_date': from_date, 'to_date': to_date})
+
+def get_employee_movement_data(employee_id, from_date, to_date, gap_min):
+    """
+    Retrieves employee movement data based on the provided SQL query.
+    
+    Args:
+        employee_id (str): Employee ID to track
+        from_date (str): Start date in YYYY-MM-DD format
+        to_date (str): End date in YYYY-MM-DD format
+        gap_min (int): Gap in minutes to consider as a separate segment
+        
+    Returns:
+        list: Employee movement records
+    """
+    query = """
+    SELECT REC_DATE,
+           EMPLOYEE_ID,
+           NAME,
+           DEPARTMENT,
+           CAMERA_NAME,
+           FLOOR_NAME,
+           LOCATION_STATUS,
+           BUILDING_NAME,
+           FIRST_SEEN_TS,
+           LAST_SEEN_TS,
+           FIRST_SEEN_TIME,
+           LAST_SEEN_TIME,
+           ROW_TOTAL_TIME,
+           ROW_TOTAL_MINUTES,
+           GAP_FROM_PREV,
+           GAP_FROM_PREV_MINUTES,
+           TOTAL_HITS
+      FROM movement_tracking_details
+     WHERE     TRUNC (REC_DATE) BETWEEN NVL ( TO_DATE(:P_FROM_DATE, 'YYYY-MM-DD'), TRUNC (SYSDATE))
+                                    AND NVL ( TO_DATE(:P_TO_DATE, 'YYYY-MM-DD'), TRUNC (SYSDATE))
+           AND (employee_id = :P_EMPLOYEE_ID OR :P_EMPLOYEE_ID IS NULL)
+    ORDER BY REC_DATE ASC, FIRST_SEEN_TIME ASC
+    """
+    return execute_query(query, {
+        'P_FROM_DATE': from_date,
+        'P_TO_DATE': to_date,
+        'P_EMPLOYEE_ID': employee_id
+    })
+
+
+def get_daily_inout_summary_data(employee_id, from_date, to_date):
+    """
+    Retrieves daily IN/OUT summary data based on the provided SQL query.
+    
+    Args:
+        employee_id (str): Employee ID to filter (optional)
+        from_date (str): Start date in YYYY-MM-DD format
+        to_date (str): End date in YYYY-MM-DD format
+        
+    Returns:
+        list: Daily IN/OUT summary records
+    """
+    query = """
+    WITH ordered_events AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            location_status,
+            first_seen_ts,
+            last_seen_ts,
+            LAG(location_status) OVER (
+                PARTITION BY rec_date, employee_id
+                ORDER BY first_seen_ts
+            ) AS prev_status
+        FROM movement_tracking_details
+    ),
+    stable AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            location_status,
+            first_seen_ts,
+            last_seen_ts
+        FROM ordered_events
+        WHERE prev_status IS NULL
+           OR prev_status <> location_status
+    ),
+    paired AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            location_status AS from_status,
+            last_seen_ts AS from_ts,
+            LEAD(location_status) OVER (
+                PARTITION BY rec_date, employee_id
+                ORDER BY first_seen_ts
+            ) AS to_status,
+            LEAD(first_seen_ts) OVER (
+                PARTITION BY rec_date, employee_id
+                ORDER BY first_seen_ts
+            ) AS to_ts
+        FROM stable
+    ),
+    movement AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            from_status,
+            to_status,
+            from_ts,
+            to_ts,
+            ROUND((CAST(to_ts AS DATE) - CAST(from_ts AS DATE)) * 1440, 2) AS minutes
+        FROM paired
+        WHERE to_status IS NOT NULL
+          AND from_status <> to_status
+    ),
+    total_in AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            ROUND(SUM(minutes), 2) AS total_inside_minutes
+        FROM movement
+        WHERE from_status = 'IN'
+        GROUP BY rec_date, employee_id, name
+    ),
+    total_out AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            ROUND(SUM(minutes), 2) AS total_outside_minutes
+        FROM movement
+        WHERE from_status = 'OUT'
+        GROUP BY rec_date, employee_id, name
+    )
+    SELECT
+        COALESCE(i.rec_date, o.rec_date) AS rec_date,
+        COALESCE(i.employee_id, o.employee_id) AS employee_id,
+        COALESCE(i.name, o.name) AS name,
+        COALESCE(i.total_inside_minutes, 0) AS total_inside_minutes,
+        COALESCE(o.total_outside_minutes, 0) AS total_outside_minutes
+    FROM total_in i
+    FULL OUTER JOIN total_out o
+        ON i.rec_date = o.rec_date
+       AND i.employee_id = o.employee_id
+    WHERE (COALESCE(i.employee_id, o.employee_id) = :P_EMPLOYEE_ID OR :P_EMPLOYEE_ID IS NULL)
+      AND TRUNC(COALESCE(i.rec_date, o.rec_date)) BETWEEN TO_DATE(:P_FROM_DATE, 'YYYY-MM-DD') AND TO_DATE(:P_TO_DATE, 'YYYY-MM-DD')
+    ORDER BY rec_date, employee_id
+    """
+    return execute_query(query, {
+        'P_FROM_DATE': from_date,
+        'P_TO_DATE': to_date,
+        'P_EMPLOYEE_ID': employee_id
+    })
+
+def get_employee_movement_transitions(employee_id, from_date, to_date):
+    """
+    Retrieves employee movement transitions using the exact same logic
+    as the Daily IN/OUT Summary (Step 6), without aggregation.
+    """
+
+    query = """
+    WITH ordered_events AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            location_status,
+            first_seen_ts,
+            last_seen_ts,
+            LAG(location_status) OVER (
+                PARTITION BY rec_date, employee_id
+                ORDER BY first_seen_ts
+            ) AS prev_status
+        FROM movement_tracking_details
+        WHERE TRUNC(rec_date) BETWEEN
+              TO_DATE(:P_FROM_DATE, 'YYYY-MM-DD')
+          AND TO_DATE(:P_TO_DATE, 'YYYY-MM-DD')
+    ),
+    stable AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            location_status,
+            first_seen_ts,
+            last_seen_ts
+        FROM ordered_events
+        WHERE prev_status IS NULL
+           OR prev_status <> location_status
+    ),
+    paired AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            location_status AS from_status,
+            last_seen_ts AS from_ts,
+            LEAD(location_status) OVER (
+                PARTITION BY rec_date, employee_id
+                ORDER BY first_seen_ts
+            ) AS to_status,
+            LEAD(first_seen_ts) OVER (
+                PARTITION BY rec_date, employee_id
+                ORDER BY first_seen_ts
+            ) AS to_ts
+        FROM stable
+    ),
+    movement AS (
+        SELECT
+            rec_date,
+            employee_id,
+            name,
+            from_status,
+            to_status,
+            from_ts,
+            to_ts,
+            ROUND(
+                (CAST(to_ts AS DATE) - CAST(from_ts AS DATE)) * 1440,
+                2
+            ) AS minutes
+        FROM paired
+        WHERE to_status IS NOT NULL
+          AND from_status <> to_status
+    )
+    SELECT
+        rec_date,
+        employee_id,
+        name,
+        from_status,
+        to_status,
+        from_ts,
+        to_ts,
+        minutes
+    FROM movement
+    WHERE (employee_id = :P_EMPLOYEE_ID OR :P_EMPLOYEE_ID IS NULL)
+    ORDER BY rec_date, employee_id, from_ts
+    """
+
+    return execute_query(query, {
+        'P_FROM_DATE': from_date,
+        'P_TO_DATE': to_date,
+        'P_EMPLOYEE_ID': employee_id
+    })
+
+def get_employee_unique_visit_summary(employee_id=None, from_date=None, to_date=None):
+    """
+    Retrieves unique floor and location visit summary per employee per day.
+
+    Rules:
+    - If employee_id is None → returns all employees
+    - If from_date or to_date is None → defaults to current date
+    """
+
+    query = """
+    SELECT
+        TRUNC(REC_DATE)              AS REC_DATE,
+        EMPLOYEE_ID,
+        NAME,
+        DEPARTMENT,
+        COUNT(DISTINCT FLOOR_NAME)    AS UNIQUE_FLOORS_VISITED,
+        COUNT(DISTINCT BUILDING_NAME) AS UNIQUE_LOCATIONS_VISITED
+    FROM movement_tracking_details
+    WHERE TRUNC(REC_DATE) BETWEEN
+              NVL(TO_DATE(:P_FROM_DATE, 'YYYY-MM-DD'), TRUNC(SYSDATE))
+          AND NVL(TO_DATE(:P_TO_DATE,   'YYYY-MM-DD'), TRUNC(SYSDATE))
+      AND (EMPLOYEE_ID = :P_EMPLOYEE_ID OR :P_EMPLOYEE_ID IS NULL)
+    GROUP BY
+        TRUNC(REC_DATE),
+        EMPLOYEE_ID,
+        NAME,
+        DEPARTMENT
+    ORDER BY
+        REC_DATE DESC,
+        UNIQUE_LOCATIONS_VISITED DESC,
+        UNIQUE_FLOORS_VISITED DESC
+    """
+
+    return execute_query(query, {
+        'P_FROM_DATE': from_date,
+        'P_TO_DATE': to_date,
+        'P_EMPLOYEE_ID': employee_id
+    })
+
+def get_location_coverage_details(employee_id, date):
+    """
+    Retrieves detailed location coverage data for a specific employee on a specific date.
+    
+    Parameters:
+    - employee_id: The employee ID to filter by
+    - date: The date to filter by (format: YYYY-MM-DD)
+    """
+    
+    query = """
+    SELECT
+        TRUNC(rec_date) AS rec_date,
+        employee_id,
+        name,
+        department,
+        building_name,
+        floor_name,
+        camera_name,
+        location_status,
+        first_seen_ts,
+        last_seen_ts,
+        ROUND((EXTRACT(DAY FROM (last_seen_ts - first_seen_ts)) * 1440 +
+                EXTRACT(HOUR FROM (last_seen_ts - first_seen_ts)) * 60 +
+                EXTRACT(MINUTE FROM (last_seen_ts - first_seen_ts)) +
+                EXTRACT(SECOND FROM (last_seen_ts - first_seen_ts)) / 60), 2) AS duration_minutes
+    FROM movement_tracking_details
+    WHERE employee_id = :P_EMPLOYEE_ID
+      AND TRUNC(rec_date) = TO_DATE(:P_REC_DATE, 'YYYY-MM-DD')
+    ORDER BY first_seen_ts
+    """
+    
+    # Convert date to string format if needed
+    if hasattr(date, 'strftime'):  # Check if it's a date/datetime object
+        date = date.strftime('%Y-%m-%d')
+    elif isinstance(date, str):
+        # Ensure date is in correct format
+        pass  # Already a string, assume correct format
+    else:
+        # Convert to string if it's another type
+        date = str(date)
+    
+    return execute_query(query, {
+        'P_EMPLOYEE_ID': employee_id,
+        'P_REC_DATE': date
+    })
+
+
+def get_top_floor_visitors(date, limit=5):
+    """
+    Retrieves the top floor visitors for a specific date based on unique floors visited.
+    
+    Args:
+        date (str): Date in YYYY-MM-DD format
+        limit (int): Number of top visitors to return (default 5)
+        
+    Returns:
+        list: Top floor visitors with employee details and floor count
+    """
+    query = """
+    SELECT
+        EMPLOYEE_ID,
+        NAME,
+        DEPARTMENT,
+        UNIQUE_FLOORS_VISITED
+    FROM (
+        SELECT
+            EMPLOYEE_ID,
+            NAME,
+            DEPARTMENT,
+            COUNT(DISTINCT FLOOR_NAME) AS UNIQUE_FLOORS_VISITED
+        FROM movement_tracking_details
+        WHERE TRUNC(REC_DATE) = TO_DATE(:P_DATE, 'YYYY-MM-DD')
+        GROUP BY
+            EMPLOYEE_ID,
+            NAME,
+            DEPARTMENT
+        HAVING COUNT(DISTINCT FLOOR_NAME) > 0
+        ORDER BY UNIQUE_FLOORS_VISITED DESC
+    )
+    WHERE ROWNUM <= :P_LIMIT
+    """
+    
+    return execute_query(query, {
+        'P_DATE': date,
+        'P_LIMIT': limit
+    })
+
+
+def get_registered_users():
+    """
+    Retrieves registered users from the REGISTERED_USERS table.
+    
+    Returns:
+        list: Registered users with ID, EMPLOYEE_ID, NAME, DEPARTMENT, CREATED_TIME, CREATED_DATE
+    """
+    query = """
+    SELECT 
+        ID,
+        EMPLOYEE_ID,
+        NAME,
+        DEPARTMENT,
+        CREATED_TIME,
+        CREATED_DATE
+    FROM REGISTERED_USERS
+    ORDER BY ID
     """
     return execute_query(query)

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Coverage Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="sidebar">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-4 sidebar-header">
+                        <h4 class="sidebar-header-text mb-0"><i class="fas fa-user-shield"></i> Admin Panel</h4>
+                        <button id="sidebarToggle" class="btn btn-toggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                    <ul class="nav flex-column sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html" id="dashboard-link">
+                                <i class="fas fa-tachometer-alt nav-icon"></i>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html" id="reports-dropdown" data-bs-toggle="collapse" data-bs-target="#reports-submenu" aria-expanded="false" aria-controls="reports-submenu">
+                                <i class="fas fa-chart-bar nav-icon"></i>
+                                <span class="nav-text">Reports</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="reports-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#cameras" id="cameras-link">
+                                        <i class="fas fa-video nav-icon"></i>
+                                        <span class="nav-text">Camera Registry</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#summary" id="summary-link">
+                                        <i class="fas fa-users nav-icon"></i>
+                                        <span class="nav-text">Employee Summary</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#downtime" id="downtime-link">
+                                        <i class="fas fa-clock nav-icon"></i>
+                                        <span class="nav-text">Downtime Summary</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#employee-movement" id="employee-movement-link">
+                                        <i class="fas fa-walking nav-icon"></i>
+                                        <span class="nav-text">Employee Movement</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#daily-inout-summary" id="daily-inout-summary-link">
+                                        <i class="fas fa-exchange-alt nav-icon"></i>
+                                        <span class="nav-text">Daily IN/OUT Summary</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#registered-users" id="registered-users-link">
+                                        <i class="fas fa-user-plus nav-icon"></i>
+                                        <span class="nav-text">Registered Users</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="location-coverage-report.html" id="location-coverage-report-link">
+                                        <i class="fas fa-map-marker-alt nav-icon"></i>
+                                        <span class="nav-text">Location Coverage Report</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="camera-management-dropdown" data-bs-toggle="collapse" data-bs-target="#camera-management-submenu" aria-expanded="false" aria-controls="camera-management-submenu">
+                                <i class="fas fa-camera nav-icon"></i>
+                                <span class="nav-text">Camera Management</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="camera-management-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link camera-info-link" href="add_camera.html" id="add-camera-link">
+                                        <i class="fas fa-plus-circle nav-icon"></i>
+                                        <span class="nav-text">Add Camera</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link camera-info-link" href="update_camera_status.html" id="update-camera-status-link">
+                                        <i class="fas fa-toggle-on nav-icon"></i>
+                                        <span class="nav-text">Update Camera Status</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="user-management-dropdown" data-bs-toggle="collapse" data-bs-target="#user-management-submenu" aria-expanded="false" aria-controls="user-management-submenu">
+                                <i class="fas fa-users-cog nav-icon"></i>
+                                <span class="nav-text">User Management</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="user-management-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link user-management-link" href="user_management.html#pending-requests" id="pending-requests-link">
+                                        <i class="fas fa-clock nav-icon"></i>
+                                        <span class="nav-text">Pending Requests</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link user-management-link" href="user_management.html#authorized-users" id="authorized-users-link">
+                                        <i class="fas fa-user-check nav-icon"></i>
+                                        <span class="nav-text">Authorized Users</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="face-recognition-link">
+                                <i class="fas fa-user-check nav-icon"></i>
+                                <span class="nav-text">Face Recognition</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <a class="nav-link" href="#" id="logout-link">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                <span class="nav-text">Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Header -->
+                <header>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1><i class="fas fa-map-marker-alt"></i> Location Coverage Report</h1>
+                            <p class="mb-0">Unique floor and location visit summary per employee per day</p>
+                        </div>
+                        <div id="user-info" class="text-end">
+                            <small class="text-white-50">Welcome,</small><br>
+                            <strong id="current-user" class="text-white">Admin User</strong>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Report Parameters -->
+                <section id="report-parameters" class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card shadow-sm">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-search"></i> Location Coverage Report Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="location-coverage-form">
+                                    <div class="row mb-3">
+                                        <div class="col-md-4 mb-3">
+                                            <label for="employee_id" class="form-label">Employee ID (Optional)</label>
+                                            <input type="text" class="form-control" id="employee_id" name="employee_id" placeholder="Enter employee ID">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="from_date" class="form-label">From Date *</label>
+                                            <input type="date" class="form-control" id="from_date" name="from_date" required>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="to_date" class="form-label">To Date (Optional)</label>
+                                            <input type="date" class="form-control" id="to_date" name="to_date">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary" id="get-location-coverage-btn">
+                                            <i class="fas fa-search"></i> Get Location Coverage Report
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Report Results -->
+                <section id="report-results">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-table"></i> Location Coverage Report Results</h5>
+                            <div class="btn-group">
+                                <button id="refresh-location-coverage" class="btn btn-outline-primary">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-success dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-file-export"></i> Export
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                                        <li><a class="dropdown-item" href="#" id="export-excel"><i class="fas fa-file-excel text-success"></i> Export to Excel</a></li>
+                                        <li><a class="dropdown-item" href="#" id="export-pdf"><i class="fas fa-file-pdf text-danger"></i> Export to PDF</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="location-coverage-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Employee ID</th>
+                                            <th>Name</th>
+                                            <th>Department</th>
+                                            <th>Floors Visited</th>
+                                            <th>Building Visited</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Location coverage data will be populated here -->
+                                        <tr>
+                                            <td colspan="6" class="text-center">Enter parameters and click "Get Location Coverage Report"</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="pt-5 my-4 text-muted border-top">
+                    <p class="mb-0">&copy; 2025 Face Recognition System Admin Dashboard</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/xlsx.js"></script>
+    <script src="lib/jspdf.umd.min.js"></script>
+    <script src="lib/jspdf.plugin.autotable.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+            } else {
+                // Load user info
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (currentUser.name) {
+                    document.getElementById('current-user').textContent = currentUser.name;
+                }
+            }
+            
+            // Set default date values
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+            const from_date = document.getElementById('from_date');
+            const to_date = document.getElementById('to_date');
+            if (from_date) from_date.value = todayStr;
+            if (to_date) to_date.value = todayStr;
+        });
+
+        // Logout functionality
+        document.getElementById('logout-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('isAdminLoggedIn');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        });
+
+        // Use API base URL from script.js
+        // const API_BASE_URL = window.API_BASE_URL || `http://${CONFIG.BACKEND_HOST}:${CONFIG.BACKEND_PORT}/api`;
+
+        // Location Coverage Report form submission
+        const locationCoverageForm = document.getElementById('location-coverage-form');
+        if (locationCoverageForm) {
+            locationCoverageForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const employeeId = document.getElementById('employee_id').value.trim();
+                const fromDate = document.getElementById('from_date').value;
+                const toDate = document.getElementById('to_date').value || new Date().toISOString().split('T')[0];
+                
+                if (!fromDate) {
+                    showAlert('Please enter required field (From Date)', 'warning');
+                    return;
+                }
+                
+                // Show loading state
+                const submitBtn = document.getElementById('get-location-coverage-btn');
+                const originalHtml = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting Location Coverage Report...';
+                submitBtn.disabled = true;
+                
+                try {
+                    // Call the API to get location coverage report data
+                    let url = `${API_BASE_URL}/location-coverage-report?from_date=${fromDate}&to_date=${toDate}`;
+                    if (employeeId) {
+                        url += `&employee_id=${employeeId}`;
+                    }
+                    const response = await fetch(url);
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        renderLocationCoverageData(result.data);
+                    } else {
+                        document.querySelector('#location-coverage-table tbody').innerHTML = `<tr><td colspan="7" class="text-center text-danger">Error: ${result.error || 'Unknown error'}</td></tr>`;
+                        showAlert(`Failed to get location coverage report: ${result.error || 'Unknown error'}`, 'danger');
+                    }
+                } catch (error) {
+                    document.querySelector('#location-coverage-table tbody').innerHTML = `<tr><td colspan="7" class="text-center text-danger">Error: ${error.message}</td></tr>`;
+                    showAlert(`Error getting location coverage report: ${error.message}`, 'danger');
+                    console.error('Error:', error);
+                } finally {
+                    // Restore button state
+                    submitBtn.innerHTML = originalHtml;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+        
+        // Refresh location coverage data button
+        const refreshLocationCoverageBtn = document.getElementById('refresh-location-coverage');
+        if (refreshLocationCoverageBtn) {
+            refreshLocationCoverageBtn.addEventListener('click', function() {
+                document.getElementById('location-coverage-form').dispatchEvent(new Event('submit'));
+            });
+        }
+        
+        // Function to render location coverage data in the table
+        function renderLocationCoverageData(coverageData) {
+            if (!coverageData || coverageData.length === 0) {
+                document.querySelector('#location-coverage-table tbody').innerHTML = '<tr><td colspan="7" class="text-center">No location coverage data found</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            coverageData.forEach(record => {
+                html += `
+                    <tr>
+                        <td>${record.REC_DATE ? new Date(record.REC_DATE).toLocaleDateString() : '-'}</td>
+                        <td>${record.EMPLOYEE_ID || '-'}</td>
+                        <td>${record.NAME || '-'}</td>
+                        <td>${record.DEPARTMENT || '-'}</td>
+                        <td>${record.UNIQUE_FLOORS_VISITED || 0}</td>
+                        <td>${record.UNIQUE_LOCATIONS_VISITED || 0}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="openLocationCoverageDetails('${record.EMPLOYEE_ID}', '${record.REC_DATE ? String(record.REC_DATE).substring(0, 10) : ''}')">
+                                <i class="fas fa-info-circle"></i> More Information
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            document.querySelector('#location-coverage-table tbody').innerHTML = html;
+        }
+        
+        // Export functionality
+        document.getElementById('export-excel').addEventListener('click', function(e) {
+            e.preventDefault();
+            exportLocationCoverageData('excel');
+        });
+        
+        document.getElementById('export-pdf').addEventListener('click', function(e) {
+            e.preventDefault();
+            exportLocationCoverageData('pdf');
+        });
+        
+        // Function to export location coverage data
+        function exportLocationCoverageData(format) {
+            // Get current location coverage data from the table
+            const table = document.getElementById('location-coverage-table');
+            if (!table || table.rows.length <= 1) {
+                showAlert('No data to export', 'warning');
+                return;
+            }
+            
+            if (format === 'excel') {
+                exportToExcel(table);
+            } else if (format === 'pdf') {
+                exportToPDF(table);
+            }
+        }
+        
+        // Function to export to Excel
+        function exportToExcel(table) {
+            // Check if SheetJS library is available
+            if (typeof window.XLSX === 'undefined') {
+                // If not available, show a message
+                showAlert('Excel export requires SheetJS library. Please install it first.', 'warning');
+                return;
+            }
+            
+            try {
+                const wb = window.XLSX.utils.table_to_book(table, {sheet: "Location Coverage Data"});
+                window.XLSX.writeFile(wb, "location_coverage_report.xlsx");
+                showAlert('Data exported to Excel successfully!', 'success');
+            } catch (error) {
+                showAlert('Error exporting to Excel: ' + error.message, 'danger');
+                console.error('Excel export error:', error);
+            }
+        }
+        
+        // Function to export to PDF
+        function exportToPDF(table) {
+            // Check if jsPDF library is available
+            let jsPdfLib = null;
+            
+            // Check different ways jsPDF might be exposed
+            if (window.jspdf && window.jspdf.jsPDF) {
+                jsPdfLib = window.jspdf;
+            } else if (window.jsPDF) {
+                jsPdfLib = { jsPDF: window.jsPDF };
+            }
+            
+            if (!jsPdfLib) {
+                showAlert('PDF export requires jsPDF library. Please install it first.', 'warning');
+                return;
+            }
+            
+            try {
+                const pdf = new jsPdfLib.jsPDF();
+                
+                // Add title
+                pdf.setFontSize(18);
+                pdf.text('Location Coverage Report', 20, 20);
+                
+                // Convert table to string format for PDF
+                const colNames = [];
+                const headers = table.querySelectorAll('thead th');
+                headers.forEach(header => colNames.push(header.textContent));
+                
+                const data = [];
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const rowData = [];
+                    const cells = row.querySelectorAll('td');
+                    cells.forEach(cell => rowData.push(cell.textContent));
+                    data.push(rowData);
+                });
+                
+                // Add table content using autoTable plugin if available
+                if (typeof pdf.autoTable !== 'undefined') {
+                    pdf.autoTable({
+                        head: [colNames],
+                        body: data,
+                        startY: 30,
+                        theme: 'grid',
+                        headStyles: { fillColor: [13, 110, 253] } // Bootstrap primary blue
+                    });
+                    
+                    pdf.save('location_coverage_report.pdf');
+                    showAlert('Data exported to PDF successfully!', 'success');
+                } else {
+                    // Fallback: simple text-based PDF
+                    let yPosition = 40;
+                    colNames.forEach((header, index) => {
+                        pdf.text(header, 10 + (index * 30), yPosition);
+                    });
+                    
+                    yPosition += 10;
+                    data.forEach(row => {
+                        row.forEach((cell, index) => {
+                            pdf.text(cell, 10 + (index * 30), yPosition);
+                        });
+                        yPosition += 10;
+                        if (yPosition > 280) { // Reset position if near bottom
+                            pdf.addPage();
+                            yPosition = 20;
+                        }
+                    });
+                    
+                    pdf.save('location_coverage_report.pdf');
+                    showAlert('Data exported to PDF (basic format) successfully!', 'success');
+                }
+            } catch (error) {
+                showAlert('Error exporting to PDF: ' + error.message, 'danger');
+                console.error('PDF export error:', error);
+            }
+        }
+        
+        // Sidebar navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar navigation links
+            const dashboardLink = document.getElementById('dashboard-link');
+            const reportsDropdown = document.getElementById('reports-dropdown');
+            const camerasLink = document.getElementById('cameras-link');
+            const summaryLink = document.getElementById('summary-link');
+            const downtimeLink = document.getElementById('downtime-link');
+            const employeeMovementLink = document.getElementById('employee-movement-link');
+            const dailyInOutSummaryLink = document.getElementById('daily-inout-summary-link');
+            const registeredUsersLink = document.getElementById('registered-users-link');
+            const locationCoverageReportLink = document.getElementById('location-coverage-report-link');
+            const addCameraLink = document.getElementById('add-camera-link');
+            const updateCameraStatusLink = document.getElementById('update-camera-status-link');
+            const faceRecognitionLink = document.getElementById('face-recognition-link');
+            
+            // Report links
+            const reportLinks = document.querySelectorAll('.report-link');
+            
+            // Camera info links
+            const cameraInfoLinks = document.querySelectorAll('.camera-info-link');
+            
+            // User management links
+            const userManagementLinks = document.querySelectorAll('.user-management-link');
+            
+            // Navigation event handlers
+            if (dashboardLink) {
+                dashboardLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'index.html';
+                });
+            }
+            
+            // Report links navigation
+            reportLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const href = this.getAttribute('href');
+                    if (href && href.startsWith('index.html')) {
+                        window.location.href = href;
+                    } else if (href && href.endsWith('location-coverage-report.html')) {
+                        window.location.href = href;
+                    }
+                });
+            });
+            
+            // Camera info links navigation
+            cameraInfoLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = this.getAttribute('href');
+                });
+            });
+            
+            // User management links navigation
+            userManagementLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = this.getAttribute('href');
+                });
+            });
+            
+            // Face recognition link
+            if (faceRecognitionLink) {
+                faceRecognitionLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // For face recognition, redirect to main dashboard to handle properly
+                    window.location.href = 'index.html#face-recognition';
+                });
+            }
+            
+            // Sidebar toggle functionality
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    
+                    // Change icon based on sidebar state
+                    const icon = sidebarToggle.querySelector('i');
+                    if (sidebar.classList.contains('collapsed')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                    
+                    // Trigger a resize event to ensure proper layout adjustment
+                    window.dispatchEvent(new Event('resize'));
+                });
+            }
+        });
+    </script>
+</body>
+</html>

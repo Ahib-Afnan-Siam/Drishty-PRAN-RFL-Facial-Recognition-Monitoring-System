@@ -172,6 +172,113 @@ body {
     color: #ffffff;
 }
 
+/* Consistent nested submenu styling for all dropdowns */
+#reports-submenu .nav-link,
+#camera-info-submenu .nav-link,
+#user-management-submenu .nav-link,
+#camera-management-submenu .nav-link,
+#drishti-management-submenu .nav-item .nav-link {
+    padding-left: 40px; /* First level nested items */
+    font-size: 0.9rem;
+    color: #adb5bd;
+}
+
+#reports-submenu .nav-link:hover,
+#camera-info-submenu .nav-link:hover,
+#user-management-submenu .nav-link:hover,
+#camera-management-submenu .nav-link:hover,
+#drishti-management-submenu .nav-item .nav-link:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+#reports-submenu .nav-link.active,
+#camera-info-submenu .nav-link.active,
+#user-management-submenu .nav-link.active,
+#camera-management-submenu .nav-link.active,
+#drishti-management-submenu .nav-item .nav-link.active {
+    background: #0d6efd;
+    color: #ffffff;
+}
+
+/* Double nested submenu styling for all submenus */
+#user-management-submenu[data-bs-parent="#drishti-management-submenu"],
+#user-management-submenu[data-bs-parent="#sidebar"],
+#camera-management-submenu[data-bs-parent="#drishti-management-submenu"],
+#camera-management-submenu[data-bs-parent="#sidebar"] {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    margin-top: 5px;
+    padding: 8px 0;
+    border-left: 2px solid #495057; /* Visual indicator for nested level */
+}
+
+#user-management-submenu[data-bs-parent="#drishti-management-submenu"] .nav-link,
+#user-management-submenu[data-bs-parent="#sidebar"] .nav-link,
+#camera-management-submenu[data-bs-parent="#drishti-management-submenu"] .nav-link,
+#camera-management-submenu[data-bs-parent="#sidebar"] .nav-link {
+    padding-left: 55px; /* More indentation for double nested items */
+    font-size: 0.88rem;
+    color: #bdc3c7; /* Slightly lighter color for nested items */
+    background: transparent;
+}
+
+#user-management-submenu[data-bs-parent="#drishti-management-submenu"] .nav-link:hover,
+#user-management-submenu[data-bs-parent="#sidebar"] .nav-link:hover,
+#camera-management-submenu[data-bs-parent="#drishti-management-submenu"] .nav-link:hover,
+#camera-management-submenu[data-bs-parent="#sidebar"] .nav-link:hover {
+    color: #ffffff;
+    background-color: rgba(13, 110, 253, 0.1); /* Slightly different hover for nested */
+}
+
+#user-management-submenu[data-bs-parent="#drishti-management-submenu"] .nav-link.active,
+#user-management-submenu[data-bs-parent="#sidebar"] .nav-link.active,
+#camera-management-submenu[data-bs-parent="#drishti-management-submenu"] .nav-link.active,
+#camera-management-submenu[data-bs-parent="#sidebar"] .nav-link.active {
+    background: #0d6efd;
+    color: #ffffff;
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-left: 55px;
+}
+
+/* Consistent styling for other double nested submenus */
+#camera-management-submenu .nav-link {
+    padding-left: 55px; /* More indentation for double nested items */
+    font-size: 0.88rem;
+    color: #bdc3c7; /* Slightly lighter color for nested items */
+    background: transparent;
+}
+
+#camera-management-submenu .nav-link:hover {
+    color: #ffffff;
+    background-color: rgba(13, 110, 253, 0.1); /* Slightly different hover for nested */
+}
+
+#camera-management-submenu .nav-link.active {
+    background: #0d6efd;
+    color: #ffffff;
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-left: 55px;
+}
+
+/* Visual indicator for all nested dropdowns */
+.sidebar .nav-item .nav-link[aria-expanded="true"] + ul {
+    position: relative;
+}
+
+.sidebar .nav-item .nav-link[aria-expanded="true"] + ul:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 25px;
+    bottom: 0;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1;
+}
+
 /* Scrollbar styling for sidebar */
 .sidebar::-webkit-scrollbar {
     width: 6px;
@@ -186,216 +293,112 @@ body {
     border-radius: 3px;
 }
 
-/* Add decorative top border to submenu */
-.sidebar #reports-submenu:before, .sidebar #camera-info-submenu:before, .sidebar #user-management-submenu:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #0d6efd, transparent);
-}
 
-.sidebar #reports-submenu .nav-link, .sidebar #camera-info-submenu .nav-link, .sidebar #user-management-submenu .nav-link {
-    background: transparent;
-    border-radius: 0;
-    margin: 0;
-    padding: 15px 15px 15px 50px;
-    font-size: 0.9rem;
-    border: none;
-    box-shadow: none;
-    color: #adb5bd;
-    position: relative;
-    transition: all 0.3s ease;
-    transform: translateX(-10px);
-    opacity: 0;
-}
 
-.sidebar #reports-submenu.show .nav-link, .sidebar #camera-info-submenu.show .nav-link, .sidebar #user-management-submenu.show .nav-link {
-    transform: translateX(0);
-    opacity: 1;
-}
-
-.sidebar #reports-submenu .nav-item:nth-child(1) .nav-link, .sidebar #camera-info-submenu .nav-item:nth-child(1) .nav-link, .sidebar #user-management-submenu .nav-item:nth-child(1) .nav-link {
-    transition-delay: 0.1s;
-}
-
-.sidebar #reports-submenu .nav-item:nth-child(2) .nav-link, .sidebar #camera-info-submenu .nav-item:nth-child(2) .nav-link, .sidebar #user-management-submenu .nav-item:nth-child(2) .nav-link {
-    transition-delay: 0.15s;
-}
-
-.sidebar #reports-submenu .nav-link:hover, .sidebar #camera-info-submenu .nav-link:hover, .sidebar #user-management-submenu .nav-link:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: #ffffff;
-}
-
-.sidebar #reports-submenu .nav-link:hover:before, .sidebar #camera-info-submenu .nav-link:hover:before, .sidebar #user-management-submenu .nav-link:hover:before {
-    opacity: 1;
-}
-
-.sidebar #reports-submenu .nav-link i, .sidebar #camera-info-submenu .nav-link i, .sidebar #user-management-submenu .nav-link i {
-    margin-right: 10px;
-    width: 16px;
-    text-align: center;
-}
-
-/* Divider between submenu items */
-/* Removed old styles */
-
-/* Chevron rotation animation */
-/* Removed old styles */
-
-/* Smooth dropdown animation - include user management submenu */
-#reports-submenu, #camera-info-submenu, #user-management-submenu {
-    opacity: 0;
-    transform: translateY(-15px);
-    display: block !important;
-    visibility: hidden;
-    max-height: 0;
+/* Adjust main content when sidebar is collapsed */
+.sidebar.collapsed {
+    width: 30px !important;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 0;
-    margin-top: 0;
+    left: 0; /* Ensure it stays flush with left edge */
+    min-width: 30px; /* Ensure minimum width */
+}
+
+.sidebar.collapsed .sidebar-header {
     padding: 0;
-    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-}
-
-#reports-submenu.show, #camera-info-submenu.show, #user-management-submenu.show {
-    opacity: 1;
-    transform: translateY(0);
-    visibility: visible;
-    max-height: 500px; /* Adjust as needed */
-    padding: 5px 0;
-}
-
-/* Header */
-header {
-    background: #0d6efd; /* Bright, saturated blue background */
-    color: white;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 0;
-    margin-bottom: 30px;
-    width: 100%;
-    transition: margin-left 0.3s ease;
-}
-
-header h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 5px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-header h1 i {
-    margin-right: 10px;
-}
-
-header p {
-    font-size: 1rem;
-    font-weight: 400;
-    opacity: 0.9;
     margin-bottom: 0;
-}
-
-/* Sidebar Toggle Button */
-.btn-toggle {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    border-radius: 4px;
-    color: white;
-    padding: 5px 7px; /* Reduced padding to fit within 30px sidebar rail */
-    transition: all 0.3s ease;
-    width: 30px;
+    border-bottom: none;
     height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0;
 }
 
-.btn-toggle:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.05);
+.sidebar.collapsed .sidebar-header-text {
+    display: none;
 }
 
-.btn-toggle:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+.sidebar.collapsed .btn-toggle {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Sidebar Collapsed State */
-.sidebar.collapsed {
-    width: 0;
-    overflow: hidden;
-    transition: width 0.3s ease;
+.sidebar.collapsed .sidebar-nav {
+    display: none;
 }
 
-@media (max-width: 768px) {
-    .sidebar.collapsed {
-        width: 0;
-    }
+/* FIXED: Responsive layout for main content */
+.main-content {
+    margin-left: 250px; /* Match sidebar width */
+    transition: margin-left 0.3s ease;
+    position: relative; /* Ensure proper positioning */
+    min-height: 100vh; /* Minimum full height */
+    padding: 20px; /* Add padding for content breathing room */
+    box-sizing: border-box; /* Include padding in width calculation */
+    width: calc(100% - 250px); /* Calculate width based on remaining space */
 }
 
-/* Dashboard Stats Cards */
-#dashboard-stats .card {
-    border-radius: 12px; /* Soft rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadows */
-    margin-bottom: 0;
+.sidebar.collapsed ~ .main-content {
+    margin-left: 30px; /* Match the collapsed sidebar width */
+    width: calc(100% - 30px); /* Recalculate width when sidebar is collapsed */
+}
+
+/* Ensure content doesn't overflow horizontally */
+.main-content > * {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Header styling */
+.main-content > header {
+    background: linear-gradient(90deg, #0d6efd, #0b5ed7);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    border: none;
-    overflow: hidden;
+}
+
+.sidebar.collapsed ~ .main-content > header {
+    padding-left: 20px; /* Reset padding when sidebar is collapsed */
+    margin-left: 0; /* Reset margin when sidebar is collapsed */
+}
+
+/* Dashboard stats section */
+#dashboard-stats .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    background: white;
+    margin-bottom: 20px;
 }
 
 #dashboard-stats .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-}
-
-/* Specific card colors as described */
-#dashboard-stats .col-md-3:nth-child(1) .card {
-    background: #0d6efd; /* Deep blue for Total Cameras */
-}
-
-#dashboard-stats .col-md-3:nth-child(2) .card {
-    background: #198754; /* Rich green for Active Cameras */
-}
-
-#dashboard-stats .col-md-3:nth-child(3) .card {
-    background: #0dcaf0; /* Bright cyan for Employees Today */
-}
-
-#dashboard-stats .col-md-3:nth-child(4) .card {
-    background: #fd7e14; /* Warm yellow-orange for Recognitions Today */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }
 
 #dashboard-stats .card-body {
-    padding: 25px;
+    padding: 20px;
 }
 
 #dashboard-stats .card-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
+    color: #6c757d;
+    margin-bottom: 10px;
 }
 
-#dashboard-stats .card-title i {
-    margin-right: 10px;
-    font-size: 1.2rem;
-}
-
-#dashboard-stats h2 {
+#dashboard-stats .display-4 {
     font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 0;
-    color: white !important;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    color: #0d6efd;
 }
 
-/* Filter Section */
+/* Cards styling */
 .card {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     border: 1px solid rgba(0, 0, 0, 0.08);
@@ -410,7 +413,7 @@ header p {
 }
 
 .card-header {
-    background: #0d6efd; /* Same blue as header */
+    background: linear-gradient(90deg, #0d6efd, #0b5ed7);
     color: white;
     border-radius: 10px 10px 0 0 !important;
     font-weight: 600;
@@ -436,87 +439,34 @@ header p {
     background-color: rgba(13, 110, 253, 0.05);
 }
 
-.card-header {
-    background: linear-gradient(90deg, #0d6efd, #0b5ed7);
-    color: white;
-    border-radius: 8px 8px 0 0 !important;
-    font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
 /* Status indicators */
 .status-active {
-    color: #198754; /* Rich green */
+    color: #198754;
     font-weight: 600;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .status-inactive {
-    color: #dc3545; /* Red */
+    color: #dc3545;
     font-weight: 600;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
-/* Card body */
-.card-body {
-    padding: 20px;
+/* Adjust main content when sidebar is collapsed */
+.sidebar.collapsed ~ .main-content > header {
+    padding-left: 30px; /* Increased spacing between sidebar rail and header */
+    margin-left: 0;
 }
 
-/* Ensure dashboard stats are visible */
-#dashboard-stats .card {
-    color: white !important;
+/* Add spacing between sidebar rail and cards when collapsed */
+.sidebar.collapsed ~ .main-content .card,
+.sidebar.collapsed ~ .main-content #dashboard-stats {
+    margin-left: 0;
+    padding-left: 0;
 }
 
-/* Specific card colors as described */
-#dashboard-stats .col-md-3:nth-child(1) .card {
-    background: #0d6efd; /* Deep blue for Total Cameras */
-}
-
-#dashboard-stats .col-md-3:nth-child(2) .card {
-    background: #198754; /* Rich green for Active Cameras */
-}
-
-#dashboard-stats .col-md-3:nth-child(3) .card {
-    background: #0dcaf0; /* Bright cyan for Employees Today */
-}
-
-#dashboard-stats .col-md-3:nth-child(4) .card {
-    background: #fd7e14; /* Warm yellow-orange for Recognitions Today */
-}
-
-#dashboard-stats .card h2 {
-    color: white !important;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-/* Buttons */
-.btn {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    border-radius: 5px;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.btn i {
-    margin-right: 5px;
-}
-
-/* Container fluid */
-.container-fluid {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-}
-
-.row {
-    margin: 0;
-    padding: 0;
-    width: 100%;
+/* Default main content margin when sidebar is expanded */
+.sidebar.collapsed ~ .main-content {
+    margin-left: 30px; /* Match the collapsed sidebar width */
+    padding-left: 30px; /* Increased spacing between sidebar rail and content */
 }
 
 /* Responsive */
@@ -569,66 +519,6 @@ header p {
             margin-left: 0;
         }
     }
-}
-
-/* Adjust main content when sidebar is collapsed */
-.sidebar.collapsed {
-    width: 30px !important;
-    overflow: hidden;
-    left: 0; /* Ensure it stays flush with left edge */
-    min-width: 30px; /* Ensure minimum width */
-}
-
-.sidebar.collapsed .sidebar-header {
-    padding: 0;
-    margin-bottom: 0;
-    border-bottom: none;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.sidebar.collapsed .sidebar-header-text {
-    display: none;
-}
-
-.sidebar.collapsed .btn-toggle {
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.sidebar.collapsed .sidebar-nav {
-    display: none;
-}
-
-.sidebar.collapsed ~ .main-content > header {
-    padding-left: 30px; /* Increased spacing between sidebar rail and header */
-    margin-left: 0;
-}
-
-.sidebar.collapsed ~ .main-content {
-    margin-left: 30px; /* Match the collapsed sidebar width */
-    padding-left: 30px; /* Increased spacing between sidebar rail and content */
-}
-
-/* Add spacing between sidebar rail and cards when collapsed */
-.sidebar.collapsed ~ .main-content .card,
-.sidebar.collapsed ~ .main-content #dashboard-stats {
-    margin-left: 0;
-    padding-left: 0;
-}
-
-/* Default main content margin when sidebar is expanded */
-.main-content {
-    margin-left: 250px; /* Match sidebar width */
-    transition: margin-left 0.3s ease;
-    position: relative; /* Ensure proper positioning */
-    height: 100vh; /* Full height */
-    overflow-y: auto; /* Allow vertical scrolling */
-    left: 0;
 }
 
 #apply-filter {
@@ -729,7 +619,7 @@ header p {
 }
 
 /* Refresh buttons */
-#refresh-cameras, #refresh-summary {
+#refresh-cameras, #refresh-summary, #refresh-downtime, #refresh-movement, #refresh-add-camera, #refresh-update-camera-status, #refresh-pending, #refresh-authorized, #refresh-registered-users, #refresh-inout-summary, #refresh-presence-distribution, #refresh-rankings, #refresh-floor-visitors, #refresh-location-coverage, #refresh-details {
     background: white;
     border: 1px solid #0d6efd;
     color: #0d6efd;
@@ -739,11 +629,35 @@ header p {
     transition: all 0.3s ease;
 }
 
-#refresh-cameras:hover, #refresh-summary:hover {
+#refresh-cameras:hover, #refresh-summary:hover, #refresh-downtime:hover, #refresh-movement:hover, #refresh-add-camera:hover, #refresh-update-camera-status:hover, #refresh-pending:hover, #refresh-authorized:hover, #refresh-registered-users:hover, #refresh-inout-summary:hover, #refresh-presence-distribution:hover, #refresh-rankings:hover, #refresh-floor-visitors:hover, #refresh-location-coverage:hover, #refresh-details:hover {
     background: #0d6efd;
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Export button styling */
+.btn-outline-success {
+    background: white;
+    border: 1px solid #198754;
+    color: #198754;
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-success:hover {
+    background: #198754;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Button group styling for refresh and export */
+.btn-group {
+    display: flex;
+    gap: 5px;
 }
 
 /* Form elements */
@@ -778,6 +692,165 @@ header p {
     border-radius: 8px;
 }
 
+/* KPI Cards */
+#kpi-cards-container {
+    margin-bottom: 20px;
+}
+
+#kpi-cards-container .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+    height: 100%;
+    min-height: 140px;
+}
+
+#kpi-cards-container .card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+#kpi-cards-container .card-body {
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#kpi-cards-container .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#kpi-cards-container .card h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+}
+
+#kpi-cards-container .card small {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+/* Charts */
+#charts-container {
+    margin-bottom: 20px;
+}
+
+#charts-container .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+#charts-container .card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+#charts-container .card-body {
+    padding: 20px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#charts-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Responsive adjustments for KPI cards */
+@media (min-width: 768px) {
+    .col-md-2-4 {
+        flex: 0 0 auto;
+        width: 20%;
+    }
+}
+
+@media (max-width: 768px) {
+    .col-md-2-4 {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    #charts-container .row > div {
+        margin-bottom: 15px;
+    }
+    
+    #charts-container .card-body {
+        height: 250px;
+    }
+}
+
+/* Breadcrumb navigation */
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.breadcrumb .breadcrumb-item {
+    font-size: 0.9rem;
+}
+
+.breadcrumb .breadcrumb-item a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.breadcrumb .breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb .breadcrumb-item.active {
+    color: #6c757d;
+}
+
+/* Header spacing */
+header {
+    margin-bottom: 20px;
+}
+
+/* Scrollable rankings container */
+.scrollable-rankings {
+    height: 350px;
+    overflow-y: auto;
+}
+
+.scrollable-rankings::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollable-rankings::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.scrollable-rankings::-webkit-scrollbar-thumb {
+    background: #0d6efd;
+    border-radius: 4px;
+}
+
+.scrollable-rankings::-webkit-scrollbar-thumb:hover {
+    background: #0b5ed7;
+}
+
 /* Alert messages */
 .alert-fixed {
     position: fixed;
@@ -788,4 +861,10 @@ header p {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+}
+
+/* Initially hide Drishti Management section until access is verified */
+#drishti-management-dropdown.hidden-initially,
+#drishti-management-submenu.hidden-initially {
+    display: none !important;
 }

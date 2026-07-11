@@ -28,6 +28,81 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link hidden-initially" href="#" id="drishti-management-dropdown" data-bs-toggle="collapse" data-bs-target="#drishti-management-submenu" aria-expanded="false" aria-controls="drishti-management-submenu">
+                                <i class="fas fa-cctv nav-icon"></i>
+                                <span class="nav-text">Drishti Management</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse hidden-initially" id="drishti-management-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link drishti-management-link" href="#" id="cameras-link">
+                                        <i class="fas fa-video nav-icon"></i>
+                                        <span class="nav-text">Camera Registry</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link drishti-management-link" href="#registered-users" id="registered-users-link">
+                                        <i class="fas fa-user-plus nav-icon"></i>
+                                        <span class="nav-text">Registered Users</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link drishti-management-link" href="#" id="face-recognition-link">
+                                        <i class="fas fa-user-check nav-icon"></i>
+                                        <span class="nav-text">Face Recognition</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" id="camera-management-dropdown" data-bs-toggle="collapse" data-bs-target="#camera-management-submenu" aria-expanded="false" aria-controls="camera-management-submenu">
+                                        <i class="fas fa-camera nav-icon"></i>
+                                        <span class="nav-text">Camera Management</span>
+                                        <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                                    </a>
+                                    <ul class="nav flex-column collapse" id="camera-management-submenu" data-bs-parent="#drishti-management-submenu">
+                                        <li class="nav-item">
+                                            <a class="nav-link camera-info-link" href="#" id="add-camera-link">
+                                                <i class="fas fa-plus-circle nav-icon"></i>
+                                                <span class="nav-text">Add Camera</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link camera-info-link" href="#" id="update-camera-status-link">
+                                                <i class="fas fa-toggle-on nav-icon"></i>
+                                                <span class="nav-text">Update Camera Status</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" id="user-management-dropdown" data-bs-toggle="collapse" data-bs-target="#user-management-submenu" aria-expanded="false" aria-controls="user-management-submenu">
+                                        <i class="fas fa-users-cog nav-icon"></i>
+                                        <span class="nav-text">User Management</span>
+                                        <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                                    </a>
+                                    <ul class="nav flex-column collapse" id="user-management-submenu" data-bs-parent="#drishti-management-submenu">
+                                        <li class="nav-item">
+                                            <a class="nav-link user-management-link" href="user_management.html#pending-requests" id="pending-requests-link">
+                                                <i class="fas fa-clock nav-icon"></i>
+                                                <span class="nav-text">Pending Requests</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link user-management-link" href="user_management.html#authorized-users" id="authorized-users-link">
+                                                <i class="fas fa-user-check nav-icon"></i>
+                                                <span class="nav-text">Authorized Users</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link admin-access-control-link" href="admin_access_control.html" id="admin-access-control-link">
+                                                <i class="fas fa-user-shield nav-icon"></i>
+                                                <span class="nav-text">Admin Access Control</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#" id="reports-dropdown" data-bs-toggle="collapse" data-bs-target="#reports-submenu" aria-expanded="false" aria-controls="reports-submenu">
                                 <i class="fas fa-chart-bar nav-icon"></i>
                                 <span class="nav-text">Reports</span>
@@ -35,67 +110,38 @@
                             </a>
                             <ul class="nav flex-column collapse" id="reports-submenu" data-bs-parent="#sidebar">
                                 <li class="nav-item">
-                                    <a class="nav-link report-link" href="#" id="cameras-link">
-                                        <i class="fas fa-video nav-icon"></i>
-                                        <span class="nav-text">Camera Registry</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link report-link" href="#" id="summary-link">
                                         <i class="fas fa-users nav-icon"></i>
                                         <span class="nav-text">Employee Summary</span>
                                     </a>
                                 </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" id="camera-info-dropdown" data-bs-toggle="collapse" data-bs-target="#camera-info-submenu" aria-expanded="false" aria-controls="camera-info-submenu">
-                                <i class="fas fa-camera nav-icon"></i>
-                                <span class="nav-text">Camera Info</span>
-                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
-                            </a>
-                            <ul class="nav flex-column collapse" id="camera-info-submenu" data-bs-parent="#sidebar">
                                 <li class="nav-item">
-                                    <a class="nav-link camera-info-link" href="#" id="add-camera-link">
-                                        <i class="fas fa-plus-circle nav-icon"></i>
-                                        <span class="nav-text">Add Camera</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link camera-info-link" href="#" id="update-camera-status-link">
-                                        <i class="fas fa-toggle-on nav-icon"></i>
-                                        <span class="nav-text">Update Camera Status</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" id="user-management-dropdown" data-bs-toggle="collapse" data-bs-target="#user-management-submenu" aria-expanded="false" aria-controls="user-management-submenu">
-                                <i class="fas fa-users-cog nav-icon"></i>
-                                <span class="nav-text">User Management</span>
-                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
-                            </a>
-                            <ul class="nav flex-column collapse" id="user-management-submenu" data-bs-parent="#sidebar">
-                                <li class="nav-item">
-                                    <a class="nav-link user-management-link" href="user_management.html#pending-requests" id="pending-requests-link">
+                                    <a class="nav-link report-link" href="#" id="downtime-link">
                                         <i class="fas fa-clock nav-icon"></i>
-                                        <span class="nav-text">Pending Requests</span>
+                                        <span class="nav-text">Downtime Summary</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link user-management-link" href="user_management.html#authorized-users" id="authorized-users-link">
-                                        <i class="fas fa-user-check nav-icon"></i>
-                                        <span class="nav-text">Authorized Users</span>
+                                    <a class="nav-link report-link" href="#employee-movement" id="employee-movement-link">
+                                        <i class="fas fa-walking nav-icon"></i>
+                                        <span class="nav-text">Employee Movement</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="#daily-inout-summary" id="daily-inout-summary-link">
+                                        <i class="fas fa-exchange-alt nav-icon"></i>
+                                        <span class="nav-text">Daily IN/OUT Summary</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="#location-coverage" id="location-coverage-link">
+                                        <i class="fas fa-map-marker-alt nav-icon"></i>
+                                        <span class="nav-text">Location Coverage Report</span>
                                     </a>
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" id="face-recognition-link">
-                                <i class="fas fa-user-check nav-icon"></i>
-                                <span class="nav-text">Face Recognition</span>
-                            </a>
-                        </li>
+
                         <li class="nav-item mt-3">
                             <a class="nav-link" href="#" id="logout-link">
                                 <i class="fas fa-sign-out-alt nav-icon"></i>
@@ -109,55 +155,30 @@
             <!-- Main Content -->
             <main class="main-content">
                 <!-- Header -->
-                <header>
+                <header class="text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h1><i class="fas fa-user-shield"></i> Face Recognition Admin Dashboard</h1>
-                            <p class="mb-0">Monitor and manage your facial recognition system</p>
+                            <h1 class="text-white"><i class="fas fa-user-shield"></i> Face Recognition Admin Dashboard</h1>
+                            <p class="mb-0 text-white">Monitor and manage your facial recognition system</p>
                         </div>
                         <div id="user-info" class="text-end">
                             <small class="text-white-50">Welcome,</small><br>
                             <strong id="current-user" class="text-white">Admin User</strong>
                         </div>
                     </div>
+                    <!-- Breadcrumb Navigation -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb text-white" id="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" id="dashboard-breadcrumb" class="text-white">Dashboard</a></li>
+                        </ol>
+                    </nav>
                 </header>
 
                 <!-- Dashboard View -->
                 <div id="dashboard-view">
-                    <!-- Dashboard Stats -->
-                    <section id="dashboard-stats" class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="card text-white">
-                                <div class="card-body">
-                                    <h5 class="card-title"><i class="fas fa-video"></i> Total Cameras</h5>
-                                    <h2 id="total-cameras" class="display-4 mb-0">0</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card text-white">
-                                <div class="card-body">
-                                    <h5 class="card-title"><i class="fas fa-video"></i> Active Cameras</h5>
-                                    <h2 id="active-cameras" class="display-4 mb-0">0</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card text-white">
-                                <div class="card-body">
-                                    <h5 class="card-title"><i class="fas fa-users"></i> Employees Today</h5>
-                                    <h2 id="total-employees" class="display-4 mb-0">0</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card text-white">
-                                <div class="card-body">
-                                    <h5 class="card-title"><i class="fas fa-fingerprint"></i> Recognitions Today</h5>
-                                    <h2 id="total-recognitions" class="display-4 mb-0">0</h2>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- New Dashboard KPIs -->
+                    <section id="kpi-cards-container" class="row mb-4">
+                        <!-- New KPIs will be loaded dynamically here -->
                     </section>
 
                     <!-- Date Filter -->
@@ -179,6 +200,154 @@
                                             <button id="apply-filter" class="btn btn-primary w-100">
                                                 <i class="fas fa-filter"></i> Apply
                                             </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Daily Presence Distribution and Top Employee Movement Rankings Side by Side -->
+                    <section class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Daily Presence Distribution</h5>
+                                        <small class="text-muted">Distribution of employee time inside vs outside</small>
+                                    </div>
+                                    <div class="btn-group" role="group">
+                                        <button id="refresh-presence-distribution" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-sync-alt"></i> Refresh
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="presence-date" class="form-label">Date</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                            <input type="date" class="form-control" id="presence-date">
+                                        </div>
+                                    </div>
+                                    <div id="presence-distribution-container">
+                                        <div id="presence-distribution-chart" class="mb-3" style="height: 300px;">
+                                            <canvas id="presence-distribution-pie-chart"></canvas>
+                                        </div>
+                                        <div class="text-center mb-3">
+                                            <div class="fw-bold" id="total-time-tracked">Total Time Tracked: 0 hrs</div>
+                                        </div>
+                                        <div id="insight-text" class="text-center text-muted">
+                                            <small>Loading insights...</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-0"><i class="fas fa-trophy"></i> Top Employee Movement Rankings</h5>
+                                        <small class="text-muted">Based on daily movement summary</small>
+                                    </div>
+                                    <div class="btn-group" role="group">
+                                        <button id="refresh-rankings" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-sync-alt"></i> Refresh
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <label for="ranking-date" class="form-label">Date</label>
+                                            <div class="input-group mb-2">
+                                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                                <input type="date" class="form-control" id="ranking-date">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="ranking-metric" class="form-label">Metric</label>
+                                            <select class="form-select" id="ranking-metric">
+                                                <option value="outside">Outside Time</option>
+                                                <option value="inside">Inside Time</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="ranking-limit" class="form-label">Limit</label>
+                                            <select class="form-select" id="ranking-limit">
+                                                <option value="5">Top 5</option>
+                                                <option value="10">Top 10</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="rankings-container" class="scrollable-rankings">
+                                        <div class="mb-2">
+                                            <small id="rankings-subtitle" class="text-muted">Employees ranked by highest outside movement time</small>
+                                        </div>
+                                        <div id="rankings-chart-container">
+                                            <canvas id="rankings-bar-chart"></canvas>
+                                        </div>
+                                        <div id="rankings-insight" class="mt-2">
+                                            <small class="text-muted"><i class="fas fa-lightbulb"></i> <span id="rankings-insight-text"></span></small>
+                                        </div>
+                                        <div id="rankings-list" class="list-group d-none">
+                                            <!-- Rankings will be populated here -->
+                                            <div class="text-center py-5">
+                                                <i class="fas fa-spinner fa-spin fa-2x text-muted mb-3"></i>
+                                                <p class="text-muted">Loading rankings...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-0"><i class="fas fa-building"></i> Top Floor Visitors</h5>
+                                        <small class="text-muted">Based on unique floors visited</small>
+                                    </div>
+                                    <div class="btn-group" role="group">
+                                        <button id="refresh-floor-visitors" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-sync-alt"></i> Refresh
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <label for="floor-visitor-date" class="form-label">Date</label>
+                                            <div class="input-group mb-2">
+                                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                                <input type="date" class="form-control" id="floor-visitor-date">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="floor-visitor-limit" class="form-label">Limit</label>
+                                            <select class="form-select" id="floor-visitor-limit">
+                                                <option value="5">Top 5</option>
+                                                <option value="10">Top 10</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="floor-visitors-container" class="scrollable-rankings">
+                                        <div class="mb-2">
+                                            <small id="floor-visitors-subtitle" class="text-muted">Employees ranked by number of unique floors visited</small>
+                                        </div>
+                                        <div id="floor-visitors-chart-container">
+                                            <canvas id="floor-visitors-bar-chart"></canvas>
+                                        </div>
+                                        <div id="floor-visitors-insight" class="mt-2">
+                                            <small class="text-muted"><i class="fas fa-lightbulb"></i> <span id="floor-visitors-insight-text"></span></small>
+                                        </div>
+                                        <div id="floor-visitors-list" class="list-group d-none">
+                                            <!-- Floor visitors will be populated here -->
+                                            <div class="text-center py-5">
+                                                <i class="fas fa-spinner fa-spin fa-2x text-muted mb-3"></i>
+                                                <p class="text-muted">Loading floor visitors...</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -232,7 +401,13 @@
                             </button>
                         </div>
                         <div class="card-body">
-                            <!-- Search and Sort Controls -->
+                            <!-- KPI Cards Container -->
+                            <div id="kpi-cards-container">
+                                <!-- KPI cards will be populated here by JavaScript -->
+                            </div>
+                            
+
+                            
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <div class="input-group">
@@ -241,26 +416,20 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="d-flex justify-content-end">
-                                        <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                                                <i class="fas fa-sort"></i> Sort By
-                                            </button>
-                                            <ul class="dropdown-menu" id="sort-options">
-                                                <li><a class="dropdown-item sort-option" href="#" data-sort="REC_DATE" data-dir="asc">Date (Ascending)</a></li>
-                                                <li><a class="dropdown-item sort-option" href="#" data-sort="REC_DATE" data-dir="desc">Date (Descending)</a></li>
-                                                <li><a class="dropdown-item sort-option" href="#" data-sort="EMPLOYEE_ID" data-dir="asc">Employee ID (Ascending)</a></li>
-                                                <li><a class="dropdown-item sort-option" href="#" data-sort="EMPLOYEE_ID" data-dir="desc">Employee ID (Descending)</a></li>
-                                                <li><a class="dropdown-item sort-option" href="#" data-sort="NAME" data-dir="asc">Name (A-Z)</a></li>
-                                                <li><a class="dropdown-item sort-option" href="#" data-sort="NAME" data-dir="desc">Name (Z-A)</a></li>
-                                                <li><a class="dropdown-item sort-option" href="#" data-sort="DEPARTMENT" data-dir="asc">Department (A-Z)</a></li>
-                                                <li><a class="dropdown-item sort-option" href="#" data-sort="DEPARTMENT" data-dir="desc">Department (Z-A)</a></li>
-                                                <li><a class="dropdown-item sort-option" href="#" data-sort="TOTAL_SPAN_HHMM" data-dir="desc">Total Time (High to Low)</a></li>
-                                                <li><a class="dropdown-item sort-option" href="#" data-sort="TOTAL_SPAN_HHMM" data-dir="asc">Total Time (Low to High)</a></li>
-                                                <li><a class="dropdown-item sort-option" href="#" data-sort="TOTAL_HITS" data-dir="desc">Hits (High to Low)</a></li>
-                                                <li><a class="dropdown-item sort-option" href="#" data-sort="TOTAL_HITS" data-dir="asc">Hits (Low to High)</a></li>
-                                            </ul>
-                                        </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-sort"></i> Sort Options
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="REC_DATE" data-dir="asc">Date (Ascending)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="REC_DATE" data-dir="desc">Date (Descending)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="EMPLOYEE_ID" data-dir="asc">Employee ID (Ascending)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="EMPLOYEE_ID" data-dir="desc">Employee ID (Descending)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="NAME" data-dir="asc">Name (A-Z)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="NAME" data-dir="desc">Name (Z-A)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="TOTAL_SPAN_HHMM" data-dir="desc">Total Span (High to Low)</a></li>
+                                            <li><a class="dropdown-item sort-option" href="#" data-sort="TOTAL_HITS" data-dir="desc">Total Hits (High to Low)</a></li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -274,13 +443,94 @@
                                             <th>Department</th>
                                             <th>First Seen</th>
                                             <th>Last Seen</th>
-                                            <th>Total Time</th>
-                                            <th>Hits</th>
-                                            <th>Floors</th>
+                                            <th>Total Span</th>
+                                            <th>Total Hits</th>
+                                            <th>Floors Visited</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <!-- Summary data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Downtime Summary View -->
+                <div id="downtime-view" class="d-none">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-clock"></i> Employee Downtime Summary</h5>
+                            <button id="refresh-downtime" class="btn btn-outline-primary">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <!-- Date Filter -->
+                            <section class="row mb-4">
+                                <div class="col">
+                                    <div class="card shadow-sm">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-4">Filter Data</h5>
+                                            <div class="row">
+                                                <div class="col-md-5 mb-3 mb-md-0">
+                                                    <label for="downtime-from-date" class="form-label">From Date</label>
+                                                    <input type="date" class="form-control" id="downtime-from-date">
+                                                </div>
+                                                <div class="col-md-5 mb-3 mb-md-0">
+                                                    <label for="downtime-to-date" class="form-label">To Date</label>
+                                                    <input type="date" class="form-control" id="downtime-to-date">
+                                                </div>
+                                                <div class="col-md-2 d-flex align-items-end">
+                                                    <button id="apply-downtime-filter" class="btn btn-primary w-100">
+                                                        <i class="fas fa-filter"></i> Apply
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <!-- Employee Downtime Table -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                        <input type="text" class="form-control" id="downtime-search" placeholder="Search by Employee ID, Name, or Department...">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="downtimeSortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-sort"></i> Sort Options
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="downtimeSortDropdown">
+                                            <li><a class="dropdown-item downtime-sort-option" href="#" data-sort="REC_DATE" data-dir="asc">Date (Ascending)</a></li>
+                                            <li><a class="dropdown-item downtime-sort-option" href="#" data-sort="REC_DATE" data-dir="desc">Date (Descending)</a></li>
+                                            <li><a class="dropdown-item downtime-sort-option" href="#" data-sort="EMPLOYEE_ID" data-dir="asc">Employee ID (Ascending)</a></li>
+                                            <li><a class="dropdown-item downtime-sort-option" href="#" data-sort="EMPLOYEE_ID" data-dir="desc">Employee ID (Descending)</a></li>
+                                            <li><a class="dropdown-item downtime-sort-option" href="#" data-sort="NAME" data-dir="asc">Name (A-Z)</a></li>
+                                            <li><a class="dropdown-item downtime-sort-option" href="#" data-sort="NAME" data-dir="desc">Name (Z-A)</a></li>
+                                            <li><a class="dropdown-item downtime-sort-option" href="#" data-sort="DOWNTIME_MINUTES" data-dir="desc">Downtime (High to Low)</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="downtime-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Employee ID</th>
+                                            <th>Name</th>
+                                            <th>Department</th>
+                                            <th>Downtime (Minutes)</th>
+                                            <th>Downtime Events</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Downtime data will be populated here -->
                                     </tbody>
                                 </table>
                             </div>
@@ -328,6 +578,289 @@
                     </div>
                 </div>
 
+                <!-- Employee Movement View -->
+                <div id="employee-movement-view" class="d-none">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-search"></i> Movement Tracking Parameters</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="movement-tracking-form">
+                                <div class="row mb-3">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="employee_id" class="form-label">Employee ID (Optional)</label>
+                                        <input type="text" class="form-control" id="employee_id" name="employee_id" placeholder="Enter employee ID">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="from_date" class="form-label">From Date *</label>
+                                        <input type="date" class="form-control" id="from_date" name="from_date" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="to_date" class="form-label">To Date (Optional)</label>
+                                        <input type="date" class="form-control" id="to_date" name="to_date">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary" id="track-movement-btn">
+                                        <i class="fas fa-search"></i> Track Movement
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Movement Results -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-table"></i> Movement Results</h5>
+                            <div class="btn-group">
+                                <button id="refresh-movement" class="btn btn-outline-primary">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-success dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-file-export"></i> Export
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                                        <li><a class="dropdown-item" href="#" id="export-excel"><i class="fas fa-file-excel text-success"></i> Export to Excel</a></li>
+                                        <li><a class="dropdown-item" href="#" id="export-pdf"><i class="fas fa-file-pdf text-danger"></i> Export to PDF</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="movement-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Employee ID</th>
+                                            <th>Name</th>
+                                            <th>Department</th>
+                                            <th>Building</th>
+                                            <th>Floor</th>
+                                            <th>Status</th>
+                                            <th>First Seen</th>
+                                            <th>Last Seen</th>
+                                            <th>Duration (Min)</th>
+                                            <th>Hits</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Movement data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily IN/OUT Summary View -->
+                <div id="daily-inout-summary-view" class="d-none">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-search"></i> IN/OUT Summary Parameters</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="inout-summary-form">
+                                <div class="row mb-3">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="inout_employee_id" class="form-label">Employee ID (Optional)</label>
+                                        <input type="text" class="form-control" id="inout_employee_id" name="inout_employee_id" placeholder="Enter employee ID">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="inout_from_date" class="form-label">From Date *</label>
+                                        <input type="date" class="form-control" id="inout_from_date" name="inout_from_date" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="inout_to_date" class="form-label">To Date (Optional)</label>
+                                        <input type="date" class="form-control" id="inout_to_date" name="inout_to_date">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary" id="get-inout-summary-btn">
+                                        <i class="fas fa-search"></i> Get IN/OUT Summary
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- IN/OUT Summary Results -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-table"></i> IN/OUT Summary Results</h5>
+                            <div class="btn-group">
+                                <button id="refresh-inout-summary" class="btn btn-outline-primary">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-success dropdown-toggle" type="button" id="inout-exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-file-export"></i> Export
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="inout-exportDropdown">
+                                        <li><a class="dropdown-item" href="#" id="export-inout-excel"><i class="fas fa-file-excel text-success"></i> Export to Excel</a></li>
+                                        <li><a class="dropdown-item" href="#" id="export-inout-pdf"><i class="fas fa-file-pdf text-danger"></i> Export to PDF</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="inout-summary-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Employee ID</th>
+                                            <th>Name</th>
+                                            <th>Total Inside Minutes</th>
+                                            <th>Total Outside Minutes</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- IN/OUT summary data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registered Users View -->
+                <div id="registered-users-view" class="d-none">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-users"></i> Registered Users</h5>
+                            <button id="refresh-registered-users" class="btn btn-outline-primary">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                        <input type="text" class="form-control" id="registered-users-search" placeholder="Search by ID, Employee ID, Name, or Department...">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="registeredUsersSortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-sort"></i> Sort Options
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="registeredUsersSortDropdown">
+                                            <li><a class="dropdown-item registered-users-sort-option" href="#" data-sort="ID" data-dir="asc">ID (Ascending)</a></li>
+                                            <li><a class="dropdown-item registered-users-sort-option" href="#" data-sort="ID" data-dir="desc">ID (Descending)</a></li>
+                                            <li><a class="dropdown-item registered-users-sort-option" href="#" data-sort="EMPLOYEE_ID" data-dir="asc">Employee ID (Ascending)</a></li>
+                                            <li><a class="dropdown-item registered-users-sort-option" href="#" data-sort="EMPLOYEE_ID" data-dir="desc">Employee ID (Descending)</a></li>
+                                            <li><a class="dropdown-item registered-users-sort-option" href="#" data-sort="NAME" data-dir="asc">Name (A-Z)</a></li>
+                                            <li><a class="dropdown-item registered-users-sort-option" href="#" data-sort="NAME" data-dir="desc">Name (Z-A)</a></li>
+                                            <li><a class="dropdown-item registered-users-sort-option" href="#" data-sort="DEPARTMENT" data-dir="asc">Department (A-Z)</a></li>
+                                            <li><a class="dropdown-item registered-users-sort-option" href="#" data-sort="DEPARTMENT" data-dir="desc">Department (Z-A)</a></li>
+                                            <li><a class="dropdown-item registered-users-sort-option" href="#" data-sort="CREATED_DATE" data-dir="desc">Created Date (Newest First)</a></li>
+                                            <li><a class="dropdown-item registered-users-sort-option" href="#" data-sort="CREATED_DATE" data-dir="asc">Created Date (Oldest First)</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="registered-users-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Employee ID</th>
+                                            <th>Name</th>
+                                            <th>Department</th>
+                                            <th>Created Time</th>
+                                            <th>Created Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Registered users data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location Coverage Report View -->
+                <div id="location-coverage-view" class="d-none">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-search"></i> Location Coverage Report Parameters</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="location-coverage-form">
+                                <div class="row mb-3">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="lc_employee_id" class="form-label">Employee ID (Optional)</label>
+                                        <input type="text" class="form-control" id="lc_employee_id" name="lc_employee_id" placeholder="Enter employee ID">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="lc_from_date" class="form-label">From Date *</label>
+                                        <input type="date" class="form-control" id="lc_from_date" name="lc_from_date" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="lc_to_date" class="form-label">To Date (Optional)</label>
+                                        <input type="date" class="form-control" id="lc_to_date" name="lc_to_date">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary" id="get-location-coverage-btn">
+                                        <i class="fas fa-search"></i> Get Location Coverage Report
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Location Coverage Report Results -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-table"></i> Location Coverage Report Results</h5>
+                            <div class="btn-group">
+                                <button id="refresh-location-coverage" class="btn btn-outline-primary">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-success dropdown-toggle" type="button" id="lc_exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-file-export"></i> Export
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="lc_exportDropdown">
+                                        <li><a class="dropdown-item" href="#" id="export-lc-excel"><i class="fas fa-file-excel text-success"></i> Export to Excel</a></li>
+                                        <li><a class="dropdown-item" href="#" id="export-lc-pdf"><i class="fas fa-file-pdf text-danger"></i> Export to PDF</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover" id="location-coverage-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Employee ID</th>
+                                            <th>Name</th>
+                                            <th>Department</th>
+                                            <th>Floors Visited</th>
+                                            <th>Building Visited</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Location coverage data will be populated here -->
+                                        <tr>
+                                            <td colspan="6" class="text-center">Enter parameters and click "Get Location Coverage Report"</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Footer -->
                 <footer class="pt-5 my-4 text-muted border-top">
                     <p class="mb-0">&copy; 2025 Face Recognition System Admin Dashboard</p>
@@ -337,6 +870,10 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="lib/xlsx.js"></script>
+    <script src="lib/jspdf.umd.min.js"></script>
+    <script src="lib/jspdf.plugin.autotable.min.js"></script>
     <script src="script.js"></script>
     <script>
         // Check if user is logged in
@@ -353,6 +890,7 @@
             }
         });
 
+
         // Logout functionality
         document.getElementById('logout-link').addEventListener('click', function(e) {
             e.preventDefault();
@@ -360,6 +898,155 @@
             localStorage.removeItem('currentUser');
             window.location.href = 'login.html';
         });
+        
+        // Function to handle active state management
+        function setActiveNavLink(activeLinkId) {
+            // Remove active class from all navigation links
+            document.querySelectorAll('#sidebar .nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Remove active class from dropdowns as well
+            document.querySelectorAll('#sidebar .nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Add active class to the specified link
+            const activeLink = document.getElementById(activeLinkId);
+            if (activeLink) {
+                activeLink.classList.add('active');
+                
+                // If this is a dropdown link, ensure it's expanded
+                const target = activeLink.getAttribute('data-bs-target');
+                if (target) {
+                    const submenu = document.querySelector(target);
+                    if (submenu) {
+                        submenu.classList.add('show');
+                        activeLink.setAttribute('aria-expanded', 'true');
+                    }
+                }
+            }
+        }
+        
+        // Function to handle navigation and set active states
+        function handleNavigation(viewName) {
+            // Hide all views
+            dashboardView.classList.add('d-none');
+            camerasView.classList.add('d-none');
+            summaryView.classList.add('d-none');
+            downtimeView.classList.add('d-none');
+            addCameraView.classList.add('d-none');
+            updateCameraStatusView.classList.add('d-none');
+            if (employeeMovementView) employeeMovementView.classList.add('d-none');
+            if (registeredUsersView) registeredUsersView.classList.add('d-none');
+            if (locationCoverageView) locationCoverageView.classList.add('d-none');
+            
+            // Set active state based on view
+            let activeLinkId = 'dashboard-link';
+            
+            switch(viewName) {
+                case 'cameras':
+                    activeLinkId = 'cameras-link';
+                    break;
+                case 'summary':
+                    activeLinkId = 'summary-link';
+                    break;
+                case 'downtime':
+                    activeLinkId = 'downtime-link';
+                    break;
+                case 'employee-movement':
+                    activeLinkId = 'employee-movement-link';
+                    break;
+                case 'registered-users':
+                    activeLinkId = 'registered-users-link';
+                    break;
+                case 'add-camera':
+                    activeLinkId = 'add-camera-link';
+                    break;
+                case 'update-camera-status':
+                    activeLinkId = 'update-camera-status-link';
+                    break;
+                case 'face-recognition':
+                    activeLinkId = 'face-recognition-link';
+                    break;
+                case 'daily-inout-summary':
+                    activeLinkId = 'daily-inout-summary-link';
+                    break;
+                case 'location-coverage':
+                    activeLinkId = 'location-coverage-link';
+                    break;
+            }
+            
+            setActiveNavLink(activeLinkId);
+            
+            // Update breadcrumb navigation
+            updateBreadcrumb(viewName);
+        }
+        
+        // Function to update breadcrumb navigation
+        function updateBreadcrumb(viewName) {
+            const breadcrumb = document.getElementById('breadcrumb');
+            if (!breadcrumb) return;
+            
+            // Clear existing breadcrumb items
+            breadcrumb.innerHTML = '';
+            
+            // Add dashboard link as home
+            const homeItem = document.createElement('li');
+            homeItem.className = 'breadcrumb-item';
+            homeItem.innerHTML = '<a href="#" id="dashboard-breadcrumb" class="text-white">Dashboard</a>';
+            breadcrumb.appendChild(homeItem);
+            
+            // Add current view to breadcrumb
+            const viewItem = document.createElement('li');
+            viewItem.className = 'breadcrumb-item active text-white';
+            viewItem.setAttribute('aria-current', 'page');
+            
+            let viewText = 'Dashboard';
+            switch(viewName) {
+                case 'cameras':
+                    viewText = 'Camera Registry';
+                    break;
+                case 'summary':
+                    viewText = 'Employee Summary';
+                    break;
+                case 'downtime':
+                    viewText = 'Downtime Summary';
+                    break;
+                case 'employee-movement':
+                    viewText = 'Employee Movement';
+                    break;
+                case 'registered-users':
+                    viewText = 'Registered Users';
+                    break;
+                case 'add-camera':
+                    viewText = 'Add Camera';
+                    break;
+                case 'update-camera-status':
+                    viewText = 'Update Camera Status';
+                    break;
+                case 'face-recognition':
+                    viewText = 'Face Recognition';
+                    break;
+                case 'daily-inout-summary':
+                    viewText = 'Daily IN/OUT Summary';
+                    break;
+                case 'location-coverage':
+                    viewText = 'Location Coverage Report';
+                    break;
+                default:
+                    viewText = 'Dashboard';
+            }
+            
+            viewItem.textContent = viewText;
+            breadcrumb.appendChild(viewItem);
+            
+            // Add click event to dashboard breadcrumb
+            document.getElementById('dashboard-breadcrumb').addEventListener('click', function(e) {
+                e.preventDefault();
+                showView('dashboard');
+            });
+        }
     </script>
 </body>
 </html>

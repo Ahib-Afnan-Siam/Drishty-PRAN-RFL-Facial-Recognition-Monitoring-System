@@ -6,9 +6,17 @@ import http.server
 import socketserver
 import os
 from pathlib import Path
+# Import configuration
+import sys
+import os
 
-# Define the port to run the server on (changed from 8000 to 8001 to avoid conflict)
-PORT = 8001
+# Add the parent directory to the Python path to import config
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config import FRONTEND_HOST, FRONTEND_PORT
+
+# Define the port to run the server on (using configuration)
+PORT = FRONTEND_PORT
 
 # Get the directory where this script is located
 SCRIPT_DIR = Path(__file__).parent.absolute()
@@ -30,7 +38,7 @@ class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 def start_server():
     """Start the HTTP server to serve the admin dashboard frontend."""
     with socketserver.TCPServer(("", PORT), CustomHTTPRequestHandler) as httpd:
-        print(f"Admin dashboard frontend server running at http://localhost:{PORT}/")
+        print(f"Admin dashboard frontend server running at http://{FRONTEND_HOST}:{PORT}/")
         print("Press Ctrl+C to stop the server")
         try:
             httpd.serve_forever()

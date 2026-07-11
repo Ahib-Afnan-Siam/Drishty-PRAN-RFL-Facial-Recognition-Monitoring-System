@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Access Control - Face Recognition Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="sidebar">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-4 sidebar-header">
+                        <h4 class="sidebar-header-text mb-0"><i class="fas fa-user-shield"></i> Admin Panel</h4>
+                        <button id="sidebarToggle" class="btn btn-toggle">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                    <ul class="nav flex-column sidebar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html" id="dashboard-link">
+                                <i class="fas fa-tachometer-alt nav-icon"></i>
+                                <span class="nav-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="drishti-management-dropdown" data-bs-toggle="collapse" data-bs-target="#drishti-management-submenu" aria-expanded="true" aria-controls="drishti-management-submenu">
+                                <i class="fas fa-cctv nav-icon"></i>
+                                <span class="nav-text">Drishti Management</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse show" id="drishti-management-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link drishti-management-link" href="index.html#cameras" id="cameras-link">
+                                        <i class="fas fa-video nav-icon"></i>
+                                        <span class="nav-text">Camera Registry</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link drishti-management-link" href="index.html#registered-users" id="registered-users-link">
+                                        <i class="fas fa-user-plus nav-icon"></i>
+                                        <span class="nav-text">Registered Users</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link drishti-management-link" href="#" id="face-recognition-link">
+                                        <i class="fas fa-user-check nav-icon"></i>
+                                        <span class="nav-text">Face Recognition</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" id="camera-management-dropdown" data-bs-toggle="collapse" data-bs-target="#camera-management-submenu" aria-expanded="false" aria-controls="camera-management-submenu">
+                                        <i class="fas fa-camera nav-icon"></i>
+                                        <span class="nav-text">Camera Management</span>
+                                        <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                                    </a>
+                                    <ul class="nav flex-column collapse" id="camera-management-submenu" data-bs-parent="#drishti-management-submenu">
+                                        <li class="nav-item">
+                                            <a class="nav-link camera-info-link" href="add_camera.html" id="add-camera-link">
+                                                <i class="fas fa-plus-circle nav-icon"></i>
+                                                <span class="nav-text">Add Camera</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link camera-info-link" href="update_camera_status.html" id="update-camera-status-link">
+                                                <i class="fas fa-toggle-on nav-icon"></i>
+                                                <span class="nav-text">Update Camera Status</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" id="user-management-dropdown" data-bs-toggle="collapse" data-bs-target="#user-management-submenu" aria-expanded="true" aria-controls="user-management-submenu">
+                                        <i class="fas fa-users-cog nav-icon"></i>
+                                        <span class="nav-text">User Management</span>
+                                        <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                                    </a>
+                                    <ul class="nav flex-column collapse show" id="user-management-submenu" data-bs-parent="#drishti-management-submenu">
+                                        <li class="nav-item">
+                                            <a class="nav-link user-management-link" href="user_management.html#pending-requests" id="pending-requests-link">
+                                                <i class="fas fa-clock nav-icon"></i>
+                                                <span class="nav-text">Pending Requests</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link user-management-link" href="user_management.html#authorized-users" id="authorized-users-link">
+                                                <i class="fas fa-user-check nav-icon"></i>
+                                                <span class="nav-text">Authorized Users</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link admin-access-control-link active" href="#admin-access-control" id="admin-access-control-link">
+                                                <i class="fas fa-user-shield nav-icon"></i>
+                                                <span class="nav-text">Admin Access Control</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="reports-dropdown" data-bs-toggle="collapse" data-bs-target="#reports-submenu" aria-expanded="false" aria-controls="reports-submenu">
+                                <i class="fas fa-chart-bar nav-icon"></i>
+                                <span class="nav-text">Reports</span>
+                                <i class="fas fa-chevron-down float-end dropdown-icon"></i>
+                            </a>
+                            <ul class="nav flex-column collapse" id="reports-submenu" data-bs-parent="#sidebar">
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#summary" id="summary-link">
+                                        <i class="fas fa-users nav-icon"></i>
+                                        <span class="nav-text">Employee Summary</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#downtime" id="downtime-link">
+                                        <i class="fas fa-clock nav-icon"></i>
+                                        <span class="nav-text">Downtime Summary</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#employee-movement" id="employee-movement-link">
+                                        <i class="fas fa-walking nav-icon"></i>
+                                        <span class="nav-text">Employee Movement</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#daily-inout-summary" id="daily-inout-summary-link">
+                                        <i class="fas fa-exchange-alt nav-icon"></i>
+                                        <span class="nav-text">Daily IN/OUT Summary</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link report-link" href="index.html#location-coverage" id="location-coverage-link">
+                                        <i class="fas fa-map-marker-alt nav-icon"></i>
+                                        <span class="nav-text">Location Coverage Report</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <a class="nav-link" href="#" id="logout-link">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                <span class="nav-text">Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Header -->
+                <header>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1><i class="fas fa-user-shield"></i> Admin Access Control</h1>
+                            <p class="mb-0">Manage admin access for users</p>
+                        </div>
+                        <div id="user-info" class="text-end">
+                            <small class="text-white-50">Welcome,</small><br>
+                            <strong id="current-user" class="text-white">Admin User</strong>
+                        </div>
+                    </div>
+                    <!-- Breadcrumb Navigation -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb" id="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="user_management.html">User Management</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Admin Access Control</li>
+                        </ol>
+                    </nav>
+                </header>
+
+                <!-- Grant Admin Access Section -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-user-plus"></i> Grant Admin Access</h5>
+                        <p class="mb-0 text-muted">Grant admin access to a user</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="grant-admin-access-form">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label for="admin_employee_id" class="form-label">Employee ID *</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="admin_employee_id" name="admin_employee_id" placeholder="Enter employee ID" required>
+                                            <button type="submit" class="btn btn-primary" id="grant-admin-btn">
+                                                <i class="fas fa-user-shield"></i> Grant Admin Access
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Admin Users List -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-users"></i> Admin Access Granted Users</h5>
+                        <button id="refresh-admin-users" class="btn btn-outline-primary">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control" id="admin-users-search" placeholder="Search by Name, Employee ID, or Department...">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="adminUsersSortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-sort"></i> Sort Options
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="adminUsersSortDropdown">
+                                        <li><a class="dropdown-item admin-users-sort-option" href="#" data-sort="FULL_NAME" data-dir="asc">Name (A-Z)</a></li>
+                                        <li><a class="dropdown-item admin-users-sort-option" href="#" data-sort="FULL_NAME" data-dir="desc">Name (Z-A)</a></li>
+                                        <li><a class="dropdown-item admin-users-sort-option" href="#" data-sort="EMPLOYEE_ID" data-dir="asc">Employee ID (Ascending)</a></li>
+                                        <li><a class="dropdown-item admin-users-sort-option" href="#" data-sort="EMPLOYEE_ID" data-dir="desc">Employee ID (Descending)</a></li>
+                                        <li><a class="dropdown-item admin-users-sort-option" href="#" data-sort="DEPARTMENT" data-dir="asc">Department (A-Z)</a></li>
+                                        <li><a class="dropdown-item admin-users-sort-option" href="#" data-sort="DEPARTMENT" data-dir="desc">Department (Z-A)</a></li>
+                                        <li><a class="dropdown-item admin-users-sort-option" href="#" data-sort="ACCESS_GRANTED_AT" data-dir="desc">Access Granted (Newest First)</a></li>
+                                        <li><a class="dropdown-item admin-users-sort-option" href="#" data-sort="ACCESS_GRANTED_AT" data-dir="asc">Access Granted (Oldest First)</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" id="admin-users-table">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>User ID</th>
+                                        <th>Full Name</th>
+                                        <th>Employee ID</th>
+                                        <th>Department</th>
+                                        <th>Designation</th>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                        <th>Access Granted At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Admin users will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="pt-5 my-4 text-muted border-top">
+                    <p class="mb-0">&copy; 2025 Face Recognition System Admin Dashboard</p>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for User Details -->
+    <div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userDetailsModalLabel">User Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="user-details-content">
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p>Loading user details...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="grant-admin-access-modal">Grant Admin Access</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // API base URL
+        const API_BASE_URL = 'http://localhost:5001/api';
+        
+        // DOM Elements
+        const adminUsersTableBody = document.querySelector('#admin-users-table tbody');
+        const refreshAdminUsersBtn = document.getElementById('refresh-admin-users');
+        const grantAdminAccessForm = document.getElementById('grant-admin-access-form');
+        const adminEmployeeIdInput = document.getElementById('admin_employee_id');
+        const grantAdminBtn = document.getElementById('grant-admin-btn');
+        const adminUsersSearch = document.getElementById('admin-users-search');
+        const userDetailsModal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
+        const userDetailsContent = document.getElementById('user-details-content');
+        const grantAdminAccessModalBtn = document.getElementById('grant-admin-access-modal');
+        
+        // Global variables
+        let currentUserId = null;
+        let allAdminUsers = [];
+        
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+            } else {
+                // Load user info
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (currentUser.name) {
+                    document.getElementById('current-user').textContent = currentUser.name;
+                }
+                
+                // Load admin users
+                loadAdminAccessUsers();
+            }
+        });
+        
+        // Load admin access users
+        async function loadAdminAccessUsers() {
+            try {
+                // Show loading state
+                const originalHTML = refreshAdminUsersBtn.innerHTML;
+                refreshAdminUsersBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                refreshAdminUsersBtn.classList.add('btn-loading');
+                
+                adminUsersTableBody.innerHTML = '<tr><td colspan="8" class="text-center">Loading...</td></tr>';
+                
+                const response = await fetch(`${API_BASE_URL}/admin-access-users`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderAdminUsers(result.data);
+                    allAdminUsers = result.data; // Store for search functionality
+                } else {
+                    adminUsersTableBody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">Error: ${result.error}</td></tr>`;
+                    showAlert('Failed to load admin access users: ' + result.error, 'danger');
+                }
+            } catch (error) {
+                adminUsersTableBody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">Error: ${error.message}</td></tr>`;
+                showAlert('Error loading admin access users: ' + error.message, 'danger');
+                console.error('Error:', error);
+            } finally {
+                // Restore button state
+                refreshAdminUsersBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                refreshAdminUsersBtn.classList.remove('btn-loading');
+            }
+        }
+        
+        // Render admin users table
+        function renderAdminUsers(users) {
+            if (users.length === 0) {
+                adminUsersTableBody.innerHTML = '<tr><td colspan="8" class="text-center">No admin access users found</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            users.forEach(user => {
+                const statusClass = user.IS_ACTIVE === 'Y' ? 'status-active' : 'status-inactive';
+                const statusText = user.IS_ACTIVE === 'Y' ? 'Active' : 'Inactive';
+                
+                html += `
+                    <tr>
+                        <td>${user.USER_ID}</td>
+                        <td>${user.FULL_NAME}</td>
+                        <td>${user.EMPLOYEE_ID}</td>
+                        <td>${user.DEPARTMENT || '-'}</td>
+                        <td>${user.DESIGNATION || '-'}</td>
+                        <td>${user.EMAIL || '-'}</td>
+                        <td class="${statusClass}">${statusText}</td>
+                        <td>${new Date(user.ACCESS_GRANTED_AT).toLocaleString()}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning revoke-admin-btn" data-user-id="${user.USER_ID}" data-full-name="${user.FULL_NAME}" title="Revoke Admin Access">
+                                <i class="fas fa-ban"></i> Revoke<br>Admin
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            adminUsersTableBody.innerHTML = html;
+            
+            // Add event listeners to revoke buttons
+            document.querySelectorAll('.revoke-admin-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-user-id');
+                    const fullName = this.getAttribute('data-full-name');
+                    revokeAdminAccess(userId, fullName);
+                });
+            });
+        }
+        
+        // Function to filter admin users based on search term
+        function filterAdminUsers(searchTerm) {
+            if (!searchTerm || searchTerm.trim() === '') {
+                // If search is empty, show all users
+                renderAdminUsers(allAdminUsers);
+                return;
+            }
+            
+            searchTerm = searchTerm.toLowerCase().trim();
+            
+            const filteredUsers = allAdminUsers.filter(user => {
+                return (
+                    (user.FULL_NAME && user.FULL_NAME.toLowerCase().includes(searchTerm)) ||
+                    (user.EMPLOYEE_ID && user.EMPLOYEE_ID.toLowerCase().includes(searchTerm)) ||
+                    (user.DEPARTMENT && user.DEPARTMENT.toLowerCase().includes(searchTerm))
+                );
+            });
+            
+            renderAdminUsers(filteredUsers);
+        }
+        
+        // Function to sort admin users
+        function sortAdminUsers(sortBy, direction) {
+            if (allAdminUsers.length === 0) return;
+            
+            const sortedUsers = [...allAdminUsers].sort((a, b) => {
+                let valueA = a[sortBy];
+                let valueB = b[sortBy];
+                
+                // Handle date sorting for ACCESS_GRANTED_AT
+                if (sortBy === 'ACCESS_GRANTED_AT') {
+                    valueA = new Date(valueA);
+                    valueB = new Date(valueB);
+                } else {
+                    // For other fields, convert to string and handle null/undefined
+                    valueA = (valueA || '').toString().toLowerCase();
+                    valueB = (valueB || '').toString().toLowerCase();
+                }
+                
+                if (valueA < valueB) {
+                    return direction === 'asc' ? -1 : 1;
+                }
+                if (valueA > valueB) {
+                    return direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+            
+            renderAdminUsers(sortedUsers);
+        }
+        
+        // Revoke admin access
+        async function revokeAdminAccess(userId, fullName) {
+            if (!confirm(`Are you sure you want to revoke admin access for ${fullName}?`)) {
+                return;
+            }
+                    
+            try {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const revokedBy = currentUser.employee_id || 'System';
+                        
+                const response = await fetch(`${API_BASE_URL}/admin-access-users/${userId}/revoke`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        revoked_by: revokedBy
+                    })
+                });
+                        
+                const result = await response.json();
+                        
+                if (result.success) {
+                    showAlert('Admin access revoked successfully!', 'success');
+                    loadAdminAccessUsers(); // Reload the table
+                } else {
+                    showAlert(`Failed to revoke admin access: ${result.message || 'Unknown error'}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`Error revoking admin access: ${error.message}`, 'danger');
+                console.error('Error:', error);
+            }
+        }
+        
+        // Event listener for grant admin access form submission
+        grantAdminAccessForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const employeeId = adminEmployeeIdInput.value.trim();
+            
+            if (!employeeId) {
+                showAlert('Please enter an employee ID', 'warning');
+                return;
+            }
+            
+            try {
+                // Show loading state
+                grantAdminBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                grantAdminBtn.disabled = true;
+                
+                // Fetch user details first to confirm existence
+                const response = await fetch(`${API_BASE_URL}/access-granted-users`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    const user = result.data.find(u => u.EMPLOYEE_ID === employeeId);
+                    
+                    if (!user) {
+                        showAlert(`User with employee ID ${employeeId} does not have access to the system`, 'danger');
+                        grantAdminBtn.innerHTML = '<i class="fas fa-user-shield"></i> Grant Admin Access';
+                        grantAdminBtn.disabled = false;
+                        return;
+                    }
+                    
+                    // Show user details in modal
+                    showUserDetailsInModal(user);
+                    
+                    // Set the current user ID for modal action
+                    currentUserId = user.USER_ID;
+                    
+                    // Show the modal
+                    userDetailsModal.show();
+                } else {
+                    showAlert(`Failed to find user: ${result.error}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`Error finding user: ${error.message}`, 'danger');
+                console.error('Error:', error);
+            } finally {
+                grantAdminBtn.innerHTML = '<i class="fas fa-user-shield"></i> Grant Admin Access';
+                grantAdminBtn.disabled = false;
+            }
+        });
+        
+        // Show user details in modal
+        function showUserDetailsInModal(user) {
+            const html = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>User Information</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>Name:</strong></td>
+                                <td>${user.FULL_NAME}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Employee ID:</strong></td>
+                                <td>${user.EMPLOYEE_ID}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Department:</strong></td>
+                                <td>${user.DEPARTMENT || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Designation:</strong></td>
+                                <td>${user.DESIGNATION || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email:</strong></td>
+                                <td>${user.EMAIL || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Access Granted At:</strong></td>
+                                <td>${new Date(user.ACCESS_GRANTED_AT).toLocaleString()}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Confirm Admin Access Grant</h6>
+                        <p>You are about to grant admin access to <strong>${user.FULL_NAME}</strong> (${user.EMPLOYEE_ID}).</p>
+                        <p>They will be able to:</p>
+                        <ul>
+                            <li>Manage user access requests</li>
+                            <li>Grant/revoke user access</li>
+                            <li>View all system reports</li>
+                            <li>Manage cameras and settings</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            userDetailsContent.innerHTML = html;
+        }
+        
+        // Grant admin access from modal
+        grantAdminAccessModalBtn.addEventListener('click', async function() {
+            if (!currentUserId) {
+                showAlert('No user selected for admin access grant', 'danger');
+                return;
+            }
+            
+            try {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                const grantedBy = currentUser.employee_id || 'System';
+                
+                // Disable the button to prevent double-click
+                grantAdminAccessModalBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Granting...';
+                grantAdminAccessModalBtn.disabled = true;
+                
+                const response = await fetch(`${API_BASE_URL}/grant-admin-access`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        employee_id: document.getElementById('admin_employee_id').value.trim(),
+                        granted_by: grantedBy
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Admin access granted successfully!', 'success');
+                    loadAdminAccessUsers(); // Reload the table
+                    userDetailsModal.hide(); // Close the modal
+                    document.getElementById('grant-admin-access-form').reset(); // Clear the form
+                } else {
+                    showAlert(`Failed to grant admin access: ${result.message || 'Unknown error'}`, 'danger');
+                }
+            } catch (error) {
+                showAlert(`Error granting admin access: ${error.message}`, 'danger');
+                console.error('Error:', error);
+            } finally {
+                grantAdminAccessModalBtn.innerHTML = 'Grant Admin Access';
+                grantAdminAccessModalBtn.disabled = false;
+            }
+        });
+        
+        // Event Listeners
+        refreshAdminUsersBtn.addEventListener('click', loadAdminAccessUsers);
+        
+        // Admin users search functionality
+        adminUsersSearch.addEventListener('input', function() {
+            const searchTerm = this.value;
+            filterAdminUsers(searchTerm);
+        });
+        
+        // Admin users sort functionality
+        document.querySelectorAll('.admin-users-sort-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.preventDefault();
+                const sortBy = this.getAttribute('data-sort');
+                const direction = this.getAttribute('data-dir');
+                sortAdminUsers(sortBy, direction);
+            });
+        });
+        
+        // Logout functionality
+        document.getElementById('logout-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('isAdminLoggedIn');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        });
+        
+        // Sidebar toggle functionality
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            
+            // Change icon based on sidebar state
+            const icon = this.querySelector('i');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+            
+            // Trigger a resize event to ensure proper layout adjustment
+            window.dispatchEvent(new Event('resize'));
+        });
+        
+        // Show alert message
+        function showAlert(message, type = 'info') {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.alert-fixed');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-fixed`;
+            alertDiv.role = 'alert';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
